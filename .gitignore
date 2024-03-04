@@ -10,3 +10,8 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# files to be ignore
+sraEnv
+cache
+credentials.py 
