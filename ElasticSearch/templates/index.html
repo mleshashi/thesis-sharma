@@ -1,0 +1,144 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Webis.de/Thesis-Sharma</title>
+    <link rel="icon" type="image/png" href="https://assets.webis.de/img/favicon.png">
+    <style>
+        body {
+            margin: 0;
+            /* Remove default margin */
+            padding: 0;
+            /* Remove default padding */
+            padding-bottom: 50px;
+            /* Add padding at the bottom equal to footer height */
+            margin: 0 20px;
+            /* Add small left and right margin */
+            box-sizing: border-box;
+            /* Include padding and border in the element's total width and height */
+        }
+
+        h1 {
+            text-align: center;
+            color: rgb(214, 214, 214);
+            background-color: rgb(28, 28, 28);
+            padding: 20px 0;
+            margin: 0 -20px 20px;
+            /* Adjust margins to extend full width despite body margin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Center content */
+            position: relative;
+            /* Allow absolute positioning relative to this */
+        }
+
+        h1 img {
+            position: absolute;
+            /* Position logo absolutely to not affect centering */
+            left: 20px;
+            /* Align to the left */
+            height: 30px;
+            /* Logo height */
+        }
+
+        h1 span {
+            position: absolute;
+            left: 60px;
+            /* Adjust based on actual logo width */
+            font-size: 0.5em;
+            /* Make the text smaller */
+            font-weight: normal;
+            /* Ensure the text is not bold */
+        }
+
+        /* Add margin below the 'Get Random Topic' button */
+        #topic {
+            margin-bottom: 2em;
+            /* Adjust the value as needed */
+        }
+
+        /* New style for spacing between result documents */
+        #results>div {
+            margin-bottom: 1em;
+            /* 1em roughly equals the line height, adjust as needed */
+        }
+
+        footer {
+            position: fixed;
+            /* Fix footer to the bottom of the viewport */
+            bottom: 0;
+            /* Align to the bottom */
+            left: 0;
+            /* Stretch across the left */
+            width: 100%;
+            /* Ensure it stretches across the full width */
+            background-color: rgb(28, 28, 28);
+            color: white;
+            text-align: center;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>
+        <img src="https://assets.webis.de/img/favicon.png" alt="Webis.de Logo">
+        <span class="h1-text">WEBIS:DE</span> Master Thesis: Statistics Retrieval of Arguments
+    </h1>
+    <button id="getTopic">Get Random Topic</button>
+    <div id="topic"></div>
+    <button id="search">Search Documents</button>
+    <div id="results"></div>
+
+    <footer>
+        <p>Supervised by: Dr. Johannes Kiesel</p>
+    </footer>
+
+    <script>
+        document.getElementById('getTopic').onclick = function () {
+            fetch('/get-random-topic')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('topic').textContent = 'Topic: ' + data.topic;
+                    // Store the topic in the search button for later use
+                    document.getElementById('search').setAttribute('data-topic', data.topic);
+                    // Clear the search results when a new topic is fetched
+                    document.getElementById('results').innerHTML = '';
+                });
+        };
+
+        document.getElementById('search').onclick = function () {
+            const topic = this.getAttribute('data-topic');
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ topic }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const results = document.getElementById('results');
+                    results.innerHTML = '';
+
+                    // Use forEach to iterate over the data, with an additional parameter to access the index
+                    data.forEach((doc, index) => {
+                        // Delay time calculation: no delay for the first item, 2000ms increments for subsequent items
+                        const delayTime = index * 1000; // 0 for the 1st, 2000 for the 2nd, 4000 for the 3rd, etc.
+
+                        // Use setTimeout to delay appending each div
+                        setTimeout(() => {
+                            const div = document.createElement('div');
+                            div.innerHTML = `<strong>Title:</strong> ${doc.title}<br><strong>Content:</strong> ${doc.content}<br><strong>Score:</strong> ${doc.score}`;
+                            results.appendChild(div);
+                        }, delayTime);
+                    });
+                });
+        };
+    </script>
+</body>
+
+</html>
