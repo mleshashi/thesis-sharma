@@ -1,33 +1,33 @@
-﻿Topic;Question
-Gas Price;How did COVID-19 affect global gasoline prices?
-Gas Price;What are the Reasons for rising Gasprice in US?
-Gas Price;What is the average gasoline price per liter in US compare to other countries?
-Gas Price;How international conflicts impact the fuel prices?
-Economy;What's the attitude of Americans towards budget deficits?
-Economy;What's the attitude of Americans towards spending on policing?
-Economy;What is the government expenditure in US?
-Economy;Is Globalisation good for economic growth?
-Economy;What is the outlook of Business Tourism?
-Economy;What is the projection of Global GDP?
-Economy;What is the forecast of United States GDP?
-Population;What is the projected population growth of the United States?
-Population;What is the projected population growth of the world?
-Politics;What are the priorities for Egyptians during election?
-Politics;How has historical political unrest affected Egypt's economy?
-Social Media & Internet;How do people use social networking sites?
-Social Media & Internet;What's the opinion of Americans about Social media?
-Social Media & Internet;How has social media impacted the workplace?
-Social Media & Internet;How has social media influenced American politics?
-Social Media & Internet;What is the Global usage of twitter?
-Social Media & Internet;How has the internet influenced election campaigns in the US?
-Social Media & Internet;How has internet banking evolved in Britain?
-Social Media & Internet;How has the adoption of online banking evolved among American?
-Gun Violence;What is the trend of violent crimes committed by youths in the US?
-Gun Violence;What is the racial distribution among U.S. mass shooting perpetrators?
-Gun Violence;What is the trend in mass shootings in the US in recent years?
-Gun Violence;Should the US reform its gun laws?
-Gun Violence;What is the statistics of legal gun ownership in the US?
-Gun Violence;How has firearm manufacturing evolved in the U.S.?
-India;What's the trend of Unemployment in India?
-India;How has urbanization impacted India?
-India;What is the projection of India'S GDP?
+Topic,Sector
+How did COVID-19 affect global gasoline prices?,Gas Price
+What are the Reasons for rising Gasprice in US?,Gas Price
+What is the average gasoline price per liter in US compare to other countries?,Gas Price
+How international conflicts impact the fuel prices?,Gas Price
+What's the attitude of Americans towards budget deficits?,Economy
+What's the attitude of Americans towards spending on policing?,Economy
+What is the government expenditure in US?,Economy
+Is Globalisation good for economic growth?,Economy
+What is the outlook of Business Tourism?,Economy
+What is the projection of Global GDP?,Economy
+What is the forecast of United States GDP?,Economy
+What is the projected population growth of the United States?,Population
+What is the projected population growth of the world?,Population
+What are the priorities for Egyptians during election?,Politics
+How has historical political unrest affected Egypt's economy?,Politics
+How do people use social networking sites?,Social Media & Internet
+What's the opinion of Americans about Social media?,Social Media & Internet
+How has social media impacted the workplace?,Social Media & Internet
+How has social media influenced American politics?,Social Media & Internet
+What is the Global usage of twitter?,Social Media & Internet
+How has the internet influenced election campaigns in the US?,Social Media & Internet
+How has internet banking evolved in Britain?,Social Media & Internet
+How has the adoption of online banking evolved among American?,Social Media & Internet
+What is the trend of violent crimes committed by youths in the US?,Gun Violence
+What is the racial distribution among U.S. mass shooting perpetrators?,Gun Violence
+What is the trend in mass shootings in the US in recent years?,Gun Violence
+Should the US reform its gun laws?,Gun Violence
+What is the statistics of legal gun ownership in the US?,Gun Violence
+How has firearm manufacturing evolved in the U.S.?,Gun Violence
+What's the trend of Unemployment in India?,India
+How has urbanization impacted India?,India
+What is the projection of India'S GDP?,India
