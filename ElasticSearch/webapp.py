@@ -12,16 +12,22 @@ index_name = "documents"
 
 # Load topics DataFrame globally
 topics_df = pd.read_csv('../dataset/TopRelevant_topics.csv')
+Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
 @app.route('/')
 def index():
     # Render the main page
     return render_template('index.html')
 
-@app.route('/get-random-topic', methods=['GET'])
-def get_random_topic():
-    random_topic = random.choice(topics_df['Topic'].to_list())
-    return jsonify({"topic": random_topic})
+@app.route('/get-topics', methods=['GET'])
+def get_topics():
+    topics_list = topics_df['Topic'].tolist()
+    return jsonify({"topics": topics_list})
+
+@app.route('/get-manual-topics', methods=['GET'])
+def get_manual_topics():
+    manual_topics_list = Manualtopics_df['Topic'].tolist()
+    return jsonify({"topics": manual_topics_list})
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -46,6 +52,24 @@ def search():
 
     documents = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response['hits']['hits']]
     return jsonify(documents)
+
+@app.route('/get-random-document', methods=['GET'])
+def get_random_document():
+    index_name = "documents"
+    total_docs = es.count(index=index_name)['count']
+
+    # Generate a random offset
+    random_offset = random.randint(0, total_docs - 1)
+
+    # Fetch one document at a random offset
+    response = es.search(index=index_name, body={
+        "size": 1,
+        "query": {"match_all": {}},
+        "from": random_offset
+    })
+    
+    doc = response['hits']['hits'][0]['_source']
+    return jsonify({"title": doc['title'], "content": doc['content']})    
 
 if __name__ == '__main__':
     app.run(debug=True)
