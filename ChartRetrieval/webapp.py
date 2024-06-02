@@ -7,7 +7,7 @@ import random
 
 app = Flask(__name__)
 es = Elasticsearch(["http://localhost:9200"])
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("all-mpnet-base-v2")
 index_name = "documents"
 
 # Load topics DataFrame globally
@@ -38,7 +38,7 @@ def search():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'mpnet_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding}
             }
         }
