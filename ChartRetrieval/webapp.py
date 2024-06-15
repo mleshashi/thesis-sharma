@@ -11,8 +11,10 @@ model = SentenceTransformer("all-mpnet-base-v2")
 index_name = "documents"
 
 # Load topics DataFrame globally
-topics_df = pd.read_csv('../dataset/TopRelevant_topics.csv')
-Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
+#topics_df = pd.read_csv('../dataset/TopRelevant_topics.csv')
+topics_df = pd.read_csv('/app/dataset/TopRelevant_topics.csv')
+#Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
+Manualtopics_df = pd.read_csv('/app/dataset/manual_topics.csv')
 
 @app.route('/')
 def index():
@@ -72,4 +74,5 @@ def get_random_document():
     return jsonify({"title": doc['title'], "content": doc['content']})    
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
