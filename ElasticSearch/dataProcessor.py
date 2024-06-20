@@ -2,7 +2,7 @@ import pandas as pd
 
 def process_metadata(pew_metadata_path, statista_metadata_path):
     # Ensure the entire text in each cell is displayed without truncation
-    pd.set_option('display.max_colwidth', None)
+    #pd.set_option('display.max_colwidth', None)
 
     # Load Pew dataset and update image paths
     pew = pd.read_csv(pew_metadata_path)
