@@ -14,22 +14,22 @@ es = Elasticsearch(["http://localhost:9200"])
 index_name = "documents"
 
 # Load models
-model_name = 'intfloat/e5-mistral-7b-instruct'
+model_name_1 = 'intfloat/e5-mistral-7b-instruct'
+#model_name_2 = 'Alibaba-NLP/gte-Qwen2-7B-instruct'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-tokenizer = load_tokenizer(model_name)
-model = load_model(model_name)
-
+tokenizer_1 = load_tokenizer(model_name_1)
+model_1 = load_model(model_name_1)
+#tokenizer_2 = load_tokenizer(model_name_2, trust_remote_code=True)
+#model_2 = load_model(model_name_2, trust_remote_code=True)
 
 # Load topics DataFrame globally
 topics_df = pd.read_csv('../dataset/TopRelevant_topics1.csv')
-#topics_df = pd.read_csv('/app/dataset/TopRelevant_topics1.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
-#Manualtopics_df = pd.read_csv('/app/dataset/manual_topics.csv')
 
 @app.route('/')
 def index():
     # Render the main page
-    return render_template('index.html')
+    return render_template('index1.html')
 
 @app.route('/get-topics', methods=['GET'])
 def get_topics():
@@ -46,26 +46,51 @@ def search():
     topic = request.json['topic']
     task = 'Given a web search query, retrieve relevant passages that answer the query'
     query = get_detailed_instruct(task, topic)
-    topic_embedding = embed_texts(query, tokenizer, model, device)
+    
+    # Get embeddings for both models
+    topic_embedding_1 = embed_texts(query, tokenizer_1, model_1, device)
+    topic_embedding_2 = embed_texts(query, tokenizer_1, model_1, device)
 
-    script_query = {
+    # Elasticsearch query for the first model
+    script_query_1 = {
         "script_score": {
             "query": {"match_all": {}},
             "script": {
                 "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding}
+                "params": {"query_vector": topic_embedding_1}
             }
         }
     }
 
-    response = es.search(index=index_name, body={
+    # Elasticsearch query for the second model
+    script_query_2 = {
+        "script_score": {
+            "query": {"match_all": {}},
+            "script": {
+                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
+                "params": {"query_vector": topic_embedding_2}
+            }
+        }
+    }
+
+    # Get results for the first model
+    response_1 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query,
+        "query": script_query_1,
         "_source": ["title", "content"]
     })
 
-    documents = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response['hits']['hits']]
-    return jsonify(documents)
+    # Get results for the second model
+    response_2 = es.search(index=index_name, body={
+        "size": 3,  # Fetch top 3 relevant documents
+        "query": script_query_2,
+        "_source": ["title", "content"]
+    })
+
+    documents_1 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response_1['hits']['hits']]
+    documents_2 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response_2['hits']['hits']]
+    
+    return jsonify({"model_1_documents": documents_1, "model_2_documents": documents_2})
 
 @app.route('/get-random-document', methods=['GET'])
 def get_random_document():
@@ -87,4 +112,3 @@ def get_random_document():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
-    #app.run(host='0.0.0.0', port=5000, debug=True)

@@ -16,3 +16,4 @@ sraEnv
 cache
 credentials.py 
 models/*
+ElasticSearch/demoCode.py
