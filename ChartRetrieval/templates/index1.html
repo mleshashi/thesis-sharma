@@ -6,7 +6,8 @@
     <title>Webis.de/Thesis-Sharma</title>
     <link rel="icon" type="image/png" href="https://assets.webis.de/img/favicon.png">
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -43,29 +44,14 @@
             font-weight: normal;
         }
 
-        #content {
-            display: flex;
-            width: 100%;
-            flex: 1;
-            min-height: calc(100vh - 140px);
-        }
-
-        #left-panel, #right-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 15px;
-        }
-
-        #left-panel {
-            border-right: 2px solid #ccc;
-        }
-
         #button-container {
             display: flex;
-            justify-content: flex-start;
-            margin-bottom: 10px;
+            justify-content: center; /* Center the content */
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 0 20px;
+            margin-top: 20px;
         }
 
         button {
@@ -75,16 +61,38 @@
         #query-container {
             display: flex;
             align-items: center;
-            width: 100%;
+            flex-grow: 1;
+            max-width: 50%; /* Center and limit width of the container */
         }
 
-        #topicDropdown, #inputField {
+        #topicDropdown,
+        #inputField {
             flex-grow: 1;
-            display: none;
+            display: block;
+            width: 100px; /* Set width to half of the previous 200px */
+        }
+
+        #inputField {
+            display: none; /* Initially hidden */
         }
 
         #search {
-            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #results-container {
+            display: flex;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .results-panel {
+            flex: 1;
+            padding: 15px;
+        }
+
+        .results-panel:not(:last-child) {
+            border-right: 2px solid #ccc;
         }
 
         footer {
@@ -97,10 +105,6 @@
             text-align: center;
             padding: 0;
         }
-
-        #results-left, #results-right {
-            margin-top: 20px;
-        }
     </style>
 </head>
 
@@ -109,26 +113,29 @@
         <img src="https://assets.webis.de/img/favicon.png" alt="Webis.de Logo">
         <span class="h1-text">WEBIS:DE</span> Master Thesis: Statistics Retrieval of Arguments
     </h1>
-    <div id="content">
-        <div id="left-panel">
-            <div id="button-container">
-                <button id="getTopics">Touche</button>
-                <button id="getManualTopics">Manual</button>
-                <button id="searchRandomContext">Random</button>
-            </div>
-            <div id="query-container">
-                <select id="topicDropdown"></select>
-                <input type="text" id="inputField" placeholder="Type your topic...">
-            </div>
-            <button id="search">Search Documents</button>
-            <div id="results-left">
-                <h3>Model 1 Results:</h3>
-            </div>
+    <div id="button-container">
+        <button id="getTopics">Touche</button>
+        <button id="getManualTopics">Manual</button>
+        <button id="searchRandomContext">Random</button>
+        <button id="questionButton">Question</button>
+        <div id="query-container">
+            <select id="topicDropdown"></select>
+            <input type="text" id="inputField" placeholder="Type your topic..." style="display:none;">
         </div>
-        <div id="right-panel">
-            <div id="results-right">
-                <h3>Model 2 Results:</h3>
-            </div>
+        <button id="search">Search Documents</button>
+    </div>
+    <div id="results-container">
+        <div id="model1-results" class="results-panel">
+            <h2>Model 1 Results</h2>
+        </div>
+        <div id="model2-results" class="results-panel">
+            <h2>Model 2 Results</h2>
+        </div>
+        <div id="model3-results" class="results-panel">
+            <h2>Model 3 Results</h2>
+        </div>
+        <div id="model4-results" class="results-panel">
+            <h2>Model 4 Results</h2>
         </div>
     </div>
     <footer>
