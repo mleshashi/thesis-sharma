@@ -80,9 +80,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     <strong>Score:</strong> ${doc.score}<br>
                     <div class="relevant-score-container">
                         <strong>Relevant Score:</strong> <input type="text" id="relevant-score-${index}" class="relevant-score-input">
+                    </div>
+                    <div class="image-container">
+                        <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
                     </div>`;
                 container.appendChild(div);
             }, index * 400); // Delay of 0 for the first, 200ms for the second, and so on
         });
     }
+
+    // Function to enlarge image
+    function enlargeImage(img) {
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+        const enlargedImg = document.createElement('img');
+        enlargedImg.src = img.src;
+        enlargedImg.classList.add('enlarged-image');
+        modal.appendChild(enlargedImg);
+        document.body.appendChild(modal);
+
+        // Close the modal when clicking outside the image
+        modal.onclick = function() {
+            document.body.removeChild(modal);
+        }
+    }
+
 });

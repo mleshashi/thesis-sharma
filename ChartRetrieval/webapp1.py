@@ -109,34 +109,34 @@ def search():
     response_1 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_1,
-        "_source": ["title", "content"]
+        "_source": ["title", "content","image_data"]
     })
 
     # Get results for the second model
     response_2 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_2,
-        "_source": ["title", "content"]
+        "_source": ["title", "content","image_data"]
     })
 
     # Get results for the third model
     response_3 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_3,
-        "_source": ["title", "content"]
+        "_source": ["title", "content","image_data"]
     })
 
     # Get results for the fourth model
     response_4 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_4,
-        "_source": ["title", "content"]
+        "_source": ["title", "content","image_data"]
     })
 
-    documents_1 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response_1['hits']['hits']]
-    documents_2 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response_2['hits']['hits']]
-    documents_3 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response_3['hits']['hits']]
-    documents_4 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"]} for hit in response_4['hits']['hits']]
+    documents_1 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_1['hits']['hits']]
+    documents_2 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_2['hits']['hits']]
+    documents_3 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_3['hits']['hits']]
+    documents_4 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_3['hits']['hits']]
     
     return jsonify({
         "model_1_documents": documents_1,
