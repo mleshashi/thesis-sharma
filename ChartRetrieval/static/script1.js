@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
 
+    // Function to display results
     function displayResults(documents, elementId) {
         const container = document.getElementById(elementId);
         container.innerHTML = '';
@@ -73,7 +74,13 @@ document.addEventListener('DOMContentLoaded', function () {
         documents.forEach((doc, index) => {
             setTimeout(() => {
                 const div = document.createElement('div');
-                div.innerHTML = `<strong>Title:</strong> ${doc.title}<br><strong>Content:</strong> ${doc.content}<br><strong>Score:</strong> ${doc.score}`;
+                div.innerHTML = `
+                    <strong>Title:</strong> ${doc.title}<br>
+                    <strong>Content:</strong> ${doc.content}<br>
+                    <strong>Score:</strong> ${doc.score}<br>
+                    <div class="relevant-score-container">
+                        <strong>Relevant Score:</strong> <input type="text" id="relevant-score-${index}" class="relevant-score-input">
+                    </div>`;
                 container.appendChild(div);
             }, index * 400); // Delay of 0 for the first, 200ms for the second, and so on
         });
