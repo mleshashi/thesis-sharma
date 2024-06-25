@@ -95,24 +95,42 @@
             border-right: 2px solid #ccc;
         }
 
+        .results-panel h2 {
+            text-align: center;
+        }
+        
         .relevant-score-container {
+            display: flex;
+            align-items: center; /* Align items to the center */
+            margin-top: 5px;
+            width: 100%;
+            justify-content: space-between; /* Ensures space is distributed between elements */
+        }
+        
+        .relevant-score-left {
+            display: flex;
+            flex-direction: column; /* Ensure elements stack vertically */
+        }
+        
+        .relevant-score-row {
             display: flex;
             align-items: center;
             margin-top: 5px;
         }
-
-        .relevant-score-input {
+        
+        .relevant-score-input,
+        .completeness-score-input {
             width: 50px;
             margin-left: 5px;
         }
-
+        
         .compact-image {
-            width: 100px; /* Adjust the size as needed */
+            width: 150px; /* Adjust the size as needed */
             height: auto;
             cursor: pointer;
-            margin-top: 10px;
+            margin-left: 50px; /* Add some space between the input field and the image */
         }
-
+        
         .modal {
             position: fixed;
             top: 0;
@@ -121,16 +139,16 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: center; /* Ensure the modal content is centered */
-            z-index: 1000; /* Ensure it is above other content */
+            z-index: 1000; /* Ensures the modal appears above other content */
         }
-
+        
         .enlarged-image {
             max-width: 90%;
             max-height: 90%;
-            padding: 20px; /* Add some padding */
         }
+            
 
         footer {
             position: fixed;
@@ -162,17 +180,21 @@
         <button id="search">Search Documents</button>
     </div>
     <div id="results-container">
-        <div id="model1-results" class="results-panel">
-            <h2>Model 1 Results</h2>
+        <div class="results-panel">
+            <h2>BM25</h2>
+            <div id="model1-results"></div> <!-- Placeholder for dynamic content -->
         </div>
-        <div id="model2-results" class="results-panel">
-            <h2>Model 2 Results</h2>
+        <div class="results-panel">
+            <h2>Mistral</h2>
+            <div id="model2-results"></div> <!-- Placeholder for dynamic content -->
         </div>
-        <div id="model3-results" class="results-panel">
-            <h2>Model 3 Results</h2>
+        <div class="results-panel">
+            <h2>GTE-QWEN2</h2>
+            <div id="model3-results"></div> <!-- Placeholder for dynamic content -->
         </div>
-        <div id="model4-results" class="results-panel">
-            <h2>Model 4 Results</h2>
+        <div class="results-panel">
+            <h2>CLIP</h2>
+            <div id="model4-results"></div> <!-- Placeholder for dynamic content -->
         </div>
     </div>
     <footer>

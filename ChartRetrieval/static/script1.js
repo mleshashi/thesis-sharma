@@ -77,17 +77,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 div.innerHTML = `
                     <strong>Title:</strong> ${doc.title}<br>
                     <strong>Content:</strong> ${doc.content}<br>
-                    <strong>Score:</strong> ${doc.score}<br>
                     <div class="relevant-score-container">
-                        <strong>Relevant Score:</strong> <input type="text" id="relevant-score-${index}" class="relevant-score-input">
-                    </div>
-                    <div class="image-container">
-                        <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
+                        <div class="relevant-score-left">
+                            <div class="relevant-score-row">
+                                <strong>Score:</strong> ${doc.score}
+                            </div>
+                            <div class="relevant-score-row">
+                                <strong>Relevant Score:</strong>
+                                <input type="text" id="relevant-score-${index}" class="relevant-score-input">
+                            </div>
+                            <div class="relevant-score-row">
+                                <strong>Completeness Score:</strong>
+                                <input type="text" id="completeness-score-${index}" class="completeness-score-input">
+                            </div>
+                        </div>
+                        <div class="relevant-score-right">
+                            <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
+                        </div>
                     </div>`;
                 container.appendChild(div);
             }, index * 400); // Delay of 0 for the first, 200ms for the second, and so on
         });
     }
+
+
 
     // Function to enlarge image
     window.enlargeImage = function(img) { // Ensure the function is globally accessible
