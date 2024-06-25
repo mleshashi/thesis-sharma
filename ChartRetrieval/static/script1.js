@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to enlarge image
-    function enlargeImage(img) {
+    window.enlargeImage = function(img) { // Ensure the function is globally accessible
         const modal = document.createElement('div');
         modal.classList.add('modal');
         const enlargedImg = document.createElement('img');
@@ -104,5 +104,4 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.removeChild(modal);
         }
     }
-
 });
