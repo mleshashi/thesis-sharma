@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>Score:</strong> ${doc.score}
                             </div>
                             <div class="relevant-score-row">
-                                <strong>Relevant Score:</strong>
+                                <strong>Relevance Score:</strong>
                                 <input type="text" id="relevant-score-${index}" class="relevant-score-input">
                             </div>
                             <div class="relevant-score-row">
