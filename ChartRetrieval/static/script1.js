@@ -96,6 +96,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const enlargedImg = document.createElement('img');
         enlargedImg.src = img.src;
         enlargedImg.classList.add('enlarged-image');
+
+        // Determine the position of the small image
+        const imgRect = img.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        const isLeftOfCenter = imgRect.left < windowWidth / 2;
+
+        // Set the position based on the small image's position
+        if (isLeftOfCenter) {
+            enlargedImg.style.marginLeft = '50%'; // Center in the right half
+        } else {
+            enlargedImg.style.marginRight = '50%'; // Center in the left half
+        }
+
         modal.appendChild(enlargedImg);
         document.body.appendChild(modal);
 
