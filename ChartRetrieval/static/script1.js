@@ -20,11 +20,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listener for the Touche button
     document.getElementById('getTopics').onclick = function () {
         fetchTopics('/get-topics');
+
+        // Clear all previous results and LLM answers
+        clearResults();
+        clearLLMAnswers();
+
     };
 
     // Event listener for the Manual button
     document.getElementById('getManualTopics').onclick = function () {
         fetchTopics('/get-manual-topics');
+
+        // Clear all previous results and LLM answers
+        clearResults();
+        clearLLMAnswers();
+
     };
 
     // Event listener for the Random button
@@ -41,7 +51,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 const results = document.getElementById('results');
                 results.innerHTML = `<strong>Title:</strong> ${doc.title}<br><strong>Content:</strong> ${doc.content}`;
             });
+
+        // Clear all previous results and LLM answers
+        clearResults();
+        clearLLMAnswers();
     };
+
+    // Function to clear all retrieved answers
+    function clearResults() {
+        document.getElementById('model1-results').innerHTML = '';
+        document.getElementById('model2-results').innerHTML = '';
+        document.getElementById('model3-results').innerHTML = '';
+        document.getElementById('model4-results').innerHTML = '';
+    }
+
+    // Function to clear and hide all LLM answers
+    function clearLLMAnswers() {
+        document.querySelectorAll('.llm-answer-content').forEach(el => el.innerHTML = '');
+        document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'none');
+    }
 
     // Search functionality for both dropdown and input field
     document.getElementById('search').onclick = function () {
@@ -62,7 +90,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayResults(data.model_2_documents, 'model2-results');
                 displayResults(data.model_3_documents, 'model3-results');
                 displayResults(data.model_4_documents, 'model4-results');
+
+                // Show the final answer titles
+                document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'block');
             });
+    };
+
+    // Event listener for the Generate Answers button
+    document.getElementById('generateAnswers').onclick = function () {
+        // Simulate fetching the answers from the LLM
+        setTimeout(() => {
+            document.querySelector('#model1-answer .llm-answer-content').textContent = 'Final Answer for BM25';
+            document.querySelector('#model2-answer .llm-answer-content').textContent = 'Final Answer for Mistral';
+            document.querySelector('#model3-answer .llm-answer-content').textContent = 'Final Answer for GTE-QWEN2';
+            document.querySelector('#model4-answer .llm-answer-content').textContent = 'Final Answer for CLIP';
+        }, 1000); // Simulate a delay
     };
 
     // Function to display results
@@ -100,10 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-
-
     // Function to enlarge image
-    window.enlargeImage = function(img) { // Ensure the function is globally accessible
+    window.enlargeImage = function(img) {
         const modal = document.createElement('div');
         modal.classList.add('modal');
         const enlargedImg = document.createElement('img');
@@ -129,5 +169,5 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.onclick = function() {
             document.body.removeChild(modal);
         }
-    }
+    };
 });

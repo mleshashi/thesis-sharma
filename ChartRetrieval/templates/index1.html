@@ -89,8 +89,12 @@
         .results-panel {
             flex: 1;
             padding: 10px;
-            max-height: 600px; /* Adjust this value as needed */
+            max-height: 60vh; /* Use 65% of the viewport height */
             overflow-y: auto; /* Enable vertical scrolling if content exceeds the max height */
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #ccc; /* Extend border to the bottom */
+            position: relative; /* Add this line */
         }
 
         .results-panel:not(:last-child) {
@@ -99,13 +103,17 @@
 
         .results-panel h2 {
             text-align: center;
-            margin-top: 0;  /* Remove top margin */
+            margin-top: -10px;  /* Remove top margin */
             margin-bottom: 10px;  /* Reduced bottom margin */
             padding: 0 10px; /* Add padding to align with panel divider */
             box-sizing: border-box; /* Ensure padding is included in the element's total width */
             border-bottom: 2px solid #ccc; /* Optional: Add a bottom border to visually match the panel dividers */
+            position: sticky; /* Ensure it stays fixed while scrolling */
+            top: -10px;
+            background-color: white; /* Ensure it covers content behind */
+            z-index: 10; /* Ensure it stays above the content */
         }
-        
+
         .relevant-score-container {
             display: flex;
             align-items: center; /* Align items to the center */
@@ -113,31 +121,31 @@
             width: 100%;
             justify-content: space-between; /* Ensures space is distributed between elements */
         }
-        
+
         .relevant-score-left {
             display: flex;
             flex-direction: column; /* Ensure elements stack vertically */
         }
-        
+
         .relevant-score-row {
             display: flex;
             align-items: center;
             margin-top: 5px;
         }
-        
+
         .relevant-score-input,
         .completeness-score-input {
             width: 50px;
             margin-left: 5px;
         }
-        
+
         .compact-image {
             width: 150px; /* Adjust the size as needed */
             height: auto;
             cursor: pointer;
             margin-left: 50px; /* Add some space between the input field and the image */
         }
-        
+
         .modal {
             position: fixed;
             top: 0;
@@ -150,12 +158,39 @@
             align-items: center;
             z-index: 1000; /* Ensures the modal appears above other content */
         }
-        
+
         .enlarged-image {
             max-width: 90%;
             max-height: 90%;
         }
-            
+
+        .llm-answer-container {
+            display: flex;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .llm-answer {
+            flex: 1;
+            padding: 10px;
+            border-top: 2px solid #ccc;
+            display: none; /* Hidden initially */
+            text-align: center;
+            border-right: 2px solid #ccc; /* Extend border to match results panels */
+        }
+
+        .llm-answer:not(:last-child) {
+            border-right: 2px solid #ccc;
+        }
+
+        .llm-answer h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            display: block; /* Ensure the title is visible */
+            border-bottom: 2px solid #ccc; /* Match the bottom border of the results panels */
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
 
         footer {
             position: fixed;
@@ -185,6 +220,7 @@
             <input type="text" id="inputField" placeholder="Type your topic..." style="display:none;">
         </div>
         <button id="search">Search Documents</button>
+        <button id="generateAnswers">Generate Answers</button>
     </div>
     <div id="results-container">
         <div class="results-panel">
@@ -203,6 +239,12 @@
             <h2>CLIP</h2>
             <div id="model4-results"></div> <!-- Placeholder for dynamic content -->
         </div>
+    </div>
+    <div class="llm-answer-container">
+        <div class="llm-answer" id="model1-answer"><h3>Final Answer for BM25</h3><div class="llm-answer-content"></div></div>
+        <div class="llm-answer" id="model2-answer"><h3>Final Answer for Mistral</h3><div class="llm-answer-content"></div></div>
+        <div class="llm-answer" id="model3-answer"><h3>Final Answer for GTE-QWEN2</h3><div class="llm-answer-content"></div></div>
+        <div class="llm-answer" id="model4-answer"><h3>Final Answer for CLIP</h3><div class="llm-answer-content"></div></div>
     </div>
     <footer>
         <p>Supervised by: Dr. Johannes Kiesel</p>
