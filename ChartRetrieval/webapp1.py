@@ -145,23 +145,28 @@ def search():
         "model_4_documents": documents_4
     })
 
-@app.route('/get-random-document', methods=['GET'])
-def get_random_document():
+@app.route('/get-random-image', methods=['GET'])
+def get_random_image():
     index_name = "documents"
     total_docs = es.count(index=index_name)['count']
 
-    # Generate a random offset
-    random_offset = random.randint(0, total_docs - 1)
+    # Cap the max_offset to avoid exceeding the max_result_window
+    max_offset = min(total_docs, 10000) - 1
+    random_offset = random.randint(0, max_offset)
 
     # Fetch one document at a random offset
     response = es.search(index=index_name, body={
         "size": 1,
         "query": {"match_all": {}},
-        "from": random_offset
+        "from": random_offset,
+        "_source": ["image_data"]  # Only request the image data field
     })
     
-    doc = response['hits']['hits'][0]['_source']
-    return jsonify({"title": doc['title'], "content": doc['content']})    
+    if response['hits']['hits']:
+        doc = response['hits']['hits'][0]['_source']
+        return jsonify({"image_data": doc['image_data']})  # Ensure 'image_data' is the correct field name
+    else:
+        return jsonify({"error": "No documents found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

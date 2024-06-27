@@ -44,14 +44,29 @@ document.addEventListener('DOMContentLoaded', function () {
         inputField.value = ''; // Clear previous input
         inputField.focus(); // Focus on the input field
 
-        // Fetch a random document immediately upon clicking Random
-        fetch('/get-random-document')
+        // Fetch a random image immediately upon clicking Random
+        fetch('/get-random-image')
             .then(response => response.json())
             .then(doc => {
-                const results = document.getElementById('results');
-                results.innerHTML = `<strong>Title:</strong> ${doc.title}<br><strong>Content:</strong> ${doc.content}`;
-            });
+                if (doc.image_data) {
+                    const img = document.createElement('img');
+                    img.src = `data:image/jpeg;base64,${doc.image_data}`;
+                    img.classList.add('enlarged-image');
 
+                    const modal = document.createElement('div');
+                    modal.classList.add('modal');
+                    modal.appendChild(img);
+                    document.body.appendChild(modal);
+
+                    // Close the modal when clicking outside the image
+                    modal.onclick = function() {
+                        document.body.removeChild(modal);
+                    };
+                } else {
+                    alert("No image found");
+                }
+            });
+            
         // Clear all previous results and LLM answers
         clearResults();
         clearLLMAnswers();
