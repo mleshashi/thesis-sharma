@@ -181,8 +181,30 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(modal);
 
         // Close the modal when clicking outside the image
-        modal.onclick = function() {
-            document.body.removeChild(modal);
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+
+        // Focus on the relevance score input field
+        const parentDiv = img.closest('.relevant-score-container');
+        const relevanceInput = parentDiv.querySelector('.relevant-score-input');
+        if (relevanceInput) {
+            relevanceInput.focus();
         }
+
+        // Handle Enter key to move to the next input field
+        parentDiv.querySelectorAll('input').forEach((input, index, inputs) => {
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const nextInput = inputs[index + 1];
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            });
+        });
     };
 });
