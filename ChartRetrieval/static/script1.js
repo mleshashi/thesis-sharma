@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to display results
     function displayResults(documents, elementId) {
         const container = document.getElementById(elementId);
-        container.innerHTML = '';
+        container.innerHTML = ''; // Clear existing content
 
         // Iterate over each document data
         documents.forEach((doc, index) => {
@@ -140,12 +140,24 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>Score:</strong> ${doc.score}
                             </div>
                             <div class="relevant-score-row">
-                                <strong>Relevance Score:</strong>
-                                <input type="text" id="relevant-score-${index}" class="relevant-score-input">
+                                <strong>Relevance:</strong>
+                                <select id="relevance-score-${index}" class="relevant-score-input">
+                                    <option value="-1">-1(Unable to Judge)</option>
+                                    <option value="0">0(No)</option>
+                                    <option value="1">1(Partially Relevant)</option>
+                                    <option value="2">2(Relevant)</option>
+                                    <option value="3">3(Highly Relevant)</option>
+                                </select>
                             </div>
                             <div class="relevant-score-row">
-                                <strong>Completeness Score:</strong>
-                                <input type="text" id="completeness-score-${index}" class="completeness-score-input">
+                                <strong>Completeness:</strong>
+                                <select id="completeness-score-${index}" class="completeness-score-input">
+                                    <option value="-1">-1(Unable to Judge)</option>
+                                    <option value="0">0(No)</option>
+                                    <option value="1">1(Somewhat)</option>
+                                    <option value="2">2(Yes but not completely)</option>
+                                    <option value="3">3(Yes)</option>
+                                </select>
                             </div>
                         </div>
                         <div class="relevant-score-right">
@@ -156,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }, index * 400); // Delay of 0 for the first, 200ms for the second, and so on
         });
     }
+
 
     // Function to enlarge image
     window.enlargeImage = function(img) {
@@ -187,21 +200,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Focus on the relevance score input field
+        // Focus on the first dropdown field (relevance score)
         const parentDiv = img.closest('.relevant-score-container');
-        const relevanceInput = parentDiv.querySelector('.relevant-score-input');
-        if (relevanceInput) {
-            relevanceInput.focus();
+        const relevanceDropdown = parentDiv.querySelector('.relevant-score-input');
+        if (relevanceDropdown) {
+            relevanceDropdown.focus();
         }
 
-        // Handle Enter key to move to the next input field
-        parentDiv.querySelectorAll('input').forEach((input, index, inputs) => {
-            input.addEventListener('keydown', function(event) {
+        // Handle Enter key to move to the next dropdown field
+        parentDiv.querySelectorAll('select').forEach((select, index, selects) => {
+            select.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
-                    const nextInput = inputs[index + 1];
-                    if (nextInput) {
-                        nextInput.focus();
+                    const nextSelect = selects[index + 1];
+                    if (nextSelect) {
+                        nextSelect.focus();
+                    } else {
+                        // Optionally, cycle back to the first select if there's no next select
+                        selects[0].focus();
                     }
                 }
             });
