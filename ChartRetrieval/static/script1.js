@@ -246,6 +246,10 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function displayNDCGScores(ndcg_scores) {
+
+        // Clear existing NDCG scores
+        document.querySelectorAll('.ndcg-score').forEach(el => el.remove());
+        
         document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
         document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
         document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
