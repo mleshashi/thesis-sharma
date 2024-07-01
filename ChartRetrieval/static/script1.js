@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const topicDropdown = document.getElementById('topicDropdown');
     const inputField = document.getElementById('inputField');
+    let topic = '';
 
     function fetchTopics(url) {
         fetch(url)
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('search').onclick = function () {
         const isDropdownVisible = topicDropdown.style.display !== 'none';
-        const topic = isDropdownVisible ? topicDropdown.value : inputField.value;
+        topic = isDropdownVisible ? topicDropdown.value : inputField.value;
 
         fetch('/search', {
             method: 'POST',
@@ -188,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('evaluateButton').onclick = function() {
         const documents = document.getElementsByClassName('relevant-score-container');
         const results = {
+            query: topic,
             model_1_documents: [],
             model_2_documents: [],
             model_3_documents: [],
@@ -221,12 +223,32 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ results })
+            body: JSON.stringify(results)
         })
         .then(response => response.json())
         .then(data => {
             console.log('Scores stored successfully:', data);
+            // Fetch the NDCG scores after storing the results
+            fetch('/evaluate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(results)
+            })
+            .then(response => response.json())
+            .then(ndcg_scores => {
+                displayNDCGScores(ndcg_scores);
+            })
+            .catch(error => console.error('Error:', error));
         })
         .catch(error => console.error('Error:', error));
     };
+
+    function displayNDCGScores(ndcg_scores) {
+        document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
+    }
 });

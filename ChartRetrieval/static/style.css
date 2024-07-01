@@ -191,6 +191,16 @@ select.relevant-score-input, select.completeness-score-input {
     box-sizing: border-box;
 }
 
+.ndcg-score {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.ndcg-value {
+    color: #007BFF;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -201,3 +211,5 @@ footer {
     text-align: center;
     padding: 0;
 }
+
+

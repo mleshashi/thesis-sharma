@@ -5,6 +5,7 @@ import random
 import torch
 from loadModel import load_model, load_tokenizer
 from getEmbeddings import get_detailed_instruct, embed_texts
+from evaluation import ndcg_at_k
 
 app = Flask(__name__)
 es = Elasticsearch(["http://localhost:9200"])
@@ -32,12 +33,7 @@ topics_df = pd.read_csv('../dataset/TopRelevant_topics1.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
 # In-memory storage for scores
-scores_storage = {
-    "model_1_documents": [],
-    "model_2_documents": [],
-    "model_3_documents": [],
-    "model_4_documents": []
-}
+scores_storage = {}
 
 @app.route('/')
 def index():
@@ -172,16 +168,31 @@ def get_random_image():
 @app.route('/store-scores', methods=['POST'])
 def store_scores():
     data = request.json
-    results = data['results']
-
-    for model_key, documents in results.items():
-        scores_storage[model_key] = documents
-
+    scores_storage.update(data)
     return jsonify({"message": "Scores stored successfully"})
 
 @app.route('/retrieve-scores', methods=['GET'])
 def retrieve_scores():
     return jsonify(scores_storage)
+
+@app.route('/evaluate', methods=['POST'])
+def evaluate():
+    data = request.json
+    results = data
+    k = 3
+
+    ndcg_scores = {}
+    for model_key, documents in results.items():
+        if model_key != 'query':
+            relevance_scores = [(doc['relevance'] + doc['completeness']) / 2 for doc in documents[:k]]
+            ndcg_score = ndcg_at_k(relevance_scores, k)
+            ndcg_scores[model_key] = ndcg_score
+
+    # Store the NDCG scores in the scores_storage
+    for model_key, score in ndcg_scores.items():
+        scores_storage[model_key + '_ndcg'] = score
+
+    return jsonify(ndcg_scores)
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
