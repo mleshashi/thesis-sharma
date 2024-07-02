@@ -201,6 +201,10 @@ select.relevant-score-input, select.completeness-score-input {
     color: #007BFF;
 }
 
+.hidden-info {
+    display: none;
+}
+
 footer {
     position: fixed;
     bottom: 0;

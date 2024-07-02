@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('#model4-answer .llm-answer-content').textContent = 'Final Answer for CLIP';
         }, 1000);
     };
+    
 
     function displayResults(documents, elementId) {
         const container = document.getElementById(elementId);
@@ -107,8 +108,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const div = document.createElement('div');
                 div.innerHTML = `
                     <div class="document-info">
-                        <strong>Title:</strong> ${doc.title}<br>
-                        <strong>Content:</strong> ${doc.content}<br>
+                        <strong>Title:</strong> <span class="doc-title">${doc.title}</span><br>
+                        <strong>Content:</strong> <span class="doc-content">${doc.content}</span><br>
                     </div>
                     <div class="relevant-score-container">
                         <div class="relevant-score-left">
@@ -139,11 +140,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="relevant-score-right">
                             <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
                         </div>
+                        <!-- Include title and content in hidden-info for evaluation purposes -->
+                        <div class="hidden-info">
+                            <span class="hidden-title">${doc.title}</span>
+                            <span class="hidden-content">${doc.content}</span>
+                        </div>
                     </div>`;
                 container.appendChild(div);
             }, index * 400);
         });
     }
+    
 
     window.enlargeImage = function(img) {
         const modal = document.createElement('div');
@@ -200,11 +207,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const score = doc.querySelector('.score').innerText;
             const relevance = doc.querySelector('.relevance-score-input').value;
             const completeness = doc.querySelector('.completeness-score-input').value;
+            const image_data = doc.querySelector('.compact-image').src.split(',')[1]; // Fetch base64 part of image data
+
+            // Fetching title and content from the hidden-info div
+            const title = doc.querySelector('.hidden-title').innerText;
+            const content = doc.querySelector('.hidden-content').innerText;
+
 
             const result = {
                 score: parseFloat(score),
                 relevance: parseFloat(relevance),
-                completeness: parseFloat(completeness)
+                completeness: parseFloat(completeness),
+                title: title.trim(),
+                content: content.trim(),
+                image_data: image_data.trim()
             };
 
             if (doc.closest('#model1-results')) {
@@ -256,3 +272,5 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
     }
 });
+
+
