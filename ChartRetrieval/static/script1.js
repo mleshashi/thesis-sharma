@@ -21,12 +21,14 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchTopics('/get-topics');
         clearResults();
         clearLLMAnswers();
+        clearExistingModal();
     };
 
     document.getElementById('getManualTopics').onclick = function () {
         fetchTopics('/get-manual-topics');
         clearResults();
         clearLLMAnswers();
+        clearExistingModal();
     };
 
     document.getElementById('searchRandomContext').onclick = function () {
@@ -34,6 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
         inputField.style.display = 'block';
         inputField.value = '';
         inputField.focus();
+
+        // Remove any existing modal
+        clearExistingModal();
 
         fetch('/get-random-image')
             .then(response => response.json())
@@ -46,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     modal.classList.add('modal');
                     modal.appendChild(img);
                     document.body.appendChild(modal);
+                    modal.style.top = `150px`;
                     modal.onclick = function() {
                         document.body.removeChild(modal);
                     };
@@ -69,6 +75,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'none');
     }
 
+    function clearExistingModal() {
+        const existingModal = document.querySelector('.modal');
+        if (existingModal) {
+            document.body.removeChild(existingModal);
+        }
+    }
+
     document.getElementById('search').onclick = function () {
         const isDropdownVisible = topicDropdown.style.display !== 'none';
         topic = isDropdownVisible ? topicDropdown.value : inputField.value;
@@ -88,6 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayResults(data.model_4_documents, 'model4-results');
                 document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'block');
             });
+
+        clearExistingModal();
     };
 
     document.getElementById('generateAnswers').onclick = function () {
@@ -155,24 +170,67 @@ document.addEventListener('DOMContentLoaded', function () {
     window.enlargeImage = function(img) {
         const modal = document.createElement('div');
         modal.classList.add('modal');
+
+        // Create the close button
+        const closeButton = document.createElement('span');
+        closeButton.classList.add('close-button');
+        closeButton.innerHTML = '&times;'; // HTML entity for the 'X' symbol
+
+        // Add event listener to the close button to remove the modal
+        closeButton.addEventListener('click', function() {
+            document.body.removeChild(modal);
+        });
+    
         const enlargedImg = document.createElement('img');
         enlargedImg.src = img.src;
         enlargedImg.classList.add('enlarged-image');
-        const imgRect = img.getBoundingClientRect();
-        const windowWidth = window.innerWidth;
-        const isLeftOfCenter = imgRect.left < windowWidth / 2;
-        if (isLeftOfCenter) {
-            enlargedImg.style.marginLeft = '50%';
-        } else {
-            enlargedImg.style.marginRight = '50%';
-        }
+    
+        modal.appendChild(closeButton); // Append the close button to the modal
         modal.appendChild(enlargedImg);
         document.body.appendChild(modal);
+    
+        // Wait for the image to load to get its natural dimensions
+        enlargedImg.onload = function() {
+            const naturalWidth = enlargedImg.naturalWidth;
+            const naturalHeight = enlargedImg.naturalHeight;
+    
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+    
+            // Set the size of the modal based on the natural size of the image
+            const modalWidth = Math.min(naturalWidth, windowWidth - 40);
+            const modalHeight = Math.min(naturalHeight, windowHeight - 40);
+    
+            modal.style.width = `${modalWidth}px`;
+            modal.style.height = `${modalHeight}px`;
+    
+            const imgRect = img.getBoundingClientRect();
+            const windowCenter = windowWidth / 2;
+            const isLeftOfCenter = imgRect.left < windowCenter;
+    
+            // Center the modal vertically within the window
+            modal.style.top = `${Math.max(20, (windowHeight - modalHeight) / 2)}px`;
+    
+            if (isLeftOfCenter) {
+                // Position the modal on the right side of the window
+                modal.style.left = `${Math.min(windowWidth - modalWidth - 20, windowCenter + 20)}px`;
+            } else {
+                // Position the modal on the left side of the window
+                modal.style.left = `${Math.max(windowCenter - modalWidth - 80)}px`;
+            }
+        };
+    
         modal.addEventListener('click', function(event) {
             if (event.target === modal) {
                 document.body.removeChild(modal);
             }
         });
+
+        // Add event listener to the compact image to remove the modal on second click
+        img.addEventListener('click', function() {
+            document.body.removeChild(modal);
+        });
+    
         const parentDiv = img.closest('.relevant-score-container');
         const relevanceDropdown = parentDiv.querySelector('.relevance-score-input');
         if (relevanceDropdown) {
@@ -192,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     };
+        
 
     document.getElementById('evaluateButton').onclick = function() {
         const documents = document.getElementsByClassName('relevant-score-container');
