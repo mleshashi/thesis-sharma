@@ -36,10 +36,10 @@ document.addEventListener('DOMContentLoaded', function () {
         inputField.style.display = 'block';
         inputField.value = '';
         inputField.focus();
-
+    
         // Remove any existing modal
         clearExistingModal();
-
+    
         fetch('/get-random-image')
             .then(response => response.json())
             .then(doc => {
@@ -47,13 +47,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     const img = document.createElement('img');
                     img.src = `data:image/jpeg;base64,${doc.image_data}`;
                     img.classList.add('enlarged-image');
+    
+                    // Create the title element
+                    const title = document.createElement('div');
+                    title.classList.add('image-title');
+                    title.innerText = doc.title || 'No Title'; // Provide default text if title is missing
+    
                     const modal = document.createElement('div');
                     modal.classList.add('modal');
-                    modal.appendChild(img);
+    
+                    modal.appendChild(title); // Append the title to the modal first
+                    modal.appendChild(img); // Append the image to the modal
                     document.body.appendChild(modal);
-                    modal.style.top = `150px`;
-                    modal.onclick = function() {
-                        document.body.removeChild(modal);
+    
+                    // Center the modal with a top offset
+                    modal.style.top = `180px`;
+    
+                    // Close modal on background click
+                    modal.onclick = function(event) {
+                        if (event.target === modal) {
+                            clearExistingModal();
+                        }
                     };
                 } else {
                     alert("No image found");

@@ -156,12 +156,12 @@ def get_random_image():
         "size": 1,
         "query": {"match_all": {}},
         "from": random_offset,
-        "_source": ["image_data"]
+        "_source": ["image_data","title"]
     })
     
     if response['hits']['hits']:
         doc = response['hits']['hits'][0]['_source']
-        return jsonify({"image_data": doc['image_data']})
+        return jsonify({"image_data": doc['image_data'], "title": doc.get('title', 'No Title')})
     else:
         return jsonify({"error": "No documents found"}), 404
 
