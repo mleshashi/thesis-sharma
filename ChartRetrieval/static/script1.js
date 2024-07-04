@@ -120,15 +120,29 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     document.getElementById('generateAnswers').onclick = function () {
-        setTimeout(() => {
-            document.querySelector('#model1-answer .llm-answer-content').textContent = 'Final Answer for BM25';
-            document.querySelector('#model2-answer .llm-answer-content').textContent = 'Final Answer for Mistral';
-            document.querySelector('#model3-answer .llm-answer-content').textContent = 'Final Answer for GTE-QWEN2';
-            document.querySelector('#model4-answer .llm-answer-content').textContent = 'Final Answer for CLIP';
-        }, 1000);
+        // Get the number of top documents to use
+        const topN = prompt("Enter the number of top documents to use:", "1");
+    
+        // Fetch the prepared LLM input
+        fetch(`/prepare-llm-input?top_n=${topN}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "LLM input prepared and stored successfully") {
+                    // Now fetch the stored LLM input to verify
+                    fetch('/retrieve-llm-input')
+                        .then(response => response.json())
+                        .then(llmData => {
+                            console.log("LLM Input Data:", llmData);
+                            alert("LLM input prepared and stored successfully. Check console for details.");
+                        })
+                        .catch(error => console.error('Error fetching LLM input:', error));
+                } else {
+                    alert("Failed to prepare LLM input.");
+                }
+            })
+            .catch(error => console.error('Error preparing LLM input:', error));
     };
     
-
     function displayResults(documents, elementId) {
         const container = document.getElementById(elementId);
         container.innerHTML = '';

@@ -6,6 +6,8 @@ import torch
 from loadModel import load_model, load_tokenizer
 from getEmbeddings import get_detailed_instruct, embed_texts
 from evaluation import ndcg_at_k
+import json
+
 
 app = Flask(__name__)
 es = Elasticsearch(["http://localhost:9200"])
@@ -32,8 +34,9 @@ model_1 = load_model(model_name_1)
 topics_df = pd.read_csv('../dataset/TopRelevant_topics1.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
-# In-memory storage for scores
+# In-memory storage for scores and LLM inputs
 scores_storage = {}
+llm_inputs = {}
 
 @app.route('/')
 def index():
@@ -183,7 +186,7 @@ def evaluate():
 
     ndcg_scores = {}
     for model_key, documents in results.items():
-        if model_key != 'query':
+        if model_key != 'query' and '_documents' in model_key:
             relevance_scores = [(doc['relevance'] + doc['completeness']) / 2 for doc in documents[:k]]
             ndcg_score = ndcg_at_k(relevance_scores, k)
             ndcg_scores[model_key] = ndcg_score
@@ -194,7 +197,72 @@ def evaluate():
 
     return jsonify(ndcg_scores)
 
+@app.route('/prepare-llm-input', methods=['GET'])
+def prepare_llm_input():
+    # Get the number of top documents to use from query parameters, default to 1
+    top_n = int(request.args.get('top_n', 1))
+
+    # Identify the model with the highest NDCG score
+    ndcg_scores = {key: value for key, value in scores_storage.items() if key.endswith('_ndcg')}
+    top_model = max(ndcg_scores, key=ndcg_scores.get).replace('_ndcg', '')
+
+    # Extract the top-ranked documents from the top NDCG model
+    top_documents_key = top_model.replace('_ndcg', '_documents')
+    top_documents = scores_storage.get(top_documents_key, [])
+
+    if not top_documents:
+        return jsonify({"error": f"No documents found for model: {top_model}"}), 404
+
+    query = scores_storage.get('query', 'No Query Found')
+
+    # Sort documents by the sum of completeness, relevance, and score
+    top_documents.sort(key=lambda doc: doc['completeness'] + doc['relevance'] + doc['score'], reverse=True)
+
+    # Prepare the JSON payload from the top N documents
+    messages = []
+    for doc in top_documents[:top_n]:
+        messages.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            "Please analyze the title, content, and the provided image data to provide statistical insights and answer the query.\n"
+                            f"Title: {doc['title']}\n"
+                            f"Content: {doc['content']}\n"
+                            f"Query: {query}"    
+                        )
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{doc['image_data']}"
+                        }
+                    }
+                ]
+            }
+        )
+
+    payload = {
+        "model": "gpt-4o",
+        "messages": messages,
+        "max_tokens": 300
+    }
+    
+    # Print the payload to check the order
+    llm_input = json.dumps(payload, indent=1)
+    print(llm_input)
+    
+    # Store the payload in llm_inputs
+    llm_inputs.update(payload)
+    
+    return jsonify({"message": "LLM input prepared and stored successfully"})
+
+@app.route('/retrieve-llm-input', methods=['GET'])
+def retrieve_llm_input():
+    return jsonify(llm_inputs)
+
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
     # app.run(host='0.0.0.0', port=5000, debug=True)
-
