@@ -218,36 +218,40 @@ def prepare_llm_input():
     # Sort documents by the sum of completeness, relevance, and score
     top_documents.sort(key=lambda doc: doc['completeness'] + doc['relevance'] + doc['score'], reverse=True)
 
-    # Prepare the JSON payload from the top N documents
-    messages = []
+    # Prepare the combined JSON payload from the top N documents
+    content = []
     for doc in top_documents[:top_n]:
-        messages.append(
+        content.append(
             {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": (
-                            "Please analyze the title, content, and the provided image data to provide statistical insights and answer the query.\n"
-                            f"Title: {doc['title']}\n"
-                            f"Content: {doc['content']}\n"
-                            f"Query: {query}"    
-                        )
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{doc['image_data']}"
-                        }
-                    }
-                ]
+                "type": "text",
+                "text": (
+                    "Please analyze the title, content, and the provided image data to provide statistical insights and answer the query.\n"
+                    f"Title: {doc['title']}\n"
+                    f"Content: {doc['content']}\n"
+                    f"Query: {query}"
+                )
             }
         )
+        content.append(
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/jpeg;base64,{doc['image_data']}"
+                }
+            }
+        )
+
+    messages = [
+        {
+            "role": "user",
+            "content": content
+        }
+    ]
 
     payload = {
         "model": "gpt-4o",
         "messages": messages,
-        "max_tokens": 300
+        "max_tokens": 1000
     }
     
     # Print the payload to check the order
