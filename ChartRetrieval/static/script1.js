@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         clearExistingModal();
+        clearLLMAnswerContent()
     };
 
     document.getElementById('generateAnswers').onclick = function () {
@@ -168,6 +169,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function clearLLMAnswers() {
         document.querySelectorAll('.llm-answer-content').forEach(el => el.innerHTML = '');
         document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'none');
+    }
+
+    function clearLLMAnswerContent() {
+        const finalAnswerContent = document.querySelector('.llm-answer-content');
+        finalAnswerContent.innerHTML = '';
     }
 
     function clearExistingModal() {
@@ -319,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     document.getElementById('evaluateButton').onclick = function() {
+        clearLLMAnswerContent(); // Call the function to clear only the LLM answer content
+        
         const documents = document.getElementsByClassName('relevant-score-container');
         const results = {
             query: topic,
