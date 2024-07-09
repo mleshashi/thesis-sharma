@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const topicDropdown = document.getElementById('topicDropdown');
     const inputField = document.getElementById('inputField');
+    const answerInfoContainer = document.querySelector('.llm-answer-info-container');
+    const finalAnswer = document.querySelector('.llm-answer');
+    const additionalInfo = document.querySelector('.llm-info');
     let topic = '';
 
     function fetchTopics(url) {
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearResults();
         clearLLMAnswers();
         clearExistingModal();
+        clearAdditionalInfo();
     };
 
     document.getElementById('getManualTopics').onclick = function () {
@@ -29,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearResults();
         clearLLMAnswers();
         clearExistingModal();
+        clearAdditionalInfo();
     };
 
     document.getElementById('searchRandomContext').onclick = function () {
@@ -36,10 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
         inputField.style.display = 'block';
         inputField.value = '';
         inputField.focus();
-    
+
         // Remove any existing modal
         clearExistingModal();
-    
+
         fetch('/get-random-image')
             .then(response => response.json())
             .then(doc => {
@@ -47,24 +52,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     const img = document.createElement('img');
                     img.src = `data:image/jpeg;base64,${doc.image_data}`;
                     img.classList.add('enlarged-image');
-    
+
                     // Create the title element
                     const title = document.createElement('div');
                     title.classList.add('image-title');
                     title.innerText = doc.title || 'No Title'; // Provide default text if title is missing
-    
+
                     const modal = document.createElement('div');
                     modal.classList.add('modal');
-    
+
                     modal.appendChild(title); // Append the title to the modal first
                     modal.appendChild(img); // Append the image to the modal
                     document.body.appendChild(modal);
-    
+
                     // Center the modal with a top offset
                     modal.style.top = `180px`;
-    
+
                     // Close modal on background click
-                    modal.onclick = function(event) {
+                    modal.onclick = function (event) {
                         if (event.target === modal) {
                             clearExistingModal();
                         }
@@ -75,31 +80,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         clearResults();
         clearLLMAnswers();
+        clearAdditionalInfo();
     };
-
-    function clearResults() {
-        document.getElementById('model1-results').innerHTML = '';
-        document.getElementById('model2-results').innerHTML = '';
-        document.getElementById('model3-results').innerHTML = '';
-        document.getElementById('model4-results').innerHTML = '';
-    }
-
-    function clearLLMAnswers() {
-        document.querySelectorAll('.llm-answer-content').forEach(el => el.innerHTML = '');
-        document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'none');
-    }
-
-    function clearExistingModal() {
-        const existingModal = document.querySelector('.modal');
-        if (existingModal) {
-            document.body.removeChild(existingModal);
-        }
-    }
 
     document.getElementById('search').onclick = function () {
         const isDropdownVisible = topicDropdown.style.display !== 'none';
         topic = isDropdownVisible ? topicDropdown.value : inputField.value;
-    
+
         fetch('/search', {
             method: 'POST',
             headers: {
@@ -107,27 +94,27 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({ topic })
         })
-        .then(response => response.json())
-        .then(data => {
-            displayResults(data.model_1_documents, 'model1-results');
-            displayResults(data.model_2_documents, 'model2-results');
-            displayResults(data.model_3_documents, 'model3-results');
-            displayResults(data.model_4_documents, 'model4-results');
-    
-            // Show the llm-answer-container
-            const llmAnswerContainer = document.querySelector('.llm-answer-container');
-            llmAnswerContainer.classList.remove('hidden');
-            document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'block');
-        });
-    
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data.model_1_documents, 'model1-results');
+                displayResults(data.model_2_documents, 'model2-results');
+                displayResults(data.model_3_documents, 'model3-results');
+                displayResults(data.model_4_documents, 'model4-results');
+
+                // Show the answer info container with titles
+                answerInfoContainer.style.display = 'flex';
+                finalAnswer.style.display = 'block';
+                additionalInfo.style.display = 'block';
+                additionalInfo.querySelector('.llm-info-content').innerText = "Static information goes here.";
+            });
+
         clearExistingModal();
     };
-    
 
     document.getElementById('generateAnswers').onclick = function () {
         // Get the number of top documents to use
         const topN = prompt("Enter the number of top documents to use:", "1");
-    
+
         // Fetch the prepared LLM input and generate the answer
         fetch(`/prepare-llm-input?top_n=${topN}`)
             .then(response => response.json())
@@ -170,8 +157,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 finalAnswerContent.classList.remove('hidden'); // Show the error message
             });
     };
-    
-    
+
+    function clearResults() {
+        document.getElementById('model1-results').innerHTML = '';
+        document.getElementById('model2-results').innerHTML = '';
+        document.getElementById('model3-results').innerHTML = '';
+        document.getElementById('model4-results').innerHTML = '';
+    }
+
+    function clearLLMAnswers() {
+        document.querySelectorAll('.llm-answer-content').forEach(el => el.innerHTML = '');
+        document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'none');
+    }
+
+    function clearExistingModal() {
+        const existingModal = document.querySelector('.modal');
+        if (existingModal) {
+            document.body.removeChild(existingModal);
+        }
+    }
+
+    function clearAdditionalInfo() {
+        const additionalInfoContainer = document.querySelector('.llm-info-content');
+        additionalInfoContainer.innerHTML = '';
+        additionalInfoContainer.closest('.llm-info').style.display = 'none';
+    }
+
     function displayResults(documents, elementId) {
         const container = document.getElementById(elementId);
         container.innerHTML = '';
@@ -222,7 +233,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }, index * 400);
         });
     }
-    
 
     window.enlargeImage = function(img) {
         const modal = document.createElement('div');
@@ -237,37 +247,37 @@ document.addEventListener('DOMContentLoaded', function () {
         closeButton.addEventListener('click', function() {
             document.body.removeChild(modal);
         });
-    
+
         const enlargedImg = document.createElement('img');
         enlargedImg.src = img.src;
         enlargedImg.classList.add('enlarged-image');
-    
+
         modal.appendChild(closeButton); // Append the close button to the modal
         modal.appendChild(enlargedImg);
         document.body.appendChild(modal);
-    
+
         // Wait for the image to load to get its natural dimensions
         enlargedImg.onload = function() {
             const naturalWidth = enlargedImg.naturalWidth;
             const naturalHeight = enlargedImg.naturalHeight;
-    
+
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-    
+
             // Set the size of the modal based on the natural size of the image
             const modalWidth = Math.min(naturalWidth, windowWidth - 40);
             const modalHeight = Math.min(naturalHeight, windowHeight - 40);
-    
+
             modal.style.width = `${modalWidth}px`;
             modal.style.height = `${modalHeight}px`;
-    
+
             const imgRect = img.getBoundingClientRect();
             const windowCenter = windowWidth / 2;
             const isLeftOfCenter = imgRect.left < windowCenter;
-    
+
             // Center the modal vertically within the window
             modal.style.top = `${Math.max(20, (windowHeight - modalHeight) / 2)}px`;
-    
+
             if (isLeftOfCenter) {
                 // Position the modal on the right side of the window
                 modal.style.left = `${Math.min(windowWidth - modalWidth - 20, windowCenter + 20)}px`;
@@ -276,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.style.left = `${Math.max(windowCenter - modalWidth - 80)}px`;
             }
         };
-    
+
         modal.addEventListener('click', function(event) {
             if (event.target === modal) {
                 document.body.removeChild(modal);
@@ -287,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
         img.addEventListener('click', function() {
             document.body.removeChild(modal);
         });
-    
+
         const parentDiv = img.closest('.relevant-score-container');
         const relevanceDropdown = parentDiv.querySelector('.relevance-score-input');
         if (relevanceDropdown) {
@@ -307,7 +317,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     };
-        
 
     document.getElementById('evaluateButton').onclick = function() {
         const documents = document.getElementsByClassName('relevant-score-container');
@@ -328,7 +337,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Fetching title and content from the hidden-info div
             const title = doc.querySelector('.hidden-title').innerText;
             const content = doc.querySelector('.hidden-content').innerText;
-
 
             const result = {
                 score: parseFloat(score),
@@ -378,15 +386,12 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function displayNDCGScores(ndcg_scores) {
-
         // Clear existing NDCG scores
         document.querySelectorAll('.ndcg-score').forEach(el => el.remove());
-        
+
         document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
         document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
         document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
         document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
     }
 });
-
-

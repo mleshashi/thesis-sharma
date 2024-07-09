@@ -181,31 +181,41 @@ select.relevant-score-input, select.completeness-score-input {
     cursor: pointer;
 }
 
-.llm-answer-container {
+.llm-answer-info-container {
     display: flex;
     width: 100%;
     padding: 0 20px;
 }
 
 .llm-answer {
-    flex: 1;
+    flex: 4; /* Adjust to occupy 80% */
     padding: 10px;
-    display: none;
+    display: none; /* Initially hidden */
     text-align: center;
     border-right: 2px solid #ccc;
+    overflow-y: hidden; /* Prevent the entire .llm-answer from scrolling */
 }
 
-.llm-answer:not(:last-child) {
-    border-right: 2px solid #ccc;
+.llm-info {
+    flex: 1; /* Adjust to occupy 20% */
+    padding: 10px;
+    display: none; /* Initially hidden */
+    text-align: left;
 }
 
-.llm-answer h3 {
+.llm-answer h3, .llm-info h3 {
     margin-top: 0;
     margin-bottom: 10px;
     display: block;
     border-bottom: 2px solid #ccc;
     padding: 0 10px;
     box-sizing: border-box;
+}
+
+.llm-answer-content {
+    text-align: justify;
+    max-height: 15vh; /* Set the max height for the scrollable content */
+    overflow-y: auto; /* Make the content area scrollable */
 }
 
 .ndcg-score {
@@ -267,4 +277,3 @@ footer {
     padding: 2px 4px;
     border-radius: 3px;
 }
-
