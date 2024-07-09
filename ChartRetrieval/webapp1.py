@@ -7,6 +7,7 @@ from loadModel import load_model, load_tokenizer
 from getEmbeddings import get_detailed_instruct, embed_texts
 from evaluation import ndcg_at_k
 import json
+import requests
 
 
 app = Flask(__name__)
@@ -219,19 +220,28 @@ def prepare_llm_input():
     top_documents.sort(key=lambda doc: doc['completeness'] + doc['relevance'] + doc['score'], reverse=True)
 
     # Prepare the combined JSON payload from the top N documents
-    content = []
+    content_text = ""
     for doc in top_documents[:top_n]:
-        content.append(
-            {
-                "type": "text",
-                "text": (
-                    "Please analyze the title, content, and the provided image data to provide statistical insights and answer the query.\n"
-                    f"Title: {doc['title']}\n"
-                    f"Content: {doc['content']}\n"
-                    f"Query: {query}"
-                )
-            }
+        content_text += (
+            f"Title: {doc['title']}\n"
+            f"Content: {doc['content']}\n\n"
         )
+
+    content = [
+        {
+            "type": "text",
+            "text": (
+                "Please provide a detailed and comprehensive statistical insight from the following titles, content, and the provided image data. "
+                "Ensure the response includes a thorough analysis with context and evaluation. "
+                "Conclude with a final decision. Format the response as a summary and avoid unnecessary newlines.\n\n"
+                f"{content_text}\n"
+                f"Query: {query}"
+            )
+        }
+    ]
+
+    # Append the images
+    for doc in top_documents[:top_n]:
         content.append(
             {
                 "type": "image_url",
@@ -242,10 +252,10 @@ def prepare_llm_input():
         )
 
     messages = [
-        {
-            "role": "user",
-            "content": content
-        }
+    {
+        "role": "user",
+        "content": content
+    }
     ]
 
     payload = {
@@ -266,6 +276,24 @@ def prepare_llm_input():
 @app.route('/retrieve-llm-input', methods=['GET'])
 def retrieve_llm_input():
     return jsonify(llm_inputs)
+
+@app.route('/generate-llm-answer', methods=['POST'])
+def generate_llm_answer():
+    api_key = "sk-proj-2GoKm2W5C6wJvPxyU48KT3BlbkFJyzexxcyw2CP17SDzvBwc"  # Replace with your actual OpenAI API key
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+
+    if not llm_inputs:
+        return jsonify({"error": "No LLM input found"}), 404
+
+    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=llm_inputs)
+    answer = response.json()
+
+    scores_storage['llm_answer'] = answer  # Store the generated answer in scores_storage
+
+    return jsonify(answer)
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('search').onclick = function () {
         const isDropdownVisible = topicDropdown.style.display !== 'none';
         topic = isDropdownVisible ? topicDropdown.value : inputField.value;
-
+    
         fetch('/search', {
             method: 'POST',
             headers: {
@@ -107,37 +107,67 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({ topic })
         })
-            .then(response => response.json())
-            .then(data => {
-                displayResults(data.model_1_documents, 'model1-results');
-                displayResults(data.model_2_documents, 'model2-results');
-                displayResults(data.model_3_documents, 'model3-results');
-                displayResults(data.model_4_documents, 'model4-results');
-                document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'block');
-            });
-
+        .then(response => response.json())
+        .then(data => {
+            displayResults(data.model_1_documents, 'model1-results');
+            displayResults(data.model_2_documents, 'model2-results');
+            displayResults(data.model_3_documents, 'model3-results');
+            displayResults(data.model_4_documents, 'model4-results');
+    
+            // Show the llm-answer-container
+            const llmAnswerContainer = document.querySelector('.llm-answer-container');
+            llmAnswerContainer.classList.remove('hidden');
+            document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'block');
+        });
+    
         clearExistingModal();
     };
+    
 
     document.getElementById('generateAnswers').onclick = function () {
         // Get the number of top documents to use
         const topN = prompt("Enter the number of top documents to use:", "1");
     
-        // Fetch the prepared LLM input
+        // Fetch the prepared LLM input and generate the answer
         fetch(`/prepare-llm-input?top_n=${topN}`)
             .then(response => response.json())
             .then(data => {
                 if (data.message !== "LLM input prepared and stored successfully") {
                     throw new Error("Failed to prepare LLM input.");
                 }
-                return fetch('/retrieve-llm-input');
+                // Generate the LLM answer
+                return fetch('/generate-llm-answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
             })
             .then(response => response.json())
-            .then(llmData => {
-                console.log("LLM Input Data:", llmData);
+            .then(() => {
+                // Retrieve scores including the generated LLM answer
+                return fetch('/retrieve-scores');
+            })
+            .then(response => response.json())
+            .then(scores => {
+                console.log("Retrieve Scores Response:", scores);
+                const finalAnswerContent = document.querySelector('.llm-answer-content');
+                const llmAnswer = scores.llm_answer;
+                if (llmAnswer && llmAnswer.choices && llmAnswer.choices.length > 0 && llmAnswer.choices[0].message) {
+                    // Convert Markdown to HTML
+                    const markdownContent = llmAnswer.choices[0].message.content;
+                    const htmlContent = marked.parse(markdownContent); // Use marked.parse to convert Markdown to HTML
+                    finalAnswerContent.innerHTML = htmlContent; // Display the HTML content
+                } else {
+                    finalAnswerContent.innerHTML = "No valid response received.";
+                }
+                finalAnswerContent.classList.remove('hidden'); // Show the final answer content
             })
             .catch(error => {
-                console.error(error);
+                console.error('Error:', error);
+                const finalAnswerContent = document.querySelector('.llm-answer-content');
+                finalAnswerContent.innerHTML = `An error occurred while generating the answer: ${error.message}`;
+                finalAnswerContent.classList.remove('hidden'); // Show the error message
             });
     };
     
