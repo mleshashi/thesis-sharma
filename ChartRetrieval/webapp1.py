@@ -10,6 +10,11 @@ import json
 import requests
 
 
+# Load the API key from credentials.json
+with open('credentials.json') as f:
+    credentials = json.load(f)
+    api_key = credentials['api_key']
+
 app = Flask(__name__)
 es = Elasticsearch(["http://localhost:9200"])
 index_name = "documents"
@@ -279,7 +284,6 @@ def retrieve_llm_input():
 
 @app.route('/generate-llm-answer', methods=['POST'])
 def generate_llm_answer():
-    api_key = "sk-proj-2GoKm2W5C6wJvPxyU48KT3BlbkFJyzexxcyw2CP17SDzvBwc"  # Replace with your actual OpenAI API key
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
