@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="relevant-score-row">
                                 <strong>Relevance:</strong>
                                 <select class="relevance-score-input">
-                                    <option value="-1">-1(Unable to Judge)</option>
+                                    <option value="" disabled selected>Select Relevance</option>
                                     <option value="0">0(No)</option>
                                     <option value="1">1(Partially Relevant)</option>
                                     <option value="2">2(Relevant)</option>
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="relevant-score-row">
                                 <strong>Completeness:</strong>
                                 <select class="completeness-score-input">
-                                    <option value="-1">-1(Unable to Judge)</option>
+                                    <option value="" disabled selected>Select Completeness</option>
                                     <option value="0">0(No)</option>
                                     <option value="1">1(Somewhat)</option>
                                     <option value="2">2(Yes but not completely)</option>
@@ -336,6 +336,8 @@ document.addEventListener('DOMContentLoaded', function () {
             model_4_documents: []
         };
 
+        let allAnnotated = true;
+
         Array.from(documents).forEach((doc) => {
             const score = doc.querySelector('.score').innerText;
             const relevance = doc.querySelector('.relevance-score-input').value;
@@ -345,6 +347,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Fetching title and content from the hidden-info div
             const title = doc.querySelector('.hidden-title').innerText;
             const content = doc.querySelector('.hidden-content').innerText;
+
+            if (!relevance || !completeness) {
+                allAnnotated = false;
+            }
 
             const result = {
                 score: parseFloat(score),
@@ -365,6 +371,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 results.model_4_documents.push(result);
             }
         });
+
+        // If not all annotations are complete, show the centered message
+        if (!allAnnotated) {
+            const centeredMessage = document.getElementById('centered-message');
+            console.log("Centered Message Element:", centeredMessage); // Debugging log
+            centeredMessage.style.display = 'block';
+            setTimeout(() => {
+                centeredMessage.style.display = 'none';
+            }, 3000);
+            return;
+        }    
 
         fetch('/store-scores', {
             method: 'POST',
