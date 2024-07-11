@@ -20,19 +20,16 @@ es = Elasticsearch(["http://localhost:9200"])
 index_name = "documents"
 
 # Load models
-model_name_1 = 'intfloat/e5-mistral-7b-instruct'
-# model_name_2 = 'Alibaba-NLP/gte-Qwen2-7B-instruct'
-# model_name_3 = 'another-model-name-1'
+mistral = 'intfloat/e5-mistral-7b-instruct'
+Qwen2 = 'Alibaba-NLP/gte-Qwen2-7B-instruct'
 # model_name_4 = 'another-model-name-2'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-tokenizer_1 = load_tokenizer(model_name_1)
-model_1 = load_model(model_name_1)
-# tokenizer_2 = load_tokenizer(model_name_2, trust_remote_code=True)
-# model_2 = load_model(model_name_2, trust_remote_code=True)
-# tokenizer_3 = load_tokenizer(model_name_3)
-# model_3 = load_model(model_name_3)
+tokenizer_2 = load_tokenizer(mistral)
+model_2 = load_model(mistral)
+tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
+model_3 = load_model(Qwen2, trust_remote_code=True)
 # tokenizer_4 = load_tokenizer(model_name_4)
 # model_4 = load_model(model_name_4)
 
@@ -65,23 +62,23 @@ def search():
     query = get_detailed_instruct(task, topic)
     
     # Get embeddings for all models
-    topic_embedding_1 = embed_texts(query, tokenizer_1, model_1, device)
-    topic_embedding_2 = embed_texts(query, tokenizer_1, model_1, device)
-    topic_embedding_3 = embed_texts(query, tokenizer_1, model_1, device)
-    topic_embedding_4 = embed_texts(query, tokenizer_1, model_1, device)
+    topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
+    topic_embedding_3 = embed_texts(query, tokenizer_3, model_3, device)
+    topic_embedding_4 = embed_texts(query, tokenizer_2, model_2, device)
 
-    # Elasticsearch query for the first model
+    # Elasticsearch BM25 query using multi_match for content and title
     script_query_1 = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding_1}
+        "query": {
+            "multi_match": {
+                "query": topic,
+                "fields": ["content", "title"],
+                "type": "best_fields",
+                "tie_breaker": 0.3
             }
         }
     }
-
-    # Elasticsearch query for the second model
+    
+    # Elasticsearch query for the first model
     script_query_2 = {
         "script_score": {
             "query": {"match_all": {}},
@@ -92,18 +89,18 @@ def search():
         }
     }
 
-    # Elasticsearch query for the third model
+    # Elasticsearch query for the second model
     script_query_3 = {
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'gte_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_3}
             }
         }
     }
 
-    # Elasticsearch query for the fourth model
+    # Elasticsearch query for the third model
     script_query_4 = {
         "script_score": {
             "query": {"match_all": {}},
@@ -114,28 +111,28 @@ def search():
         }
     }
 
-    # Get results for the first model
+    # Get results for the first model ie. BM25
     response_1 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_1,
+        "query": script_query_1["query"],
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the second model
+    # Get results for the mistral model
     response_2 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_2,
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the third model
+    # Get results for the qwen-2 model
     response_3 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_3,
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the fourth model
+    # Get results for the clip model
     response_4 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_4,
@@ -228,7 +225,7 @@ def prepare_llm_input():
     query = scores_storage.get('query', 'No Query Found')
 
     # Sort documents by the sum of completeness, relevance, and score
-    top_documents.sort(key=lambda doc: doc['completeness'] + doc['relevance'] + doc['score'], reverse=True)
+    top_documents.sort(key=lambda doc: doc['score'], reverse=True)
 
     # Prepare the combined JSON payload from the top N documents
     content_text = ""
