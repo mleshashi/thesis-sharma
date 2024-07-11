@@ -19,6 +19,7 @@ def get_detailed_instruct(task_description: str, query: str) -> str:
 
 max_length=1250
 
+
 # Function to embed texts
 def embed_texts(texts, tokenizer, model, device):
     input_token = tokenizer(texts, max_length=max_length, padding=True, truncation=True, return_tensors='pt')
@@ -28,3 +29,29 @@ def embed_texts(texts, tokenizer, model, device):
         embeddings = last_token_pool(outputs.last_hidden_state, input_token['attention_mask'])
         embeddings = F.normalize(embeddings, p=2, dim=1)
     return embeddings.detach().cpu().numpy().flatten().tolist()
+
+
+
+def get_text_features(texts, tokenizer, model, device):
+    """
+    Preprocesses a text query, extracts text features using the model, and normalizes the features.
+
+    Args:
+        text_query (str): The input text query.
+        tokenizer: The tokenizer to use for preprocessing the text.
+        model: The model to use for extracting text features.
+        device (str): The device to run the model on ('cuda' or 'cpu').
+
+    Returns:
+        list: Normalized text features as a list of numpy arrays.
+    """
+    # Tokenize the text query
+    inputs = tokenizer(text=[texts], padding=True, return_tensors="pt").to(device)
+    
+    # Extract text features
+    with torch.no_grad():
+        text_features = model.get_text_features(**inputs).squeeze(0)
+        # Normalize the features
+        text_features = (text_features / text_features.norm(p=2, dim=-1, keepdim=True)).cpu().numpy().tolist()
+    
+    return text_features

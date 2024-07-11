@@ -3,8 +3,8 @@ from elasticsearch import Elasticsearch
 import pandas as pd
 import random
 import torch
-from loadModel import load_model, load_tokenizer
-from getEmbeddings import get_detailed_instruct, embed_texts
+from loadModel import load_model, load_tokenizer, load_clip_model
+from getEmbeddings import get_detailed_instruct, embed_texts, get_text_features
 from evaluation import ndcg_at_k
 import json
 import requests
@@ -22,7 +22,7 @@ index_name = "documents"
 # Load models
 mistral = 'intfloat/e5-mistral-7b-instruct'
 Qwen2 = 'Alibaba-NLP/gte-Qwen2-7B-instruct'
-# model_name_4 = 'another-model-name-2'
+clip = 'openai/clip-vit-large-patch14'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -30,8 +30,7 @@ tokenizer_2 = load_tokenizer(mistral)
 model_2 = load_model(mistral)
 tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
 model_3 = load_model(Qwen2, trust_remote_code=True)
-# tokenizer_4 = load_tokenizer(model_name_4)
-# model_4 = load_model(model_name_4)
+tokenizer_4, model_4 = load_clip_model(clip, device)
 
 # Load topics DataFrame globally
 topics_df = pd.read_csv('../dataset/TopRelevant_topics1.csv')
@@ -64,7 +63,7 @@ def search():
     # Get embeddings for all models
     topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
     topic_embedding_3 = embed_texts(query, tokenizer_3, model_3, device)
-    topic_embedding_4 = embed_texts(query, tokenizer_2, model_2, device)
+    topic_embedding_4 = get_text_features(topic, tokenizer_4, model_4, device)
 
     # Elasticsearch BM25 query using multi_match for content and title
     script_query_1 = {
@@ -105,7 +104,7 @@ def search():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'clip_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_4}
             }
         }
