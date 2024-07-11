@@ -188,7 +188,7 @@ select.relevant-score-input, select.completeness-score-input {
 }
 
 .llm-answer {
-    flex: 4; /* Adjust to occupy 80% */
+    flex: 3.75; /* Adjust to occupy 80% */
     padding: 10px;
     display: none; /* Initially hidden */
     text-align: center;
@@ -197,7 +197,7 @@ select.relevant-score-input, select.completeness-score-input {
 }
 
 .llm-info {
-    flex: 1; /* Adjust to occupy 20% */
+    flex: 1.25; /* Adjust to occupy 20% */
     padding: 10px;
     display: none; /* Initially hidden */
     text-align: left;
@@ -217,6 +217,14 @@ select.relevant-score-input, select.completeness-score-input {
     max-height: 15vh; /* Set the max height for the scrollable content */
     overflow-y: auto; /* Make the content area scrollable */
 }
+
+.compact-info {
+    font-size: 0.8em; /* Reduce the font size for compact display */
+    line-height: 1.2; /* Adjust line height for compactness */
+    max-height: 15vh; /* Set the max height for the scrollable content */
+    overflow-y: auto; /* Make the content area scrollable */
+}
+
 
 .ndcg-score {
     margin-top: 10px;

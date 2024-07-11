@@ -190,11 +190,17 @@ def evaluate():
     results = data
     k = 3
 
+    # Collect all relevance scores from all models
+    all_relevance_scores = []
+    for model_key, documents in results.items():
+        if model_key != 'query' and '_documents' in model_key:
+            all_relevance_scores.extend([(doc['relevance'] + doc['completeness']) for doc in documents])
+
     ndcg_scores = {}
     for model_key, documents in results.items():
         if model_key != 'query' and '_documents' in model_key:
-            relevance_scores = [(doc['relevance'] + doc['completeness']) / 2 for doc in documents[:k]]
-            ndcg_score = ndcg_at_k(relevance_scores, k)
+            relevance_scores = [(doc['relevance'] + doc['completeness']) for doc in documents[:k]]
+            ndcg_score = ndcg_at_k(relevance_scores, k, all_relevance_scores)
             ndcg_scores[model_key] = ndcg_score
 
     # Store the NDCG scores in the scores_storage
@@ -271,7 +277,7 @@ def prepare_llm_input():
     
     # Print the payload to check the order
     llm_input = json.dumps(payload, indent=1)
-    print(llm_input)
+    # print(llm_input)
     
     # Store the payload in llm_inputs
     llm_inputs.update(payload)

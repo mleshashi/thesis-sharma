@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('search').onclick = function () {
         const isDropdownVisible = topicDropdown.style.display !== 'none';
         topic = isDropdownVisible ? topicDropdown.value : inputField.value;
-
+    
         fetch('/search', {
             method: 'POST',
             headers: {
@@ -94,22 +94,37 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({ topic })
         })
-            .then(response => response.json())
-            .then(data => {
-                displayResults(data.model_1_documents, 'model1-results');
-                displayResults(data.model_2_documents, 'model2-results');
-                displayResults(data.model_3_documents, 'model3-results');
-                displayResults(data.model_4_documents, 'model4-results');
-
-                // Show the answer info container with titles
-                answerInfoContainer.style.display = 'flex';
-                finalAnswer.style.display = 'block';
-                additionalInfo.style.display = 'block';
-                additionalInfo.querySelector('.llm-info-content').innerText = "Static information goes here.";
-            });
-
+        .then(response => response.json())
+        .then(data => {
+            displayResults(data.model_1_documents, 'model1-results');
+            displayResults(data.model_2_documents, 'model2-results');
+            displayResults(data.model_3_documents, 'model3-results');
+            displayResults(data.model_4_documents, 'model4-results');
+    
+            // Show the answer info container with titles
+            answerInfoContainer.style.display = 'flex';
+            finalAnswer.style.display = 'block';
+            additionalInfo.style.display = 'block';
+            additionalInfo.querySelector('.llm-info-content').innerHTML = `
+                <p><strong>Relevance: Does the response accurately address the topic?</strong></p>
+                <ul>
+                    <li><strong>0:</strong> Not Relevant - The response seems to be completely random to the topic.</li>
+                    <li><strong>1:</strong> Partially Relevant - The response is partially off-topic; may be vaguely related, but too divergent from the topic.</li>
+                    <li><strong>2:</strong> Relevant - Response answers the topic, though it might lack full detail or depth.</li>
+                    <li><strong>3:</strong> Highly Relevant - The response fully and clearly answers the topic with detailed information.</li>
+                </ul>
+                <p><strong>Completeness: Does the response provide a thorough and comprehensive answer to the topic?</strong></p>
+                <ul>
+                    <li><strong>0:</strong> No - The response does not address the topic or is completely unrelated.</li>
+                    <li><strong>1:</strong> Somewhat - The response addresses the query but misses significant details or only covers part of the topic.</li>
+                    <li><strong>2:</strong> Mostly - The response covers most aspects of the topic but may miss minor details.</li>
+                    <li><strong>3:</strong> Yes - The response fully and thoroughly addresses the topic, leaving no aspect untouched.</li>
+                </ul>
+            `;
+        });
+    
         clearExistingModal();
-        clearLLMAnswerContent()
+        clearLLMAnswerContent();
     };
 
     document.getElementById('generateAnswers').onclick = function () {
@@ -157,6 +172,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 finalAnswerContent.innerHTML = `An error occurred while generating the answer: ${error.message}`;
                 finalAnswerContent.classList.remove('hidden'); // Show the error message
             });
+    };
+
+    document.getElementById('annotateButton').onclick = function () {
+        const documents = document.getElementsByClassName('relevant-score-container');
+        Array.from(documents).forEach((doc) => {
+            const relevanceInput = doc.querySelector('.relevance-score-input');
+            const completenessInput = doc.querySelector('.completeness-score-input');
+            relevanceInput.value = Math.floor(Math.random() * 4); // Random value between 0 and 3
+            completenessInput.value = Math.floor(Math.random() * 4); // Random value between 0 and 3
+        });
     };
 
     function clearResults() {
@@ -234,7 +259,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <span class="hidden-title">${doc.title}</span>
                             <span class="hidden-content">${doc.content}</span>
                         </div>
-                    </div>`;
+                    </div>
+                    <hr><br>`; // Add horizontal line here
                 container.appendChild(div);
             }, index * 400);
         });
@@ -414,9 +440,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Clear existing NDCG scores
         document.querySelectorAll('.ndcg-score').forEach(el => el.remove());
 
-        document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
-        document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
-        document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
-        document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG Score: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
+        document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
     }
 });
