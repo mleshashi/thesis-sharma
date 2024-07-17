@@ -219,7 +219,7 @@ select.relevant-score-input, select.completeness-score-input {
 }
 
 .compact-info {
-    font-size: 0.8em; /* Reduce the font size for compact display */
+    font-size: 0.9em; /* Reduce the font size for compact display */
     line-height: 1.2; /* Adjust line height for compactness */
     max-height: 15vh; /* Set the max height for the scrollable content */
     overflow-y: auto; /* Make the content area scrollable */

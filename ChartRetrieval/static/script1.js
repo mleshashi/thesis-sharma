@@ -184,6 +184,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+
+    // Event listener for the save button
+    document.getElementById('save').onclick = function () {
+        fetch('/save-query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Query saved successfully:', data);
+        })
+        .catch(error => console.error('Error:', error));
+    };
+
     function clearResults() {
         document.getElementById('model1-results').innerHTML = '';
         document.getElementById('model2-results').innerHTML = '';

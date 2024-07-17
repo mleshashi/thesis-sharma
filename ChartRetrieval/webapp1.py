@@ -8,6 +8,7 @@ from getEmbeddings import get_detailed_instruct, embed_texts, get_text_features
 from evaluation import ndcg_at_k
 import json
 import requests
+import os
 
 
 # Load the API key from credentials.json
@@ -238,11 +239,13 @@ def prepare_llm_input():
         {
             "type": "text",
             "text": (
-                "Please provide a detailed and comprehensive statistical insight from the following titles, content, and the provided image data. "
-                "Ensure the response includes a thorough analysis with context and evaluation. "
-                "Conclude with a final decision. Format the response as a summary and avoid unnecessary newlines.\n\n"
+                "Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
+                f"Query: {query}\n"
                 f"{content_text}\n"
-                f"Query: {query}"
+                "Format the response in the following structure with 3 paragraphs:\n\n"
+                "1. Start the response with a clear classification or a straightforward answer with respect to the query.\n"
+                "2. Follow with supporting findings and detailed analysis.\n"
+                "3. Summarize the final conclusion briefly."
             )
         }
     ]
@@ -280,9 +283,11 @@ def prepare_llm_input():
     
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
+
 @app.route('/retrieve-llm-input', methods=['GET'])
 def retrieve_llm_input():
     return jsonify(llm_inputs)
+
 
 @app.route('/generate-llm-answer', methods=['POST'])
 def generate_llm_answer():
@@ -300,6 +305,49 @@ def generate_llm_answer():
     scores_storage['llm_answer'] = answer  # Store the generated answer in scores_storage
 
     return jsonify(answer)
+
+
+@app.route('/save-query', methods=['POST'])
+def save_query():
+    # Retrieve the necessary data from the in-memory storage
+    query = scores_storage.get('query', 'No Query Found')
+    ndcg_scores = {key: value for key, value in scores_storage.items() if key.endswith('_ndcg')}
+    top_model = max(ndcg_scores, key=ndcg_scores.get).replace('_ndcg', '')
+    highest_ndcg_score = ndcg_scores[top_model + '_ndcg']
+    final_answer = scores_storage.get('llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found')
+
+    # Define the path to the CSV file
+    csv_file_path = 'queries.csv'
+
+    # Check if the CSV file exists
+    file_exists = os.path.isfile(csv_file_path)
+
+    # Determine the next SL number
+    if file_exists:
+        existing_df = pd.read_csv(csv_file_path)
+        next_sl_number = existing_df.shape[0] + 1
+    else:
+        next_sl_number = 1
+
+    # Prepare the data to append
+    data = {
+        'SL': next_sl_number,
+        'query': query,
+        'top_model': top_model,
+        'highest_ndcg_score': highest_ndcg_score,
+        'final_answer': final_answer
+    }
+
+    # Convert the data to a DataFrame
+    df = pd.DataFrame([data])
+
+    # Append the data to the CSV file
+    if file_exists:
+        df.to_csv(csv_file_path, mode='a', header=False, index=False)
+    else:
+        df.to_csv(csv_file_path, mode='w', header=True, index=False)
+
+    return jsonify({"message": "Query saved successfully"})
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
