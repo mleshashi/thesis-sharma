@@ -26,7 +26,6 @@
         <button id="evaluateButton">Evaluate Models</button>
         <button id="generateAnswers">Generate Answers</button>
         <button id="save">Save</button>
-        <button id="toggleAllResultsBtn" class="toggle-btn">Expand/Collapse All</button>
 
     </div>
     <div id="results-container">
@@ -58,7 +57,11 @@
             </div>
         </div>
     </div>
-    <div id="centered-message" class="centered-message hidden">Alert: Please complete all the annotations to evaluate the models.</div>
+    <div id="loadingModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <p>Loading annotations. Please complete them and save.</p>
+        </div>
+    </div>
     <footer>
         <p>Supervised by: Dr. Johannes Kiesel</p>
     </footer>

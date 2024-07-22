@@ -113,28 +113,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Error:', error);
         });
+
+        // Show the modal overlay
+        loadingModal.classList.remove('hidden');
+
+        // Automatically hide the modal after 1 minute
+        setTimeout(() => {
+            loadingModal.classList.add('hidden');
+        }, 60000);
     
         clearExistingModal();
         clearLLMAnswerContent();
-    };
-
-    document.getElementById('toggleAllResultsBtn').onclick = function () {
-        const resultContainers = [
-            document.getElementById('model1-results'),
-            document.getElementById('model2-results'),
-            document.getElementById('model3-results'),
-            document.getElementById('model4-results')
-        ];
-        
-        resultContainers.forEach(container => {
-            if (container.style.display === 'none' || container.style.display === '') {
-                container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
-            }
-        });
-    };
-    
+    };    
 
     document.getElementById('generateAnswers').onclick = function () {
         // Get the number of top documents to use
@@ -387,6 +377,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
         document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
         document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
-    }  
+    }
 
 });
