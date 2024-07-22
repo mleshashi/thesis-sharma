@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const topicDropdown = document.getElementById('topicDropdown');
     const inputField = document.getElementById('inputField');
     const answerInfoContainer = document.querySelector('.llm-answer-info-container');
-    const finalAnswer = document.querySelector('.llm-answer1');
-    const additionalInfo = document.querySelector('.llm-answer2');
+    const finalAnswer1 = document.querySelector('.llm-answer1');
+    const finalAnswer2 = document.querySelector('.llm-answer2');
     let topic = '';
 
     function fetchTopics(url) {
@@ -103,8 +103,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Show the answer info container with titles
             answerInfoContainer.style.display = 'flex';
-            finalAnswer.style.display = 'block';
-            additionalInfo.style.display = 'block';
+            finalAnswer1.style.display = 'block';
+            finalAnswer2.style.display = 'block';
 
             // Open a new HTML page in a new tab
             const annotationURL = '/annotation'; // The URL of the new page
