@@ -99,44 +99,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 completeness: doc.querySelector('.completeness-score-input').value
             };
         });
-
-        const allAnnotationsComplete = true; // Assuming this is checked before saving
-
-        if (allAnnotationsComplete) {
-            localStorage.setItem('expandResults', 'true');
-            window.close(); // Close the current annotation page
-        }
-
+    
         // Check if all annotations are complete
         const allAnnotated = annotations.every(annotation => annotation.relevance !== '' && annotation.completeness !== '');
-                
-        // If not all annotations are complete, show the centered message
-        if (!allAnnotated) {
+    
+        if (allAnnotated) {
+            // If all annotations are complete, save them
+            fetch('/save-annotations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(annotations)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Annotations saved successfully:', data);
+                // Close the current annotation page
+                window.close();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            // If not all annotations are complete, show the centered message
             const centeredMessage = document.getElementById('centered-message');
             centeredMessage.style.display = 'block';
             setTimeout(() => {
                 centeredMessage.style.display = 'none';
             }, 3000);
-            return;
         }
+    };
     
-        fetch('/save-annotations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(annotations)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Annotations saved successfully:', data);
-    
-            // Close the current annotation page
-            window.close();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-
-    };   
 });
