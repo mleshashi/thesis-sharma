@@ -25,8 +25,8 @@
         <button id="search">Search Documents</button>
         <button id="evaluateButton">Evaluate Models</button>
         <button id="generateAnswers">Generate Answers</button>
-        <button id="annotateButton">Annotate Randomly</button> <!-- New button -->
         <button id="save">Save</button>
+        <button id="toggleAllResultsBtn" class="toggle-btn">Expand/Collapse All</button>
 
     </div>
     <div id="results-container">
@@ -55,20 +55,6 @@
         <div class="llm-info">
             <h3>Additional Info</h3>
             <div class="llm-info-content compact-info">
-                <p><strong>Relevance: Does the response accurately address the topic?</strong></p>
-                <ul>
-                    <li><strong>0:</strong> Not Relevant - The response seems to be completely random to the topic.</li>
-                    <li><strong>1:</strong> Partially Relevant - The response is partially off-topic; may be vaguely related, but too divergent from the topic.</li>
-                    <li><strong>2:</strong> Relevant - Response answers the topic, though it might lack full detail or depth.</li>
-                    <li><strong>3:</strong> Highly Relevant - The response fully and clearly answers the topic with detailed information.</li>
-                </ul>
-                <p><strong>Completeness: Does the response provide a thorough and comprehensive answer to the topic?</strong></p>
-                <ul>
-                    <li><strong>0:</strong> No - The response does not address the topic or is completely unrelated.</li>
-                    <li><strong>1:</strong> Somewhat - The response addresses the query but misses significant details or only covers part of the topic.</li>
-                    <li><strong>2:</strong> Mostly - The response covers most aspects of the topic but may miss minor details.</li>
-                    <li><strong>3:</strong> Yes - The response fully and thoroughly addresses the topic, leaving no aspect untouched.</li>
-                </ul>
             </div>
         </div>
     </div>

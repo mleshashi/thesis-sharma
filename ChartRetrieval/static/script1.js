@@ -100,32 +100,41 @@ document.addEventListener('DOMContentLoaded', function () {
             displayResults(data.model_2_documents, 'model2-results');
             displayResults(data.model_3_documents, 'model3-results');
             displayResults(data.model_4_documents, 'model4-results');
-    
+
             // Show the answer info container with titles
             answerInfoContainer.style.display = 'flex';
             finalAnswer.style.display = 'block';
             additionalInfo.style.display = 'block';
-            additionalInfo.querySelector('.llm-info-content').innerHTML = `
-                <p><strong>Relevance: Does the response accurately address the topic?</strong></p>
-                <ul>
-                    <li><strong>0:</strong> Not Relevant - The response seems to be completely random to the topic.</li>
-                    <li><strong>1:</strong> Partially Relevant - The response is partially off-topic; may be vaguely related, but too divergent from the topic.</li>
-                    <li><strong>2:</strong> Relevant - Response answers the topic, though it might lack full detail or depth.</li>
-                    <li><strong>3:</strong> Highly Relevant - The response fully and clearly answers the topic with detailed information.</li>
-                </ul>
-                <p><strong>Completeness: Does the response provide a thorough and comprehensive answer to the topic?</strong></p>
-                <ul>
-                    <li><strong>0:</strong> No - The response does not address the topic or is completely unrelated.</li>
-                    <li><strong>1:</strong> Somewhat - The response addresses the query but misses significant details or only covers part of the topic.</li>
-                    <li><strong>2:</strong> Mostly - The response covers most aspects of the topic but may miss minor details.</li>
-                    <li><strong>3:</strong> Yes - The response fully and thoroughly addresses the topic, leaving no aspect untouched.</li>
-                </ul>
-            `;
+
+            // Open a new HTML page in a new tab
+            const annotationURL = '/annotation'; // The URL of the new page
+            window.open(annotationURL, '_blank');
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
     
         clearExistingModal();
         clearLLMAnswerContent();
     };
+
+    document.getElementById('toggleAllResultsBtn').onclick = function () {
+        const resultContainers = [
+            document.getElementById('model1-results'),
+            document.getElementById('model2-results'),
+            document.getElementById('model3-results'),
+            document.getElementById('model4-results')
+        ];
+        
+        resultContainers.forEach(container => {
+            if (container.style.display === 'none' || container.style.display === '') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        });
+    };
+    
 
     document.getElementById('generateAnswers').onclick = function () {
         // Get the number of top documents to use
@@ -172,16 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 finalAnswerContent.innerHTML = `An error occurred while generating the answer: ${error.message}`;
                 finalAnswerContent.classList.remove('hidden'); // Show the error message
             });
-    };
-
-    document.getElementById('annotateButton').onclick = function () {
-        const documents = document.getElementsByClassName('relevant-score-container');
-        Array.from(documents).forEach((doc) => {
-            const relevanceInput = doc.querySelector('.relevance-score-input');
-            const completenessInput = doc.querySelector('.completeness-score-input');
-            relevanceInput.value = Math.floor(Math.random() * 4); // Random value between 0 and 3
-            completenessInput.value = Math.floor(Math.random() * 4); // Random value between 0 and 3
-        });
     };
 
 
@@ -247,34 +246,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="relevant-score-row">
                                 <strong>Score:</strong> <span class="score">${doc.score}</span>
                             </div>
-                            <div class="relevant-score-row">
-                                <strong>Relevance:</strong>
-                                <select class="relevance-score-input">
-                                    <option value="" disabled selected>Select Relevance</option>
-                                    <option value="0">0(No)</option>
-                                    <option value="1">1(Partially Relevant)</option>
-                                    <option value="2">2(Relevant)</option>
-                                    <option value="3">3(Highly Relevant)</option>
-                                </select>
-                            </div>
-                            <div class="relevant-score-row">
-                                <strong>Completeness:</strong>
-                                <select class="completeness-score-input">
-                                    <option value="" disabled selected>Select Completeness</option>
-                                    <option value="0">0(No)</option>
-                                    <option value="1">1(Somewhat)</option>
-                                    <option value="2">2(Yes but not completely)</option>
-                                    <option value="3">3(Yes)</option>
-                                </select>
-                            </div>
                         </div>
                         <div class="relevant-score-right">
                             <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
-                        </div>
-                        <!-- Include title and content in hidden-info for evaluation purposes -->
-                        <div class="hidden-info">
-                            <span class="hidden-title">${doc.title}</span>
-                            <span class="hidden-content">${doc.content}</span>
                         </div>
                     </div>
                     <hr><br>`; // Add horizontal line here
@@ -369,97 +343,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('evaluateButton').onclick = function() {
         clearLLMAnswerContent(); // Call the function to clear only the LLM answer content
-        
-        const documents = document.getElementsByClassName('relevant-score-container');
-        const results = {
-            query: topic,
-            model_1_documents: [],
-            model_2_documents: [],
-            model_3_documents: [],
-            model_4_documents: []
-        };
-
-        let allAnnotated = true;
-
-        Array.from(documents).forEach((doc) => {
-            const score = doc.querySelector('.score').innerText;
-            const relevance = doc.querySelector('.relevance-score-input').value;
-            const completeness = doc.querySelector('.completeness-score-input').value;
-            const image_data = doc.querySelector('.compact-image').src.split(',')[1]; // Fetch base64 part of image data
-
-            // Fetching title and content from the hidden-info div
-            const title = doc.querySelector('.hidden-title').innerText;
-            const content = doc.querySelector('.hidden-content').innerText;
-
-            if (!relevance || !completeness) {
-                allAnnotated = false;
-            }
-
-            const result = {
-                score: parseFloat(score),
-                relevance: parseFloat(relevance),
-                completeness: parseFloat(completeness),
-                title: title.trim(),
-                content: content.trim(),
-                image_data: image_data.trim()
-            };
-
-            if (doc.closest('#model1-results')) {
-                results.model_1_documents.push(result);
-            } else if (doc.closest('#model2-results')) {
-                results.model_2_documents.push(result);
-            } else if (doc.closest('#model3-results')) {
-                results.model_3_documents.push(result);
-            } else if (doc.closest('#model4-results')) {
-                results.model_4_documents.push(result);
-            }
-        });
-
-        // If not all annotations are complete, show the centered message
-        if (!allAnnotated) {
-            const centeredMessage = document.getElementById('centered-message');
-            console.log("Centered Message Element:", centeredMessage); // Debugging log
-            centeredMessage.style.display = 'block';
-            setTimeout(() => {
-                centeredMessage.style.display = 'none';
-            }, 3000);
-            return;
-        }    
-
-        fetch('/store-scores', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(results)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Scores stored successfully:', data);
-            // Fetch the NDCG scores after storing the results
-            fetch('/evaluate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(results)
-            })
+    
+        // Fetch the search results from /retrieve-results
+        fetch('/retrieve-results')
             .then(response => response.json())
-            .then(ndcg_scores => {
-                displayNDCGScores(ndcg_scores);
+            .then(results => {
+                // Store the results using /store-scores
+                fetch('/store-scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(results)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Scores stored successfully:', data);
+    
+                    // Fetch the NDCG scores after storing the results
+                    fetch('/evaluate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(results)
+                    })
+                    .then(response => response.json())
+                    .then(ndcg_scores => {
+                        displayNDCGScores(ndcg_scores);
+                    })
+                    .catch(error => console.error('Error fetching NDCG scores:', error));
+                })
+                .catch(error => console.error('Error storing scores:', error));
             })
-            .catch(error => console.error('Error:', error));
-        })
-        .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error retrieving results:', error));
     };
-
+    
     function displayNDCGScores(ndcg_scores) {
         // Clear existing NDCG scores
         document.querySelectorAll('.ndcg-score').forEach(el => el.remove());
-
+    
         document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
         document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
         document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
         document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
-    }
+    }    
+
 });

@@ -304,3 +304,10 @@ footer {
 .centered-message.hidden {
     display: none;
 }
+
+/* Add this to your existing CSS */
+.toggle-btn {
+    margin-left: 10px;
+    font-size: 0.8em;
+    cursor: pointer;
+}

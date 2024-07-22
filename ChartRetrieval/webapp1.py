@@ -10,7 +10,6 @@ import json
 import requests
 import os
 
-
 # Load the API key from credentials.json
 with open('credentials.json') as f:
     credentials = json.load(f)
@@ -29,21 +28,26 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 tokenizer_2 = load_tokenizer(mistral)
 model_2 = load_model(mistral)
-tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
-model_3 = load_model(Qwen2, trust_remote_code=True)
+#tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
+#model_3 = load_model(Qwen2, trust_remote_code=True)
 tokenizer_4, model_4 = load_clip_model(clip, device)
 
 # Load topics DataFrame globally
 topics_df = pd.read_csv('../dataset/TopRelevant_topics1.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
-# In-memory storage for scores and LLM inputs
+# In-memory storage for scores and search results
+search_results = {}
 scores_storage = {}
 llm_inputs = {}
 
 @app.route('/')
 def index():
-    return render_template('index1.html')
+    return render_template('main-page.html')
+
+@app.route('/annotation')
+def annotation():
+    return render_template('annotation.html')
 
 @app.route('/get-topics', methods=['GET'])
 def get_topics():
@@ -63,7 +67,7 @@ def search():
     
     # Get embeddings for all models
     topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
-    topic_embedding_3 = embed_texts(query, tokenizer_3, model_3, device)
+    topic_embedding_3 = embed_texts(query, tokenizer_2, model_2, device)
     topic_embedding_4 = get_text_features(topic, tokenizer_4, model_4, device)
 
     # Elasticsearch BM25 query using multi_match for content and title
@@ -94,7 +98,7 @@ def search():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'gte_embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_3}
             }
         }
@@ -144,12 +148,43 @@ def search():
     documents_3 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_3['hits']['hits']]
     documents_4 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_4['hits']['hits']]
     
-    return jsonify({
+    # Store results in memory without the "latest" wrapper
+    search_results.update({
+        "query": topic,
         "model_1_documents": documents_1,
         "model_2_documents": documents_2,
         "model_3_documents": documents_3,
         "model_4_documents": documents_4
     })
+    
+    return jsonify(search_results)
+
+@app.route('/retrieve-results', methods=['GET'])
+def retrieve_results():
+    return jsonify(search_results)
+
+@app.route('/save-annotations', methods=['POST'])
+def save_annotations():
+    annotations = request.json
+
+    for model_key, documents in search_results.items():
+        for doc in documents:
+            updated = False  # Flag to indicate if the document was updated
+            if isinstance(doc, dict):
+                for annotation in annotations:
+                    if (''.join(doc.get('title', '').split()) == ''.join(annotation.get('title', '').split()) and
+                        ''.join(doc.get('content', '').split()) == ''.join(annotation.get('content', '').split())):
+                        doc['relevance'] = int(annotation.get('relevance', 0))
+                        doc['completeness'] = int(annotation.get('completeness', 0))
+                        updated = True
+                        break
+                if not updated:
+                    print(f"Document did not match any annotation: {doc}")
+                    for annotation in annotations:
+                        print(f"Compared with annotation: {annotation}")
+
+    return jsonify({"message": "Annotations saved successfully"})
+
 
 @app.route('/get-random-image', methods=['GET'])
 def get_random_image():
@@ -187,15 +222,21 @@ def evaluate():
     results = data
     k = 3
 
-    # Collect all relevance scores from all models
+    # Collect all relevance scores from all models, removing duplicates
     all_relevance_scores = []
+    seen_docs = set()  # To keep track of seen (title, content) pairs
+
     for model_key, documents in results.items():
         if model_key != 'query' and '_documents' in model_key:
-            all_relevance_scores.extend([(doc['relevance'] + doc['completeness']) for doc in documents])
+            for doc in documents:
+                doc_key = (doc['title'].strip(), doc['content'].strip())
+                if doc_key not in seen_docs:
+                    seen_docs.add(doc_key)
+                    all_relevance_scores.append(doc['relevance'] + doc['completeness'])
 
     ndcg_scores = {}
     for model_key, documents in results.items():
-        if model_key != 'query' and '_documents' in model_key:
+        if (model_key != 'query') and ('_documents' in model_key):
             relevance_scores = [(doc['relevance'] + doc['completeness']) for doc in documents[:k]]
             ndcg_score = ndcg_at_k(relevance_scores, k, all_relevance_scores)
             ndcg_scores[model_key] = ndcg_score
