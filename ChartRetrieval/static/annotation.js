@@ -100,6 +100,13 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         });
 
+        const allAnnotationsComplete = true; // Assuming this is checked before saving
+
+        if (allAnnotationsComplete) {
+            localStorage.setItem('expandResults', 'true');
+            window.close(); // Close the current annotation page
+        }
+
         // Check if all annotations are complete
         const allAnnotated = annotations.every(annotation => annotation.relevance !== '' && annotation.completeness !== '');
                 
@@ -130,5 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Error:', error);
         });
+
     };   
 });

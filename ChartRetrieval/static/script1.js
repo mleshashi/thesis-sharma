@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const topicDropdown = document.getElementById('topicDropdown');
     const inputField = document.getElementById('inputField');
     const answerInfoContainer = document.querySelector('.llm-answer-info-container');
-    const finalAnswer = document.querySelector('.llm-answer');
-    const additionalInfo = document.querySelector('.llm-info');
+    const finalAnswer = document.querySelector('.llm-answer1');
+    const additionalInfo = document.querySelector('.llm-answer2');
     let topic = '';
 
     function fetchTopics(url) {
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(scores => {
                 console.log("Retrieve Scores Response:", scores);
-                const finalAnswerContent = document.querySelector('.llm-answer-content');
+                const finalAnswerContent = document.querySelector('.llm-answer-content1');
                 const llmAnswer = scores.llm_answer;
                 if (llmAnswer && llmAnswer.choices && llmAnswer.choices.length > 0 && llmAnswer.choices[0].message) {
                     // Convert Markdown to HTML
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => {
                 console.error('Error:', error);
-                const finalAnswerContent = document.querySelector('.llm-answer-content');
+                const finalAnswerContent = document.querySelector('.llm-answer-content1');
                 finalAnswerContent.innerHTML = `An error occurred while generating the answer: ${error.message}`;
                 finalAnswerContent.classList.remove('hidden'); // Show the error message
             });
@@ -208,12 +208,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function clearLLMAnswers() {
-        document.querySelectorAll('.llm-answer-content').forEach(el => el.innerHTML = '');
-        document.querySelectorAll('.llm-answer').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.llm-answer-content1').forEach(el => el.innerHTML = '');
+        document.querySelectorAll('.llm-answer1').forEach(el => el.style.display = 'none');
     }
 
     function clearLLMAnswerContent() {
-        const finalAnswerContent = document.querySelector('.llm-answer-content');
+        const finalAnswerContent = document.querySelector('.llm-answer-content1');
         finalAnswerContent.innerHTML = '';
     }
 
@@ -225,9 +225,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function clearAdditionalInfo() {
-        const additionalInfoContainer = document.querySelector('.llm-info-content');
+        const additionalInfoContainer = document.querySelector('.llm-answer-content2');
         additionalInfoContainer.innerHTML = '';
-        additionalInfoContainer.closest('.llm-info').style.display = 'none';
+        additionalInfoContainer.closest('.llm-answer2').style.display = 'none';
     }
 
     function displayResults(documents, elementId) {
@@ -387,6 +387,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
         document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
         document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
-    }    
+    }  
 
 });
