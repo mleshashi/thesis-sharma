@@ -373,10 +373,20 @@ document.addEventListener('DOMContentLoaded', function () {
         // Clear existing NDCG scores
         document.querySelectorAll('.ndcg-score').forEach(el => el.remove());
     
-        document.getElementById('model1-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_1_documents.toFixed(2)}</span></div>`);
-        document.getElementById('model2-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_2_documents.toFixed(2)}</span></div>`);
-        document.getElementById('model3-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_3_documents.toFixed(2)}</span></div>`);
-        document.getElementById('model4-results').insertAdjacentHTML('beforeend', `<div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores.model_4_documents.toFixed(2)}</span></div>`);
+        // Function to create the NDCG score HTML for a given model
+        function createNDCGScoreHTML(modelKey, modelName) {
+            return `
+                <div class="ndcg-score">NDCG@1: <span class="ndcg-value">${ndcg_scores[1][modelKey].toFixed(2)}</span></div>
+                <div class="ndcg-score">NDCG@2: <span class="ndcg-value">${ndcg_scores[2][modelKey].toFixed(2)}</span></div>
+                <div class="ndcg-score">NDCG@3: <span class="ndcg-value">${ndcg_scores[3][modelKey].toFixed(2)}</span></div>
+            `;
+        }
+    
+        // Insert the NDCG scores for each model
+        document.getElementById('model1-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_1_documents', 'Model 1'));
+        document.getElementById('model2-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_2_documents', 'Model 2'));
+        document.getElementById('model3-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_3_documents', 'Model 3'));
+        document.getElementById('model4-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_4_documents', 'Model 4'));
     }
 
 });

@@ -220,7 +220,7 @@ def retrieve_scores():
 def evaluate():
     data = request.json
     results = data
-    k = 3
+    ks = [1, 2, 3]  # List of k values to evaluate
 
     # Collect all relevance scores from all models, removing duplicates
     all_relevance_scores = []
@@ -234,16 +234,19 @@ def evaluate():
                     seen_docs.add(doc_key)
                     all_relevance_scores.append(doc['relevance'] + doc['completeness'])
 
-    ndcg_scores = {}
+     # Calculate NDCG scores for each k in ks
+    ndcg_scores = {k: {} for k in ks}
     for model_key, documents in results.items():
-        if (model_key != 'query') and ('_documents' in model_key):
-            relevance_scores = [(doc['relevance'] + doc['completeness']) for doc in documents[:k]]
-            ndcg_score = ndcg_at_k(relevance_scores, k, all_relevance_scores)
-            ndcg_scores[model_key] = ndcg_score
+        if model_key != 'query' and '_documents' in model_key:
+            for k in ks:
+                relevance_scores = [(doc['relevance'] + doc['completeness']) for doc in documents[:k]]
+                ndcg_score = ndcg_at_k(relevance_scores, k, all_relevance_scores)
+                ndcg_scores[k][model_key] = ndcg_score
 
     # Store the NDCG scores in the scores_storage
-    for model_key, score in ndcg_scores.items():
-        scores_storage[model_key + '_ndcg'] = score
+    for k in ks:
+        for model_key, score in ndcg_scores[k].items():
+            scores_storage[model_key + f'_ndcg@{k}'] = score
 
     return jsonify(ndcg_scores)
 
