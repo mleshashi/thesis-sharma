@@ -252,15 +252,22 @@ def evaluate():
 
 @app.route('/prepare-llm-input', methods=['GET'])
 def prepare_llm_input():
-    # Get the number of top documents to use from query parameters, default to 1
-    top_n = int(request.args.get('top_n', 1))
+    # Get the NDCG value to use from query parameters, default to 1
+    ndcg_value = int(request.args.get('ndcg', 1))
 
-    # Identify the model with the highest NDCG score
-    ndcg_scores = {key: value for key, value in scores_storage.items() if key.endswith('_ndcg')}
-    top_model = max(ndcg_scores, key=ndcg_scores.get).replace('_ndcg', '')
+    # Map the NDCG value to the number of documents
+    top_n = ndcg_value
+
+    # Identify the model with the highest NDCG score for the selected NDCG value
+    ndcg_key = f'_ndcg@{ndcg_value}'
+    ndcg_scores = {key: value for key, value in scores_storage.items() if key.endswith(ndcg_key)}
+    if not ndcg_scores:
+        return jsonify({"error": f"No NDCG scores found for NDCG@{ndcg_value}"}), 404
+    
+    top_model = max(ndcg_scores, key=ndcg_scores.get).replace(ndcg_key, '')
 
     # Extract the top-ranked documents from the top NDCG model
-    top_documents_key = top_model.replace('_ndcg', '_documents')
+    top_documents_key = top_model.replace(ndcg_key, '_documents')
     top_documents = scores_storage.get(top_documents_key, [])
 
     if not top_documents:
@@ -268,7 +275,7 @@ def prepare_llm_input():
 
     query = scores_storage.get('query', 'No Query Found')
 
-    # Sort documents by the sum of completeness, relevance, and score
+    # Sort the documents by the score
     top_documents.sort(key=lambda doc: doc['score'], reverse=True)
 
     # Prepare the combined JSON payload from the top N documents
@@ -320,7 +327,7 @@ def prepare_llm_input():
     
     # Print the payload to check the order
     llm_input = json.dumps(payload, indent=1)
-    # print(llm_input)
+    print(llm_input)
     
     # Store the payload in llm_inputs
     llm_inputs.update(payload)

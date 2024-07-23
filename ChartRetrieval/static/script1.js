@@ -120,18 +120,24 @@ document.addEventListener('DOMContentLoaded', function () {
         // Automatically hide the modal after 1 minute
         setTimeout(() => {
             loadingModal.classList.add('hidden');
-        }, 60000);
+        }, 2000);
     
         clearExistingModal();
         clearLLMAnswerContent();
-    };    
+    };
 
     document.getElementById('generateAnswers').onclick = function () {
-        // Get the number of top documents to use
-        const topN = prompt("Enter the number of top documents to use:", "1");
-
+        // Ask for which NDCG value to use (1, 2, or 3)
+        const ndcgValue = prompt("Enter which NDCG value to use (1, 2, or 3):", "1");
+    
+        // Validate the input
+        if (![1, 2, 3].includes(parseInt(ndcgValue))) {
+            alert("Invalid input. Please enter 1, 2, or 3.");
+            return;
+        }
+    
         // Fetch the prepared LLM input and generate the answer
-        fetch(`/prepare-llm-input?top_n=${topN}`)
+        fetch(`/prepare-llm-input?ndcg=${ndcgValue}`)
             .then(response => response.json())
             .then(data => {
                 if (data.message !== "LLM input prepared and stored successfully") {
@@ -172,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 finalAnswerContent.classList.remove('hidden'); // Show the error message
             });
     };
-
+    
 
     // Event listener for the save button
     document.getElementById('save').onclick = function () {
