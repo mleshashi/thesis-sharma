@@ -13,7 +13,8 @@ import os
 # Load the API key from credentials.json
 with open('credentials.json') as f:
     credentials = json.load(f)
-    api_key = credentials['api_key']
+    api_key1 = credentials['gpt-api_key']
+    api_key2 = credentials['llava-api_key']
 
 app = Flask(__name__)
 es = Elasticsearch(["http://localhost:9200"])
@@ -301,7 +302,7 @@ def prepare_llm_input():
         }
     ]
 
-    # Append the images
+    # Append the images in content
     for doc in top_documents[:top_n]:
         content.append(
             {
@@ -312,6 +313,35 @@ def prepare_llm_input():
             }
         )
 
+    content2 = []
+
+    # Append the images first
+    for doc in top_documents[:top_n]:
+        content2.append(
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/jpeg;base64,{doc['image_data']}"
+                }
+            }
+        )
+
+    # Append the text to content2
+    content2.append(
+        {
+            "type": "text",
+            "text": (
+                "Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
+                f"Query: {query}\n"
+                f"{content_text}\n"
+                "Format the response in the following structure with 3 paragraphs:\n\n"
+                "1. Start the response with a clear classification or a straightforward answer with respect to the query.\n"
+                "2. Follow with supporting findings and detailed analysis.\n"
+                "3. Summarize the final conclusion briefly."
+            )
+        }
+    )
+
     messages = [
     {
         "role": "user",
@@ -319,19 +349,36 @@ def prepare_llm_input():
     }
     ]
 
-    payload = {
+    messages2 = [
+    {
+        "role": "user",
+        "content": content2
+    }
+    ]
+
+    # Create two separate payloads with the same message but different models
+    payload1 = {
         "model": "gpt-4o",
         "messages": messages,
         "max_tokens": 1000
     }
+
+    payload2 = {
+        "model": "llava-hf/llava-1.5-7b-hf",
+        "messages": messages2,
+        "max_tokens": 1000
+    }
     
-    # Print the payload to check the order
-    llm_input = json.dumps(payload, indent=1)
-    print(llm_input)
+     # Print the payloads to check the order
+    llm_input1 = json.dumps(payload1, indent=1)
+    llm_input2 = json.dumps(payload2, indent=1)
+    print(llm_input1)
+    print(llm_input2)
     
-    # Store the payload in llm_inputs
-    llm_inputs.update(payload)
-    
+    # Store the payloads in llm_inputs
+    llm_inputs['gpt'] = payload1
+    llm_inputs['llava'] = payload2
+
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
 
@@ -342,20 +389,38 @@ def retrieve_llm_input():
 
 @app.route('/generate-llm-answer', methods=['POST'])
 def generate_llm_answer():
-    headers = {
+# Define the headers for both API requests
+    headers1 = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
+        "Authorization": f"Bearer {api_key1}"
+    }
+    headers2 = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key2}"
     }
 
     if not llm_inputs:
         return jsonify({"error": "No LLM input found"}), 404
+    
+    # Get the inputs for both APIs
+    input_gpt = llm_inputs.get('gpt', {})
+    input_llava = llm_inputs.get('llava', {})
 
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=llm_inputs)
-    answer = response.json()
+    response1 = requests.post("https://api.openai.com/v1/chat/completions", headers=headers1, json=input_gpt)
+    response2 = requests.post("https://api.deepinfra.com/v1/openai/chat/completions", headers=headers2, json=input_llava)
+    
+    # Parse the responses
+    answer_gpt = response1.json()
+    answer_llava = response2.json()
 
-    scores_storage['llm_answer'] = answer  # Store the generated answer in scores_storage
+    # Store the generated answers in scores_storage
+    scores_storage['gpt_llm_answer'] = answer_gpt
+    scores_storage['llava_llm_answer'] = answer_llava
 
-    return jsonify(answer)
+    return jsonify({
+        "gpt_answer": answer_gpt,
+        "llava_answer": answer_llava
+    })
 
 
 @app.route('/save-query', methods=['POST'])

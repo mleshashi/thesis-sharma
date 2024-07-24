@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.message !== "LLM input prepared and stored successfully") {
                     throw new Error("Failed to prepare LLM input.");
                 }
-                // Generate the LLM answer
+                // Generate the LLM answers
                 return fetch('/generate-llm-answer', {
                     method: 'POST',
                     headers: {
@@ -153,32 +153,46 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => response.json())
             .then(() => {
-                // Retrieve scores including the generated LLM answer
+                // Retrieve scores including the generated LLM answers
                 return fetch('/retrieve-scores');
             })
             .then(response => response.json())
             .then(scores => {
                 console.log("Retrieve Scores Response:", scores);
-                const finalAnswerContent = document.querySelector('.llm-answer-content1');
-                const llmAnswer = scores.llm_answer;
-                if (llmAnswer && llmAnswer.choices && llmAnswer.choices.length > 0 && llmAnswer.choices[0].message) {
-                    // Convert Markdown to HTML
-                    const markdownContent = llmAnswer.choices[0].message.content;
-                    const htmlContent = marked.parse(markdownContent); // Use marked.parse to convert Markdown to HTML
-                    finalAnswerContent.innerHTML = htmlContent; // Display the HTML content
+                const finalAnswerContent1 = document.querySelector('.llm-answer-content1');
+                const finalAnswerContent2 = document.querySelector('.llm-answer-content2');
+    
+                const gptAnswer = scores.gpt_llm_answer;
+                const llavaAnswer = scores.llava_llm_answer;
+    
+                // Display GPT answer
+                if (gptAnswer && gptAnswer.choices && gptAnswer.choices.length > 0 && gptAnswer.choices[0].message) {
+                    const markdownContent1 = gptAnswer.choices[0].message.content;
+                    const htmlContent1 = marked.parse(markdownContent1); // Use marked.parse to convert Markdown to HTML
+                    finalAnswerContent1.innerHTML = htmlContent1; // Display the HTML content
                 } else {
-                    finalAnswerContent.innerHTML = "No valid response received.";
+                    finalAnswerContent1.innerHTML = "No valid response received from GPT.";
                 }
-                finalAnswerContent.classList.remove('hidden'); // Show the final answer content
+    
+                // Display LLava answer
+                if (llavaAnswer && llavaAnswer.choices && llavaAnswer.choices.length > 0 && llavaAnswer.choices[0].message) {
+                    const markdownContent2 = llavaAnswer.choices[0].message.content;
+                    const htmlContent2 = marked.parse(markdownContent2); // Use marked.parse to convert Markdown to HTML
+                    finalAnswerContent2.innerHTML = htmlContent2; // Display the HTML content
+                } else {
+                    finalAnswerContent2.innerHTML = "No valid response received from LLava.";
+                }
+    
+                // Show the answers container
+                document.querySelector('.llm-answer-info-container').classList.remove('hidden');
             })
             .catch(error => {
                 console.error('Error:', error);
-                const finalAnswerContent = document.querySelector('.llm-answer-content1');
-                finalAnswerContent.innerHTML = `An error occurred while generating the answer: ${error.message}`;
-                finalAnswerContent.classList.remove('hidden'); // Show the error message
+                const finalAnswerContent1 = document.querySelector('.llm-answer-content1');
+                finalAnswerContent1.innerHTML = `An error occurred while generating the answer: ${error.message}`;
+                finalAnswerContent1.classList.remove('hidden'); // Show the error message
             });
     };
-    
 
     // Event listener for the save button
     document.getElementById('save').onclick = function () {
