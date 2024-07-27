@@ -291,13 +291,13 @@ def prepare_llm_input():
         {
             "type": "text",
             "text": (
-                "Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
+                "You are an expert statistical analyst. Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
                 f"Query: {query}\n"
                 f"{content_text}\n"
                 "Format the response in the following structure with 3 paragraphs:\n\n"
                 "1. Start the response with a clear classification or a straightforward answer with respect to the query.\n"
                 "2. Follow with supporting findings and detailed analysis.\n"
-                "3. Summarize the final conclusion briefly."
+                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion."
             )
         }
     ]
@@ -313,46 +313,10 @@ def prepare_llm_input():
             }
         )
 
-    content2 = []
-
-    # Append the images first
-    for doc in top_documents[:top_n]:
-        content2.append(
-            {
-                "type": "image_url",
-                "image_url": {
-                    "url": f"data:image/jpeg;base64,{doc['image_data']}"
-                }
-            }
-        )
-
-    # Append the text to content2
-    content2.append(
-        {
-            "type": "text",
-            "text": (
-                "Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
-                f"Query: {query}\n"
-                f"{content_text}\n"
-                "Format the response in the following structure with 3 paragraphs:\n\n"
-                "1. Start the response with a clear classification or a straightforward answer with respect to the query.\n"
-                "2. Follow with supporting findings and detailed analysis.\n"
-                "3. Summarize the final conclusion briefly."
-            )
-        }
-    )
-
     messages = [
     {
         "role": "user",
         "content": content
-    }
-    ]
-
-    messages2 = [
-    {
-        "role": "user",
-        "content": content2
     }
     ]
 
@@ -365,7 +329,7 @@ def prepare_llm_input():
 
     payload2 = {
         "model": "llava-hf/llava-1.5-7b-hf",
-        "messages": messages2,
+        "messages": messages,
         "max_tokens": 1000
     }
     

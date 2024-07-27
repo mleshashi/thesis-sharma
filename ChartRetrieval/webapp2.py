@@ -291,13 +291,13 @@ def prepare_llm_input():
         {
             "type": "text",
             "text": (
-                "You are an expert statistical analyst. Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
+                "Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
                 f"Query: {query}\n"
                 f"{content_text}\n"
-                "Format the response in the following structure with 3 paragraphs, without paragraph title::\n\n"
-                "1. Start the response with a clear classification or a straightforward answer to the query.\n"
-                "2. Provide supporting findings and detailed analysis, including relevant statistical data.\n"
-                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion based on provided content."
+                "Format the response in the following structure with 3 paragraphs:\n\n"
+                "1. Start the response with a clear classification or a straightforward answer with respect to the query.\n"
+                "2. Follow with supporting findings and detailed analysis.\n"
+                "3. Summarize the final conclusion briefly."
             )
         }
     ]
@@ -313,40 +313,59 @@ def prepare_llm_input():
             }
         )
 
-    messages1 = [
+    content2 = []
+
+    # Append the images first
+    for doc in top_documents[:top_n]:
+        content2.append(
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/jpeg;base64,{doc['image_data']}"
+                }
+            }
+        )
+
+    # Append the text to content2
+    content2.append(
+        {
+            "type": "text",
+            "text": (
+                "Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.\n\n"
+                f"Query: {query}\n"
+                f"{content_text}\n"
+                f"{content_text}\n"
+                "Format the response in the following structure with 3 paragraphs:\n\n"
+                "1. Start the response with a clear classification or a straightforward answer with respect to the query.\n"
+                "2. Follow with supporting findings and detailed analysis.\n"
+                "3. Summarize the final conclusion briefly."
+            )
+        }
+    )
+
+    messages = [
     {
         "role": "user",
         "content": content
     }
     ]
 
-    # Create the instruction and user messages
     messages2 = [
-        {
-            "role": "system",
-            "content": (
-                "You are an expert statistical analyst. Answer the given query with a detailed and comprehensive statistical insight from the following title and content.\n\n"
-                "Format the response in the following structure with 3 paragraphs, without paragraph title:\n\n"
-                "1. Start the response with a clear classification or a straightforward answer to the query.\n"
-                "2. Provide supporting findings and detailed analysis, including relevant statistical data.\n"
-                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion based on the provided content."
-            )
-        },
-        {
-            "role": "user",
-            "content": f"Query: {query}\n\n{content_text}"
-        }
+    {
+        "role": "user",
+        "content": content2
+    }
     ]
 
     # Create two separate payloads with the same message but different models
     payload1 = {
         "model": "gpt-4o",
-        "messages": messages1,
+        "messages": messages,
         "max_tokens": 1000
     }
 
     payload2 = {
-        "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "model": "llava-hf/llava-1.5-7b-hf",
         "messages": messages2,
         "max_tokens": 1000
     }
