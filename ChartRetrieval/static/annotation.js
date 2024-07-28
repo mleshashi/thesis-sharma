@@ -90,6 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     document.getElementById('saveAnnotations').onclick = function () {
+        // Get annotator details
+        const annotatorName = document.getElementById('annotatorName').value;
+        const annotatorUrl = document.getElementById('annotatorUrl').value;
+
+        // Get document annotations
         const documents = document.getElementsByClassName('document-info-container');
         const annotations = Array.from(documents).map(doc => {
             return {
@@ -103,14 +108,20 @@ document.addEventListener('DOMContentLoaded', function () {
         // Check if all annotations are complete
         const allAnnotated = annotations.every(annotation => annotation.relevance !== '' && annotation.completeness !== '');
     
-        if (allAnnotated) {
+        if (allAnnotated && annotatorName && annotatorUrl) {
+            // Include annotator details in the data
+            const data = {
+                annotatorName,
+                annotatorUrl,
+                annotations
+            };
             // If all annotations are complete, save them
             fetch('/save-annotations', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(annotations)
+                body: JSON.stringify(data)
             })
             .then(response => response.json())
             .then(data => {

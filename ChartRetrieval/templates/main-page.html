@@ -48,11 +48,48 @@
     </div>
     <div class="llm-answer-info-container hidden">
         <div class="llm-answer1">
-            <h3>Final Answer1</h3>
+            <h3>
+                Final Answer 1
+                <div class="annotation-dropdowns">
+                    <select class="relevance-dropdown">
+                        <option value="" disabled selected>Relevance</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    <select class="faithfulness-dropdown">
+                        <option value="" disabled selected>Faithfulness</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+            </h3>
             <div class="llm-answer-content1"></div>
         </div>
         <div class="llm-answer2">
-            <h3>Final Answer2</h3>
+            <h3>
+                Final Answer 2
+                <div class="annotation-dropdowns">
+                    <select id="relevance1" class="relevance-dropdown">
+                        <option value="">Relevance</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+    
+                    <select id="faithfulness1" class="faithfulness-dropdown">
+                        <option value="">Faithfulness</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+            </h3>
             <div class="llm-answer-content2">
             </div>
         </div>

@@ -22,6 +22,22 @@
             margin: 0;
             font-size: 1.2em; /* Adjust the font size here */
         }
+        .button-container,
+        .annotator-details {
+            display: flex;
+            align-items: center;
+        }
+        .button-container button,
+        .annotator-details input {
+            margin-right: 10px;
+        }
+        .profile-url {
+            width: 300px; /* Adjust this value as needed */
+        }
+        .annotator-details label {
+            margin-right: 5px;
+            font-weight: bold;
+        }
         .rules-container {
             display: flex;
             justify-content: space-between;
@@ -96,6 +112,11 @@
 <body>
     <div class="annotation-header">
         <h2 id="annotation-query">Query Title</h2>
+        <div class="annotator-details">
+            <label>Annotator Details:</label>
+            <input type="text" id="annotatorName" placeholder="Full Name">
+            <input type="url" id="annotatorUrl" placeholder="LinkedIn / Profile URL" class="profile-url">
+        </div>
         <div class="button-container">
             <button id="annotateButton">Random Annotate</button>
             <button id="saveAnnotations">Save Annotations</button>

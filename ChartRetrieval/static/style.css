@@ -188,27 +188,44 @@ select.relevant-score-input, select.completeness-score-input {
 }
 
 .llm-answer1, .llm-answer2 {
-    flex: 2.5; /* Adjust to occupy 50% */
+    flex: 2.5;
     padding: 10px;
-    display: none; /* Initially hidden */
-    text-align: center;
+    display: none;
+    text-align: left;
     border-right: 2px solid #ccc;
-    overflow-y: hidden; /* Prevent the entire .llm-answer from scrolling */
+    box-sizing: border-box;
+    overflow-y: hidden;
 }
 
 .llm-answer1 h3, .llm-answer2 h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    display: block;
-    border-bottom: 2px solid #ccc;
-    padding: 0 10px;
-    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* Center the title */
+    align-items: center;
+    margin: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    position: relative; /* For positioning dropdowns */
+}
+
+.annotation-dropdowns {
+    position: absolute;
+    right: 0; /* Align to the right */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.annotation-dropdowns select {
+    padding: 2px; /* Reduce padding for smaller height */
+    font-size: 14px;
+    max-width: 100px;
+    height: 25px; /* Adjust height as needed */
 }
 
 .llm-answer-content1, .llm-answer-content2 {
     text-align: justify;
-    max-height: 15vh; /* Set the max height for the scrollable content */
-    overflow-y: auto; /* Make the content area scrollable */
+    max-height: 15vh;
+    overflow-y: auto;
 }
 
 .ndcg-score {

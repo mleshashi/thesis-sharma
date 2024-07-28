@@ -14,7 +14,7 @@ import os
 with open('credentials.json') as f:
     credentials = json.load(f)
     api_key1 = credentials['gpt-api_key']
-    api_key2 = credentials['llava-api_key']
+    api_key2 = credentials['lama-api_key']
 
 app = Flask(__name__)
 es = Elasticsearch(["http://localhost:9200"])
@@ -34,13 +34,14 @@ model_2 = load_model(mistral)
 tokenizer_4, model_4 = load_clip_model(clip, device)
 
 # Load topics DataFrame globally
-topics_df = pd.read_csv('../dataset/TopRelevant_topics1.csv')
+topics_df = pd.read_csv('../dataset/Touche2.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
 # In-memory storage for scores and search results
 search_results = {}
 scores_storage = {}
 llm_inputs = {}
+llm_answers = {}
 
 @app.route('/')
 def index():
@@ -166,7 +167,18 @@ def retrieve_results():
 
 @app.route('/save-annotations', methods=['POST'])
 def save_annotations():
-    annotations = request.json
+    data  = request.json
+    # Extract annotator details
+    annotator_name = data.get('annotatorName')
+    annotator_url = data.get('annotatorUrl')
+    annotations = data.get('annotations', [])
+
+    # Store the annotator details separately
+    search_results['annotator_details'] = {
+        "annotator_name": annotator_name,
+        "annotator_url": annotator_url,
+        "affiliated": "Bauhaus-Universität Weimar"
+    }
 
     for model_key, documents in search_results.items():
         for doc in documents:
@@ -359,7 +371,7 @@ def prepare_llm_input():
     
     # Store the payloads in llm_inputs
     llm_inputs['gpt'] = payload1
-    llm_inputs['llava'] = payload2
+    llm_inputs['lama'] = payload2
 
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
@@ -386,24 +398,27 @@ def generate_llm_answer():
     
     # Get the inputs for both APIs
     input_gpt = llm_inputs.get('gpt', {})
-    input_llava = llm_inputs.get('llava', {})
+    input_lama = llm_inputs.get('lama', {})
 
     response1 = requests.post("https://api.openai.com/v1/chat/completions", headers=headers1, json=input_gpt)
-    response2 = requests.post("https://api.deepinfra.com/v1/openai/chat/completions", headers=headers2, json=input_llava)
+    response2 = requests.post("https://api.deepinfra.com/v1/openai/chat/completions", headers=headers2, json=input_lama)
     
     # Parse the responses
     answer_gpt = response1.json()
-    answer_llava = response2.json()
+    answer_lama = response2.json()
 
     # Store the generated answers in scores_storage
-    scores_storage['gpt_llm_answer'] = answer_gpt
-    scores_storage['llava_llm_answer'] = answer_llava
+    llm_answers['gpt_llm_answer'] = answer_gpt
+    llm_answers['lama_llm_answer'] = answer_lama
 
     return jsonify({
         "gpt_answer": answer_gpt,
-        "llava_answer": answer_llava
+        "lama_answer": answer_lama
     })
 
+@app.route('/retrieve-llm-answers', methods=['GET'])
+def retrieve_llm_answers():
+    return jsonify(llm_answers)
 
 @app.route('/save-query', methods=['POST'])
 def save_query():

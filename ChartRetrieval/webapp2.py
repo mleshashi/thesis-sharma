@@ -41,6 +41,7 @@ Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 search_results = {}
 scores_storage = {}
 llm_inputs = {}
+llm_answers = {}
 
 @app.route('/')
 def index():

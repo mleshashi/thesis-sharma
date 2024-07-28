@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(() => {
                 // Retrieve scores including the generated LLM answers
-                return fetch('/retrieve-scores');
+                return fetch('/retrieve-llm-answers');
             })
             .then(response => response.json())
             .then(scores => {
@@ -163,24 +163,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 const finalAnswerContent2 = document.querySelector('.llm-answer-content2');
     
                 const gptAnswer = scores.gpt_llm_answer;
-                const llavaAnswer = scores.llava_llm_answer;
+                const lamaAnswer = scores.lama_llm_answer;
     
-                // Display GPT answer
-                if (gptAnswer && gptAnswer.choices && gptAnswer.choices.length > 0 && gptAnswer.choices[0].message) {
-                    const markdownContent1 = gptAnswer.choices[0].message.content;
-                    const htmlContent1 = marked.parse(markdownContent1); // Use marked.parse to convert Markdown to HTML
-                    finalAnswerContent1.innerHTML = htmlContent1; // Display the HTML content
-                } else {
-                    finalAnswerContent1.innerHTML = "No valid response received from GPT.";
-                }
+                // Randomly decide the order of answers
+                const placeGPTFirst = Math.random() < 0.5;
     
-                // Display LLava answer
-                if (llavaAnswer && llavaAnswer.choices && llavaAnswer.choices.length > 0 && llavaAnswer.choices[0].message) {
-                    const markdownContent2 = llavaAnswer.choices[0].message.content;
-                    const htmlContent2 = marked.parse(markdownContent2); // Use marked.parse to convert Markdown to HTML
-                    finalAnswerContent2.innerHTML = htmlContent2; // Display the HTML content
+                // Function to render the content in HTML
+                const renderAnswer = (answer, container) => {
+                    if (answer && answer.choices && answer.choices.length > 0 && answer.choices[0].message) {
+                        const markdownContent = answer.choices[0].message.content;
+                        const htmlContent = marked.parse(markdownContent); // Use marked.parse to convert Markdown to HTML
+                        container.innerHTML = htmlContent; // Display the HTML content
+                    } else {
+                        container.innerHTML = "No valid response received.";
+                    }
+                };
+    
+                // Place GPT and Lama answers based on the random decision
+                if (placeGPTFirst) {
+                    renderAnswer(gptAnswer, finalAnswerContent1);
+                    renderAnswer(lamaAnswer, finalAnswerContent2);
                 } else {
-                    finalAnswerContent2.innerHTML = "No valid response received from LLava.";
+                    renderAnswer(lamaAnswer, finalAnswerContent1);
+                    renderAnswer(gptAnswer, finalAnswerContent2);
                 }
     
                 // Show the answers container
@@ -189,10 +194,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 console.error('Error:', error);
                 const finalAnswerContent1 = document.querySelector('.llm-answer-content1');
+                const finalAnswerContent2 = document.querySelector('.llm-answer-content2');
                 finalAnswerContent1.innerHTML = `An error occurred while generating the answer: ${error.message}`;
-                finalAnswerContent1.classList.remove('hidden'); // Show the error message
+                finalAnswerContent2.innerHTML = `An error occurred while generating the answer: ${error.message}`;
+                document.querySelector('.llm-answer-info-container').classList.remove('hidden'); // Show the error message
             });
     };
+    
 
     // Event listener for the save button
     document.getElementById('save').onclick = function () {
