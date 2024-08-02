@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Automatically hide the modal after 1 minute
         setTimeout(() => {
             loadingModal.classList.add('hidden');
-        }, 2000);
+        }, 60000);
     
         clearExistingModal();
         clearLLMAnswerContent();

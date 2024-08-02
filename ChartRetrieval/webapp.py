@@ -100,7 +100,7 @@ def search():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'llava_content_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_3}
             }
         }
@@ -111,7 +111,7 @@ def search():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'clip_embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'image_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_4}
             }
         }
