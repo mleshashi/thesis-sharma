@@ -96,10 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            //displayResults(data.model_1_documents, 'model1-results');
-            //displayResults(data.model_2_documents, 'model2-results');
-            //displayResults(data.model_3_documents, 'model3-results');
-            //displayResults(data.model_4_documents, 'model4-results');
 
             // Show the answer info container with titles
             answerInfoContainer.style.display = 'flex';

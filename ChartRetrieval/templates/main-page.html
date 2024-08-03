@@ -31,22 +31,25 @@
     <div id="results-container">
         <div class="results-panel">
             <h2>BM25</h2>
-            <div id="model1-results"></div> <!-- Placeholder for NDCG SCORE -->
+            <div id="model1-results"></div> 
         </div>
         <div class="results-panel">
             <h2>Mistral</h2>
-            <div id="model2-results"></div> <!-- Placeholder for NDCG SCORE -->
+            <div id="model2-results"></div> 
         </div>
         <div class="results-panel">
             <h2>GTE-QWEN2</h2>
-            <div id="model3-results"></div> <!-- Placeholder for NDCG SCORE -->
+            <div id="model3-results"></div> 
         </div>
         <div class="results-panel">
             <h2>CLIP</h2>
-            <div id="model4-results"></div> <!-- Placeholder for NDCG SCORE -->
+            <div id="model4-results"></div>
         </div>
     </div>
     <hr> <!-- Add horizontal line after results-container -->
+    <div id="top-documents-title-container">
+        <h2 id="top-documents-title">Top Charts with Title and Content:</h2>
+    </div>
     <div id="top-documents-container"></div>
     <div class="llm-answer-info-container hidden">
         <div class="llm-answer1">
@@ -55,17 +58,17 @@
                 <div class="annotation-dropdowns">
                     <select class="relevance-dropdown">
                         <option value="" disabled selected>Relevance</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                        <option value="0">0 (No)</option>
+                        <option value="1">1 (Partially Relevant)</option>
+                        <option value="2">2 (Relevant)</option>
+                        <option value="3">3 (Highly Relevant)</option>
                     </select>
                     <select class="faithfulness-dropdown">
                         <option value="" disabled selected>Faithfulness</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                        <option value="0">0 (No)</option>
+                        <option value="1">1 (Somewhat)</option>
+                        <option value="2">2 (Mostly)</option>
+                        <option value="3">3 (Yes)</option>
                     </select>
                 </div>
             </h3>
@@ -76,19 +79,19 @@
                 Final Answer 2
                 <div class="annotation-dropdowns">
                     <select id="relevance1" class="relevance-dropdown">
-                        <option value="">Relevance</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                        <option value="" disabled selected>Relevance</option>
+                        <option value="0">0 (No)</option>
+                        <option value="1">1 (Partially Relevant)</option>
+                        <option value="2">2 (Relevant)</option>
+                        <option value="3">3 (Highly Relevant)</option>
                     </select>
     
                     <select id="faithfulness1" class="faithfulness-dropdown">
-                        <option value="">Faithfulness</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                        <option value="" disabled selected>Faithfulness</option>
+                        <option value="0">0 (No)</option>
+                        <option value="1">1 (Somewhat)</option>
+                        <option value="2">2 (Mostly)</option>
+                        <option value="3">3 (Yes)</option>
                     </select>
                 </div>
             </h3>
