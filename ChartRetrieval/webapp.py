@@ -42,6 +42,7 @@ search_results = {}
 scores_storage = {}
 llm_inputs = {}
 llm_answers = {}
+top_documents_storage = {}
 
 @app.route('/')
 def index():
@@ -373,12 +374,19 @@ def prepare_llm_input():
     llm_inputs['gpt'] = payload1
     llm_inputs['lama'] = payload2
 
+    # Store the top documents in a separate storage
+    top_documents_storage['top_documents'] = top_documents[:top_n]
+
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
 
 @app.route('/retrieve-llm-input', methods=['GET'])
 def retrieve_llm_input():
     return jsonify(llm_inputs)
+
+@app.route('/retrieve-top-documents', methods=['GET'])
+def retrieve_top_documents():
+    return jsonify(top_documents_storage)
 
 
 @app.route('/generate-llm-answer', methods=['POST'])

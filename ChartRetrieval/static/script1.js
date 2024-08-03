@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            displayResults(data.model_1_documents, 'model1-results');
-            displayResults(data.model_2_documents, 'model2-results');
-            displayResults(data.model_3_documents, 'model3-results');
-            displayResults(data.model_4_documents, 'model4-results');
+            //displayResults(data.model_1_documents, 'model1-results');
+            //displayResults(data.model_2_documents, 'model2-results');
+            //displayResults(data.model_3_documents, 'model3-results');
+            //displayResults(data.model_4_documents, 'model4-results');
 
             // Show the answer info container with titles
             answerInfoContainer.style.display = 'flex';
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Automatically hide the modal after 1 minute
         setTimeout(() => {
             loadingModal.classList.add('hidden');
-        }, 60000);
+        }, 1000);
     
         clearExistingModal();
         clearLLMAnswerContent();
@@ -143,6 +143,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.message !== "LLM input prepared and stored successfully") {
                     throw new Error("Failed to prepare LLM input.");
                 }
+    
+                // Retrieve the top documents
+                return fetch('/retrieve-top-documents');
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayTopDocuments(data.top_documents);
+    
                 // Generate the LLM answers
                 return fetch('/generate-llm-answer', {
                     method: 'POST',
@@ -200,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('.llm-answer-info-container').classList.remove('hidden'); // Show the error message
             });
     };
-    
 
     // Event listener for the save button
     document.getElementById('save').onclick = function () {
@@ -248,33 +255,35 @@ document.addEventListener('DOMContentLoaded', function () {
         additionalInfoContainer.closest('.llm-answer2').style.display = 'none';
     }
 
-    function displayResults(documents, elementId) {
-        const container = document.getElementById(elementId);
-        container.innerHTML = '';
+    function displayTopDocuments(documents) {
+        const topDocumentsContainer = document.getElementById('top-documents-container');
+        topDocumentsContainer.innerHTML = '';
+    
         documents.forEach((doc, index) => {
-            setTimeout(() => {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <div class="document-info">
-                        <strong>Title:</strong> <span class="doc-title">${doc.title}</span><br>
-                        <strong>Content:</strong> <span class="doc-content">${doc.content}</span><br>
-                    </div>
-                    <div class="relevant-score-container">
-                        <div class="relevant-score-left">
-                            <div class="relevant-score-row">
-                                <strong>Score:</strong> <span class="score">${doc.score}</span>
-                            </div>
+            const div = document.createElement('div');
+            div.classList.add('top-document');
+            if (documents.length === 1) {
+                div.classList.add('single');
+            }
+            div.innerHTML = `
+                <div class="document-info">
+                    <strong>Title:</strong> <span class="doc-title">${doc.title}</span><br>
+                    <strong>Content:</strong> <span class="doc-content">${doc.content}</span><br>
+                </div>
+                <div class="relevant-score-container">
+                    <div class="relevant-score-left">
+                        <div class="relevant-score-row">
+                            <strong>Score:</strong> <span class="score">${doc.score}</span>
                         </div>
-                        <div class="relevant-score-right">
-                            <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
-                        </div>
                     </div>
-                    <hr><br>`; // Add horizontal line here
-                container.appendChild(div);
-            }, index * 400);
+                    <div class="relevant-score-right">
+                        <img src="data:image/jpeg;base64,${doc.image_data}" class="compact-image" onclick="enlargeImage(this)">
+                    </div>
+                </div>`;
+            topDocumentsContainer.appendChild(div);
         });
     }
-
+    
     window.enlargeImage = function(img) {
         const modal = document.createElement('div');
         modal.classList.add('modal');
@@ -358,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     };
+
 
     document.getElementById('evaluateButton').onclick = function() {
         clearLLMAnswerContent(); // Call the function to clear only the LLM answer content
