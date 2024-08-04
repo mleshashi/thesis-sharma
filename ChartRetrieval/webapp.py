@@ -30,8 +30,8 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 tokenizer_1, model_1 = load_clip_model(clip, device)
 tokenizer_2 = load_tokenizer(mistral)
 model_2 = load_model(mistral)
-#tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
-#model_3 = load_model(Qwen2, trust_remote_code=True)
+tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
+model_3 = load_model(Qwen2, trust_remote_code=True)
 
 # Load topics DataFrame globally
 topics_df = pd.read_csv('../dataset/Touche2.csv')
@@ -73,7 +73,7 @@ def search():
     # Get embeddings for all models
     topic_embedding_1 = get_text_features(topic, tokenizer_1, model_1, device)
     topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
-    topic_embedding_3 = embed_texts(query, tokenizer_2, model_2, device)
+    topic_embedding_3 = embed_texts(query, tokenizer_3, model_3, device)
 
     # Elasticsearch BM25 query using multi_match for content and title
     script_query_1 = {
@@ -137,7 +137,7 @@ def search():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
+                "source": "cosineSimilarity(params.query_vector, 'gte_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_3}
             }
         }
