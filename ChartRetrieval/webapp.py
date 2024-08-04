@@ -44,6 +44,7 @@ llm_inputs = {}
 llm_answers = {}
 top_documents_storage = {}
 metric_metadata = {} # Store metadata for the metrics
+old_data = None  # Initialize old_data globally
 
 @app.route('/')
 def index():
@@ -280,11 +281,19 @@ def prepare_llm_input():
     if not ndcg_scores:
         return jsonify({"error": f"No NDCG scores found for NDCG@{ndcg_value}"}), 404
     
-    # Extract the top model name, hgighest NDCG score
-    top_model = max(ndcg_scores, key=ndcg_scores.get).replace(ndcg_key, '')
-    highest_ndcg_score = ndcg_scores[top_model + ndcg_key]
+    # Sort the NDCG scores to get the top and second top models
+    sorted_ndcg_scores = sorted(ndcg_scores.items(), key=lambda item: item[1], reverse=True)
+    
+    top_model, highest_ndcg_score = sorted_ndcg_scores[0]
+    top_model = top_model.replace(ndcg_key, '')
     top_model_name = top_model.replace('_documents', '')
+    
+    second_top_model, second_highest_ndcg_score = sorted_ndcg_scores[1]
+    second_top_model = second_top_model.replace(ndcg_key, '')
+    second_top_model_name = second_top_model.replace('_documents', '')
+    
     print(ndcg_key, top_model_name, highest_ndcg_score)
+    print(ndcg_key, second_top_model_name, second_highest_ndcg_score)
 
     # Extract the top-ranked documents from the top NDCG model
     top_documents_key = top_model.replace(ndcg_key, '_documents')
@@ -381,6 +390,8 @@ def prepare_llm_input():
     metric_metadata['ndcg_metric'] = ndcg_key
     metric_metadata['top_model'] = top_model_name
     metric_metadata['highest_ndcg_score'] = highest_ndcg_score
+    metric_metadata['second_top_model'] = second_top_model_name
+    metric_metadata['second_highest_ndcg_score'] = second_highest_ndcg_score
 
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
@@ -455,19 +466,24 @@ os.makedirs('../dataset/annotations', exist_ok=True)
 
 @app.route('/save-query', methods=['POST'])
 def save_query():
+    # Use the global old_data to persist it across requests
+    global old_data  
+
     # Retrieve the necessary data from the in-memory storage
     query = scores_storage.get('query', 'No Query Found')
     ndcg_metric = metric_metadata.get('ndcg_metric', 'No Metric Found')
     top_model = metric_metadata.get('top_model', 'No Model Found')
     highest_ndcg_score = metric_metadata.get('highest_ndcg_score', 'No Score Found')
+    second_top_model = metric_metadata.get('second_top_model', 'No Model Found')
+    second_highest_ndcg_score = metric_metadata.get('second_highest_ndcg_score', 'No Score Found')
 
-    gpt_answer = llm_answers.get('gpt_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found')
-    relevance_score_gpt = llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('relevance', 'No Relevance Found')
-    faithfulness_gpt = llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('faithfulness', 'No Faithfulness Found')
+    gpt_answer = llm_answers.get('gpt_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found').replace('\n', ' ').replace('\r', ' ')
+    relevance_score_gpt = int(llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('relevance'))
+    faithfulness_gpt = int(llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('faithfulness'))
     
-    lama_answer = llm_answers.get('lama_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found')
-    relevance_score_lama = llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('relevance', 'No Relevance Found')
-    faithfulness_lama = llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness', 'No Faithfulness Found')
+    lama_answer = llm_answers.get('lama_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found').replace('\n', ' ').replace('\r', ' ')
+    relevance_score_lama = int(llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('relevance'))
+    faithfulness_lama = int(llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness'))
 
     annotator_name = metric_metadata.get('annotator_name', 'No Annotator Found')
 
@@ -492,6 +508,8 @@ def save_query():
         'ndcg_metric': ndcg_metric,
         'top_model': top_model,
         'highest_ndcg_score': highest_ndcg_score,
+        'second_top_model': second_top_model,
+        'second_highest_ndcg_score': second_highest_ndcg_score,
         'final_answer_gpt': gpt_answer,
         'relevance_gpt': relevance_score_gpt,
         'faithfulness_gpt': faithfulness_gpt,
@@ -510,13 +528,14 @@ def save_query():
     else:
         df.to_csv(csv_file_path, mode='w', header=True, index=False)
 
+
     # Save scores_storage as a separate JSON file with the filename as the query
     safe_query = "".join([c if c.isalnum() else "_" for c in query])  # Ensure the filename is safe
     json_file_path = f'../dataset/annotations/{safe_query}.json'
     with open(json_file_path, 'w') as json_file:
         json.dump(scores_storage, json_file, indent=4)
 
-    return jsonify({"message": "Query saved successfully"})
+    return jsonify({"message": "Query saved successfully."})
 
 
 if __name__ == '__main__':
