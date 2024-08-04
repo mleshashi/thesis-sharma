@@ -173,11 +173,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const placeGPTFirst = Math.random() < 0.5;
     
                 // Function to render the content in HTML
-                const renderAnswer = (answer, container) => {
+                const renderAnswer = (answer, container, answerId) => {
                     if (answer && answer.choices && answer.choices.length > 0 && answer.choices[0].message) {
                         const markdownContent = answer.choices[0].message.content;
                         const htmlContent = marked.parse(markdownContent); // Use marked.parse to convert Markdown to HTML
                         container.innerHTML = htmlContent; // Display the HTML content
+                        container.setAttribute('data-answer-id', answerId); // Set data-answer-id
                     } else {
                         container.innerHTML = "No valid response received.";
                     }
@@ -185,11 +186,11 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Place GPT and Lama answers based on the random decision
                 if (placeGPTFirst) {
-                    renderAnswer(gptAnswer, finalAnswerContent1);
-                    renderAnswer(lamaAnswer, finalAnswerContent2);
+                    renderAnswer(gptAnswer, finalAnswerContent1, 'gpt_llm_answer');
+                    renderAnswer(lamaAnswer, finalAnswerContent2, 'lama_llm_answer');
                 } else {
-                    renderAnswer(lamaAnswer, finalAnswerContent1);
-                    renderAnswer(gptAnswer, finalAnswerContent2);
+                    renderAnswer(lamaAnswer, finalAnswerContent1, 'lama_llm_answer');
+                    renderAnswer(gptAnswer, finalAnswerContent2, 'gpt_llm_answer');
                 }
     
                 // Show the answers container
@@ -204,21 +205,63 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('.llm-answer-info-container').classList.remove('hidden'); // Show the error message
             });
     };
+    
 
-    // Event listener for the save button
     document.getElementById('save').onclick = function () {
-        fetch('/save-query', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
+        // Collect annotation values for Final Answer 1
+        const relevance1 = document.querySelector('.llm-answer1 .relevance-dropdown').value;
+        const faithfulness1 = document.querySelector('.llm-answer1 .faithfulness-dropdown').value;
+        const answerId1 = document.querySelector('.llm-answer-content1').getAttribute('data-answer-id');
+    
+        // Collect annotation values for Final Answer 2
+        const relevance2 = document.querySelector('.llm-answer2 .relevance-dropdown').value;
+        const faithfulness2 = document.querySelector('.llm-answer2 .faithfulness-dropdown').value;
+        const answerId2 = document.querySelector('.llm-answer-content2').getAttribute('data-answer-id');
+    
+        // Retrieve the LLM answers
+        fetch('/retrieve-llm-answers')
+            .then(response => response.json())
+            .then(scores => {
+                // Add annotations to the LLM answers based on the stored order
+                if (scores[answerId1]) {
+                    scores[answerId1].annotation = {
+                        relevance: relevance1,
+                        faithfulness: faithfulness1
+                    };
+                }
+                if (scores[answerId2]) {
+                    scores[answerId2].annotation = {
+                        relevance: relevance2,
+                        faithfulness: faithfulness2
+                    };
+                }
+    
+                // Send updated LLM answers back to the server
+                return fetch('/save-llm-answers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(scores)
+                });
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Annotations saved successfully:', data);
+            // Save the query and other relevant data
+            return fetch('/save-query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            });
         })
         .then(response => response.json())
         .then(data => {
             console.log('Query saved successfully:', data);
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error saving data:', error));
     };
 
     function clearResults() {
@@ -417,10 +460,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         // Insert the NDCG scores for each model
-        document.getElementById('model1-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_1_documents', 'Model 1'));
-        document.getElementById('model2-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_2_documents', 'Model 2'));
-        document.getElementById('model3-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_3_documents', 'Model 3'));
-        document.getElementById('model4-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('model_4_documents', 'Model 4'));
+        document.getElementById('model1-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('BM25_documents', 'Model 1'));
+        document.getElementById('model2-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Mistral_documents', 'Model 2'));
+        document.getElementById('model3-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Qwen2_documents', 'Model 3'));
+        document.getElementById('model4-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Clip_documents', 'Model 4'));
     }
 
 });

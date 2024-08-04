@@ -9,6 +9,7 @@ from evaluation import ndcg_at_k
 import json
 import requests
 import os
+from openpyxl import load_workbook
 
 # Load the API key from credentials.json
 with open('credentials.json') as f:
@@ -43,6 +44,7 @@ scores_storage = {}
 llm_inputs = {}
 llm_answers = {}
 top_documents_storage = {}
+metric_metadata = {} # Store metadata for the metrics
 
 @app.route('/')
 def index():
@@ -154,10 +156,10 @@ def search():
     # Store results in memory without the "latest" wrapper
     search_results.update({
         "query": topic,
-        "model_1_documents": documents_1,
-        "model_2_documents": documents_2,
-        "model_3_documents": documents_3,
-        "model_4_documents": documents_4
+        "BM25_documents": documents_1,
+        "Mistral_documents": documents_2,
+        "Qwen2_documents": documents_3,
+        "Clip_documents": documents_4
     })
     
     return jsonify(search_results)
@@ -278,7 +280,11 @@ def prepare_llm_input():
     if not ndcg_scores:
         return jsonify({"error": f"No NDCG scores found for NDCG@{ndcg_value}"}), 404
     
+    # Extract the top model name, hgighest NDCG score
     top_model = max(ndcg_scores, key=ndcg_scores.get).replace(ndcg_key, '')
+    highest_ndcg_score = ndcg_scores[top_model + ndcg_key]
+    top_model_name = top_model.replace('_documents', '')
+    print(ndcg_key, top_model_name, highest_ndcg_score)
 
     # Extract the top-ranked documents from the top NDCG model
     top_documents_key = top_model.replace(ndcg_key, '_documents')
@@ -364,18 +370,17 @@ def prepare_llm_input():
         "max_tokens": 1000
     }
     
-     # Print the payloads to check the order
-    llm_input1 = json.dumps(payload1, indent=1)
-    llm_input2 = json.dumps(payload2, indent=1)
-    print(llm_input1)
-    print(llm_input2)
-    
     # Store the payloads in llm_inputs
     llm_inputs['gpt'] = payload1
     llm_inputs['lama'] = payload2
 
     # Store the top documents in a separate storage
     top_documents_storage['top_documents'] = top_documents[:top_n]
+
+    # Store the NDCG metric, top model, and highest NDCG score in metadata 
+    metric_metadata['ndcg_metric'] = ndcg_key
+    metric_metadata['top_model'] = top_model_name
+    metric_metadata['highest_ndcg_score'] = highest_ndcg_score
 
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
@@ -428,24 +433,49 @@ def generate_llm_answer():
 def retrieve_llm_answers():
     return jsonify(llm_answers)
 
+@app.route('/save-llm-answers', methods=['POST'])
+def save_llm_answers():
+    scores = request.json
+
+    # Update the global llm_answers with the received data
+    for key, value in scores.items():
+        if key in llm_answers:
+            llm_answers[key]['annotation'] = value.get('annotation', {})
+        else:
+            llm_answers[key] = value
+
+    # Optionally, persist llm_answers to a file or database
+    with open('llm_answers_with_annotations.json', 'w') as f:
+        json.dump(llm_answers, f)
+
+    return jsonify({"message": "LLM answers and annotations saved successfully"})
+
 @app.route('/save-query', methods=['POST'])
 def save_query():
     # Retrieve the necessary data from the in-memory storage
     query = scores_storage.get('query', 'No Query Found')
-    ndcg_scores = {key: value for key, value in scores_storage.items() if key.endswith('_ndcg')}
-    top_model = max(ndcg_scores, key=ndcg_scores.get).replace('_ndcg', '')
-    highest_ndcg_score = ndcg_scores[top_model + '_ndcg']
-    final_answer = scores_storage.get('llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found')
+    ndcg_metric = metric_metadata.get('ndcg_metric', 'No Metric Found')
+    top_model = metric_metadata.get('top_model', 'No Model Found')
+    highest_ndcg_score = metric_metadata.get('highest_ndcg_score', 'No Score Found')
 
-    # Define the path to the CSV file
-    csv_file_path = 'queries.csv'
+    gpt_answer = llm_answers.get('gpt_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found')
+    relevance_score_gpt = llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('relevance', 'No Relevance Found')
+    faithfulness_gpt = llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('faithfulness', 'No Faithfulness Found')
+    
+    lama_answer = llm_answers.get('lama_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found')
+    relevance_score_lama = llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('relevance', 'No Relevance Found')
+    faithfulness_lama = llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness', 'No Faithfulness Found')
+
+
+    # Define the path to the Excel file
+    excel_file_path = 'results.xlsx'
 
     # Check if the CSV file exists
-    file_exists = os.path.isfile(csv_file_path)
+    file_exists = os.path.isfile(excel_file_path)
 
     # Determine the next SL number
     if file_exists:
-        existing_df = pd.read_csv(csv_file_path)
+        existing_df = pd.read_csv(excel_file_path)
         next_sl_number = existing_df.shape[0] + 1
     else:
         next_sl_number = 1
@@ -454,19 +484,35 @@ def save_query():
     data = {
         'SL': next_sl_number,
         'query': query,
+        'ndcg_metric': ndcg_metric,
         'top_model': top_model,
         'highest_ndcg_score': highest_ndcg_score,
-        'final_answer': final_answer
+        'final_answer_gpt': gpt_answer,
+        'relevance_gpt': relevance_score_gpt,
+        'faithfulness_gpt': faithfulness_gpt,
+        'final_answer_lama': lama_answer,
+        'relevance_lama': relevance_score_lama,
+        'faithfulness_lama': faithfulness_lama,
+        'scores_storage': json.dumps(scores_storage),  # Convert dictionary to JSON string
+        'llm_answers': json.dumps(llm_answers)  # Convert dictionary to JSON string
     }
 
     # Convert the data to a DataFrame
     df = pd.DataFrame([data])
 
-    # Append the data to the CSV file
+    # Append the data to the Excel file
     if file_exists:
-        df.to_csv(csv_file_path, mode='a', header=False, index=False)
+        # Load existing workbook
+        book = load_workbook(excel_file_path)
+        writer = pd.ExcelWriter(excel_file_path, engine='openpyxl')
+        writer.book = book
+        writer.sheets = {ws.title: ws for ws in book.worksheets}
+        reader = pd.read_excel(excel_file_path)
+        df.to_excel(writer, index=False, header=False, startrow=len(reader) + 1)
+        writer.close()
     else:
-        df.to_csv(csv_file_path, mode='w', header=True, index=False)
+        # Create a new workbook and write the data
+        df.to_excel(excel_file_path, index=False, header=True)
 
     return jsonify({"message": "Query saved successfully"})
 

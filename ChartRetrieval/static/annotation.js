@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Combine all documents into one array
             const allDocuments = [
-                ...searchResults.model_1_documents,
-                ...searchResults.model_2_documents,
-                ...searchResults.model_3_documents,
-                ...searchResults.model_4_documents
+                ...searchResults.BM25_documents,
+                ...searchResults.Mistral_documents,
+                ...searchResults.Qwen2_documents,
+                ...searchResults.Clip_documents
             ];
 
             // Remove duplicate documents
