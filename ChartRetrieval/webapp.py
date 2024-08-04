@@ -80,7 +80,7 @@ def search():
         "query": {
             "multi_match": {
                 "query": topic,
-                "fields": ["content", "title"],
+                "fields": ["title", "content"],
                 "type": "best_fields",
                 "tie_breaker": 0.3
             }

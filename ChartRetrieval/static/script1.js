@@ -83,10 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTopDocuments();
     };
 
-    document.getElementById('search').onclick = function () {
+    function performSearch() {
         const isDropdownVisible = topicDropdown.style.display !== 'none';
         topic = isDropdownVisible ? topicDropdown.value : inputField.value;
-    
+
         fetch('/search', {
             method: 'POST',
             headers: {
@@ -96,32 +96,35 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-
-            // Show the answer info container with titles
             answerInfoContainer.style.display = 'flex';
             finalAnswer1.style.display = 'block';
             finalAnswer2.style.display = 'block';
 
-            // Open a new HTML page in a new tab
-            const annotationURL = '/annotation'; // The URL of the new page
+            const annotationURL = '/annotation';
             window.open(annotationURL, '_blank');
         })
         .catch(error => {
             console.error('Error:', error);
         });
 
-        // Show the modal overlay
         loadingModal.classList.remove('hidden');
 
-        // Automatically hide the modal after 1 minute
         setTimeout(() => {
             loadingModal.classList.add('hidden');
         }, 1000);
-    
+
         clearExistingModal();
         clearLLMAnswers();
         clearTopDocuments();
-    };
+    }
+
+    document.getElementById('search').onclick = performSearch;
+
+    inputField.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
+    });
 
     document.getElementById('generateAnswers').onclick = function () {
 
