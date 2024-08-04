@@ -487,9 +487,11 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Insert the NDCG scores for each model
         document.getElementById('model1-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('BM25_documents', 'Model 1'));
-        document.getElementById('model2-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Mistral_documents', 'Model 2'));
-        document.getElementById('model3-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Qwen2_documents', 'Model 3'));
-        document.getElementById('model4-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Clip_documents', 'Model 4'));
+        document.getElementById('model2-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('BM25-llava_documents', 'Model 2'));
+        document.getElementById('model3-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Clip_documents', 'Model 3'));
+        document.getElementById('model4-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Mistral_documents', 'Model 4'));
+        document.getElementById('model5-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Mistral-llava_documents', 'Model 5'));
+        document.getElementById('model6-results').insertAdjacentHTML('beforeend', createNDCGScoreHTML('Qwen2_documents', 'Model 6'));
     }
 
 });

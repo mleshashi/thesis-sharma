@@ -12,9 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Combine all documents into one array
             const allDocuments = [
                 ...searchResults.BM25_documents,
+                ...searchResults['BM25-llava_documents'],
+                ...searchResults.Clip_documents,
                 ...searchResults.Mistral_documents,
-                ...searchResults.Qwen2_documents,
-                ...searchResults.Clip_documents
+                ...searchResults['Mistral-llava_documents'],
+                ...searchResults.Qwen2_documents
             ];
 
             // Remove duplicate documents

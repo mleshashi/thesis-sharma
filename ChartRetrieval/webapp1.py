@@ -27,11 +27,11 @@ clip = 'openai/clip-vit-large-patch14'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-tokenizer_1, model_1 = load_clip_model(clip, device)
 tokenizer_2 = load_tokenizer(mistral)
 model_2 = load_model(mistral)
 #tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
 #model_3 = load_model(Qwen2, trust_remote_code=True)
+tokenizer_4, model_4 = load_clip_model(clip, device)
 
 # Load topics DataFrame globally
 topics_df = pd.read_csv('../dataset/Touche2.csv')
@@ -71,9 +71,9 @@ def search():
     query = get_detailed_instruct(task, topic)
     
     # Get embeddings for all models
-    topic_embedding_1 = get_text_features(topic, tokenizer_1, model_1, device)
     topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
     topic_embedding_3 = embed_texts(query, tokenizer_2, model_2, device)
+    topic_embedding_4 = get_text_features(topic, tokenizer_4, model_4, device)
 
     # Elasticsearch BM25 query using multi_match for content and title
     script_query_1 = {
@@ -86,32 +86,9 @@ def search():
             }
         }
     }
-
-    # Elasticsearch BM25 query using multi_match for lava content and title
-    script_query_2 = {
-        "query": {
-            "multi_match": {
-                "query": topic,
-                "fields": ["title", "lava_content"],
-                "type": "best_fields",
-                "tie_breaker": 0.3
-            }
-        }
-    }
-
-    # Elasticsearch query using clip model on the image embeddings
-    script_query_3 = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'image_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding_1}
-            }
-        }
-    }
     
     # Elasticsearch query for the first model
-    script_query_4 = {
+    script_query_2 = {
         "script_score": {
             "query": {"match_all": {}},
             "script": {
@@ -122,66 +99,52 @@ def search():
     }
 
     # Elasticsearch query for the second model
-    script_query_5 = {
+    script_query_3 = {
         "script_score": {
             "query": {"match_all": {}},
             "script": {
                 "source": "cosineSimilarity(params.query_vector, 'llava_content_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding_2}
-            }
-        }
-    }
-
-    # Elasticsearch query for the third model
-    script_query_6 = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
                 "params": {"query_vector": topic_embedding_3}
             }
         }
     }
 
-    # Get results for the first model ie. BM25 on title and content
+    # Elasticsearch query for the third model
+    script_query_4 = {
+        "script_score": {
+            "query": {"match_all": {}},
+            "script": {
+                "source": "cosineSimilarity(params.query_vector, 'image_embedding') + 1.0",
+                "params": {"query_vector": topic_embedding_4}
+            }
+        }
+    }
+
+    # Get results for the first model ie. BM25
     response_1 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_1["query"],
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the second model ie. BM25 on title and llava content
+    # Get results for the mistral model
     response_2 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_2["query"],
+        "query": script_query_2,
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the clip model on the image embeddings
+    # Get results for the qwen-2 model
     response_3 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_3,
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the mistral model on the title and content embeddings
+    # Get results for the clip model
     response_4 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_4,
-        "_source": ["title", "content", "image_data"]
-    })
-
-    # Get results for the mistral model on the title and llava content embeddings
-    response_5 = es.search(index=index_name, body={
-        "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_5,
-        "_source": ["title", "content", "image_data"]
-    })
-        
-    # Get results for the qwen-2 model on the title and content embeddings
-    response_6 = es.search(index=index_name, body={
-        "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_6,
         "_source": ["title", "content", "image_data"]
     })
 
@@ -189,18 +152,14 @@ def search():
     documents_2 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_2['hits']['hits']]
     documents_3 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_3['hits']['hits']]
     documents_4 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_4['hits']['hits']]
-    documents_5 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_5['hits']['hits']]
-    documents_6 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_6['hits']['hits']]
     
     # Store results in memory without the "latest" wrapper
     search_results.update({
         "query": topic,
         "BM25_documents": documents_1,
-        "BM25-llava_documents": documents_2,
-        "Clip_documents": documents_3,
-        "Mistral_documents": documents_4,
-        "Mistral-llava_documents": documents_5,
-        "Qwen2_documents": documents_6
+        "Mistral_documents": documents_2,
+        "Qwen2_documents": documents_3,
+        "Clip_documents": documents_4
     })
     
     return jsonify(search_results)
