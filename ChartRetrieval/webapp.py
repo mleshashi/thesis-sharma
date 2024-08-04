@@ -9,7 +9,6 @@ from evaluation import ndcg_at_k
 import json
 import requests
 import os
-from openpyxl import load_workbook
 
 # Load the API key from credentials.json
 with open('credentials.json') as f:
@@ -173,15 +172,16 @@ def save_annotations():
     data  = request.json
     # Extract annotator details
     annotator_name = data.get('annotatorName')
-    annotator_url = data.get('annotatorUrl')
     annotations = data.get('annotations', [])
 
     # Store the annotator details separately
     search_results['annotator_details'] = {
         "annotator_name": annotator_name,
-        "annotator_url": annotator_url,
         "affiliated": "Bauhaus-Universität Weimar"
     }
+
+    # save the annotator details in the metric_metadata
+    metric_metadata['annotator_name'] = annotator_name
 
     for model_key, documents in search_results.items():
         for doc in documents:
@@ -450,6 +450,9 @@ def save_llm_answers():
 
     return jsonify({"message": "LLM answers and annotations saved successfully"})
 
+# Ensure the directories exist
+os.makedirs('../dataset/annotations', exist_ok=True)
+
 @app.route('/save-query', methods=['POST'])
 def save_query():
     # Retrieve the necessary data from the in-memory storage
@@ -466,19 +469,21 @@ def save_query():
     relevance_score_lama = llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('relevance', 'No Relevance Found')
     faithfulness_lama = llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness', 'No Faithfulness Found')
 
+    annotator_name = metric_metadata.get('annotator_name', 'No Annotator Found')
 
-    # Define the path to the Excel file
-    excel_file_path = 'results.xlsx'
+    # Define the path to the CSV file
+    csv_file_path  = '../dataset/results/results.csv'
 
     # Check if the CSV file exists
-    file_exists = os.path.isfile(excel_file_path)
+    file_exists = os.path.isfile(csv_file_path )
 
     # Determine the next SL number
     if file_exists:
-        existing_df = pd.read_csv(excel_file_path)
+        existing_df = pd.read_csv(csv_file_path)
         next_sl_number = existing_df.shape[0] + 1
     else:
         next_sl_number = 1
+
 
     # Prepare the data to append
     data = {
@@ -493,28 +498,26 @@ def save_query():
         'final_answer_lama': lama_answer,
         'relevance_lama': relevance_score_lama,
         'faithfulness_lama': faithfulness_lama,
-        'scores_storage': json.dumps(scores_storage),  # Convert dictionary to JSON string
-        'llm_answers': json.dumps(llm_answers)  # Convert dictionary to JSON string
+        'annotator_name': annotator_name
     }
 
     # Convert the data to a DataFrame
     df = pd.DataFrame([data])
 
-    # Append the data to the Excel file
+    # Append the data to the CSV file
     if file_exists:
-        # Load existing workbook
-        book = load_workbook(excel_file_path)
-        writer = pd.ExcelWriter(excel_file_path, engine='openpyxl')
-        writer.book = book
-        writer.sheets = {ws.title: ws for ws in book.worksheets}
-        reader = pd.read_excel(excel_file_path)
-        df.to_excel(writer, index=False, header=False, startrow=len(reader) + 1)
-        writer.close()
+        df.to_csv(csv_file_path, mode='a', header=False, index=False)
     else:
-        # Create a new workbook and write the data
-        df.to_excel(excel_file_path, index=False, header=True)
+        df.to_csv(csv_file_path, mode='w', header=True, index=False)
+
+    # Save scores_storage as a separate JSON file with the filename as the query
+    safe_query = "".join([c if c.isalnum() else "_" for c in query])  # Ensure the filename is safe
+    json_file_path = f'../dataset/annotations/{safe_query}.json'
+    with open(json_file_path, 'w') as json_file:
+        json.dump(scores_storage, json_file, indent=4)
 
     return jsonify({"message": "Query saved successfully"})
+
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

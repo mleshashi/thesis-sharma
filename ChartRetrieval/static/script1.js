@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearResults();
         clearLLMAnswers();
         clearExistingModal();
-        clearAdditionalInfo();
+        clearTopDocuments();
     };
 
     document.getElementById('getManualTopics').onclick = function () {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearResults();
         clearLLMAnswers();
         clearExistingModal();
-        clearAdditionalInfo();
+        clearTopDocuments();
     };
 
     document.getElementById('searchRandomContext').onclick = function () {
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         clearResults();
         clearLLMAnswers();
-        clearAdditionalInfo();
+        clearTopDocuments();
     };
 
     document.getElementById('search').onclick = function () {
@@ -119,10 +119,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 1000);
     
         clearExistingModal();
-        clearLLMAnswerContent();
+        clearLLMAnswers();
+        clearTopDocuments();
     };
 
     document.getElementById('generateAnswers').onclick = function () {
+
+        // Clear the existing LLM answers and top documents
+        clearTopDocuments();
+        clearLLMAnswers();
+
         // Ask for which NDCG value to use (1, 2, or 3)
         const ndcgValue = prompt("Enter which NDCG value to use (1, 2, or 3):", "1");
     
@@ -217,6 +223,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const relevance2 = document.querySelector('.llm-answer2 .relevance-dropdown').value;
         const faithfulness2 = document.querySelector('.llm-answer2 .faithfulness-dropdown').value;
         const answerId2 = document.querySelector('.llm-answer-content2').getAttribute('data-answer-id');
+
+        // Validate the annotations
+        if (!relevance1 || !faithfulness1 || !relevance2 || !faithfulness2) {
+            showMessage('Please complete all annotations before saving.');
+            return;
+        }
     
         // Retrieve the LLM answers
         fetch('/retrieve-llm-answers')
@@ -264,35 +276,45 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => console.error('Error saving data:', error));
     };
 
+    function showMessage(message) {
+        const centeredMessage = document.getElementById('centered-message');
+        centeredMessage.innerText = message;
+        centeredMessage.style.display = 'block';
+        setTimeout(() => {
+            centeredMessage.style.display = 'none';
+        }, 3000);
+    }
+
     function clearResults() {
-        document.getElementById('model1-results').innerHTML = '';
-        document.getElementById('model2-results').innerHTML = '';
-        document.getElementById('model3-results').innerHTML = '';
-        document.getElementById('model4-results').innerHTML = '';
+        ['model1-results', 'model2-results', 'model3-results', 'model4-results'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
     }
-
+    
     function clearLLMAnswers() {
-        document.querySelectorAll('.llm-answer-content1').forEach(el => el.innerHTML = '');
-        document.querySelectorAll('.llm-answer1').forEach(el => el.style.display = 'none');
+        // Clear the content
+        ['.llm-answer-content1', '.llm-answer-content2'].forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.innerHTML = '');
+        });
+    
+        // Reset the relevance and faithfulness dropdowns
+        document.querySelectorAll('.relevance-dropdown, .faithfulness-dropdown').forEach(dropdown => {
+            dropdown.selectedIndex = 0;
+        });
     }
 
-    function clearLLMAnswerContent() {
-        const finalAnswerContent = document.querySelector('.llm-answer-content1');
-        finalAnswerContent.innerHTML = '';
+    function clearTopDocuments() {
+        const topDocumentsContainer = document.getElementById('top-documents-container');
+        topDocumentsContainer.innerHTML = '';
     }
-
+    
     function clearExistingModal() {
         const existingModal = document.querySelector('.modal');
         if (existingModal) {
             document.body.removeChild(existingModal);
         }
     }
-
-    function clearAdditionalInfo() {
-        const additionalInfoContainer = document.querySelector('.llm-answer-content2');
-        additionalInfoContainer.innerHTML = '';
-        additionalInfoContainer.closest('.llm-answer2').style.display = 'none';
-    }
+    
 
     function displayTopDocuments(documents) {
         const topDocumentsContainer = document.getElementById('top-documents-container');
@@ -409,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     document.getElementById('evaluateButton').onclick = function() {
-        clearLLMAnswerContent(); // Call the function to clear only the LLM answer content
+        clearLLMAnswers(); // Call the function to clear only the LLM answer content
     
         // Fetch the search results from /retrieve-results
         fetch('/retrieve-results')

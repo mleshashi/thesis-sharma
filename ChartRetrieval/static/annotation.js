@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('saveAnnotations').onclick = function () {
         // Get annotator details
         const annotatorName = document.getElementById('annotatorName').value;
-        const annotatorUrl = document.getElementById('annotatorUrl').value;
 
         // Get document annotations
         const documents = document.getElementsByClassName('document-info-container');
@@ -108,11 +107,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Check if all annotations are complete
         const allAnnotated = annotations.every(annotation => annotation.relevance !== '' && annotation.completeness !== '');
     
-        if (allAnnotated && annotatorName && annotatorUrl) {
+        if (allAnnotated && annotatorName) {
             // Include annotator details in the data
             const data = {
                 annotatorName,
-                annotatorUrl,
                 annotations
             };
             // If all annotations are complete, save them
