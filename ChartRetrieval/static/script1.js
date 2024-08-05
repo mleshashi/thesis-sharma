@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function clearResults() {
-        ['model1-results', 'model2-results', 'model3-results', 'model4-results'].forEach(id => {
+        ['model1-results', 'model2-results', 'model3-results', 'model4-results', 'model5-results', 'model6-results'].forEach(id => {
             document.getElementById(id).innerHTML = '';
         });
     }

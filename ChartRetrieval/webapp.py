@@ -34,7 +34,7 @@ tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
 model_3 = load_model(Qwen2, trust_remote_code=True)
 
 # Load topics DataFrame globally
-topics_df = pd.read_csv('../dataset/Touche2.csv')
+topics_df = pd.read_csv('../dataset/Touche.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
 # In-memory storage for scores and search results
@@ -332,9 +332,14 @@ def prepare_llm_input():
     second_top_model, second_highest_ndcg_score = sorted_ndcg_scores[1]
     second_top_model = second_top_model.replace(ndcg_key, '')
     second_top_model_name = second_top_model.replace('_documents', '')
+
+    third_top_model, third_highest_ndcg_score = sorted_ndcg_scores[2]
+    third_top_model = third_top_model.replace(ndcg_key, '')
+    third_top_model_name = third_top_model.replace('_documents', '')
     
     print(ndcg_key, top_model_name, highest_ndcg_score)
     print(ndcg_key, second_top_model_name, second_highest_ndcg_score)
+    print(ndcg_key, third_top_model_name, third_highest_ndcg_score)
 
     # Extract the top-ranked documents from the top NDCG model
     top_documents_key = top_model.replace(ndcg_key, '_documents')
@@ -433,6 +438,8 @@ def prepare_llm_input():
     metric_metadata['highest_ndcg_score'] = highest_ndcg_score
     metric_metadata['second_top_model'] = second_top_model_name
     metric_metadata['second_highest_ndcg_score'] = second_highest_ndcg_score
+    metric_metadata['third_top_model'] = third_top_model_name
+    metric_metadata['third_highest_ndcg_score'] = third_highest_ndcg_score
 
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
@@ -517,6 +524,8 @@ def save_query():
     highest_ndcg_score = metric_metadata.get('highest_ndcg_score', 'No Score Found')
     second_top_model = metric_metadata.get('second_top_model', 'No Model Found')
     second_highest_ndcg_score = metric_metadata.get('second_highest_ndcg_score', 'No Score Found')
+    third_top_model = metric_metadata.get('third_top_model', 'No Model Found')
+    third_highest_ndcg_score = metric_metadata.get('third_highest_ndcg_score', 'No Score Found')
 
     gpt_answer = llm_answers.get('gpt_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found').replace('\n', ' ').replace('\r', ' ')
     relevance_score_gpt = int(llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('relevance'))
@@ -527,6 +536,15 @@ def save_query():
     faithfulness_lama = int(llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness'))
 
     annotator_name = metric_metadata.get('annotator_name', 'No Annotator Found')
+
+    # Check if first and second model NDCG scores are the same
+    if highest_ndcg_score == second_highest_ndcg_score and highest_ndcg_score == third_highest_ndcg_score:
+        scores_equal = '1&2&3'
+    elif highest_ndcg_score == second_highest_ndcg_score:
+        scores_equal = '1&2'
+    else:
+        scores_equal = 'None'
+
 
     # Define the path to the CSV file
     csv_file_path  = '../dataset/results/results.csv'
@@ -551,13 +569,16 @@ def save_query():
         'highest_ndcg_score': highest_ndcg_score,
         'second_top_model': second_top_model,
         'second_highest_ndcg_score': second_highest_ndcg_score,
+        'third_top_model': third_top_model,
+        'third_highest_ndcg_score': third_highest_ndcg_score,
         'final_answer_gpt': gpt_answer,
         'relevance_gpt': relevance_score_gpt,
         'faithfulness_gpt': faithfulness_gpt,
         'final_answer_lama': lama_answer,
         'relevance_lama': relevance_score_lama,
         'faithfulness_lama': faithfulness_lama,
-        'annotator_name': annotator_name
+        'annotator_name': annotator_name,
+        'scores_equal': scores_equal
     }
 
     # Convert the data to a DataFrame
