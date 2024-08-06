@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const uniqueDocuments = [];
             const titles = new Set();
             allDocuments.forEach(doc => {
-                const uniqueKey = `${doc.title}-${doc.content}-${doc.image_data}`;
+                const uniqueKey = `${doc.title}-${doc.content}`;
                 if (!titles.has(uniqueKey)) {
                     titles.add(uniqueKey);
                     uniqueDocuments.push(doc);
