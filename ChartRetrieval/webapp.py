@@ -9,6 +9,8 @@ from evaluation import ndcg_at_k
 import json
 import requests
 import os
+from collections import defaultdict
+import random
 
 # Load the API key from credentials.json
 with open('credentials.json') as f:
@@ -328,18 +330,30 @@ def prepare_llm_input():
     if not ndcg_scores:
         return jsonify({"error": f"No NDCG scores found for NDCG@{ndcg_value}"}), 404
     
-    # Sort the NDCG scores to get the top and second top models
-    sorted_ndcg_scores = sorted(ndcg_scores.items(), key=lambda item: item[1], reverse=True)
+    # Group the scores
+    score_groups = defaultdict(list)
+    for key, value in ndcg_scores.items():
+        score_groups[value].append(key)
+
+    # Sort the groups by score in descending order
+    sorted_score_groups = sorted(score_groups.items(), key=lambda item: item[0], reverse=True)
+
+    # Randomize within each group
+    randomized_models = []
+    for score, models in sorted_score_groups:
+        random.shuffle(models)
+        for model in models:
+            randomized_models.append((model, score))
     
-    top_model, highest_ndcg_score = sorted_ndcg_scores[0]
+    top_model, highest_ndcg_score = randomized_models[0]
     top_model = top_model.replace(ndcg_key, '')
     top_model_name = top_model.replace('_documents', '')
     
-    second_top_model, second_highest_ndcg_score = sorted_ndcg_scores[1]
+    second_top_model, second_highest_ndcg_score = randomized_models[1]
     second_top_model = second_top_model.replace(ndcg_key, '')
     second_top_model_name = second_top_model.replace('_documents', '')
 
-    third_top_model, third_highest_ndcg_score = sorted_ndcg_scores[2]
+    third_top_model, third_highest_ndcg_score = randomized_models[2]
     third_top_model = third_top_model.replace(ndcg_key, '')
     third_top_model_name = third_top_model.replace('_documents', '')
     
