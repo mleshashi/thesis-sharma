@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setTimeout(() => {
             loadingModal.classList.add('hidden');
-        }, 1000);
+        }, 60000);
 
         clearExistingModal();
         clearLLMAnswers();

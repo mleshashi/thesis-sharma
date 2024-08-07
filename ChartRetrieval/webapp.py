@@ -283,6 +283,7 @@ def evaluate():
     # Collect all relevance scores from all models, removing duplicates
     all_relevance_scores = []
     seen_docs = set()  # To keep track of seen (title, content) pairs
+    unique_doc_count = 0  # Variable to count unique documents
 
     for model_key, documents in results.items():
         if model_key != 'query' and '_documents' in model_key:
@@ -291,6 +292,7 @@ def evaluate():
                 if doc_key not in seen_docs:
                     seen_docs.add(doc_key)
                     all_relevance_scores.append(doc['relevance'] + doc['completeness'])
+                    unique_doc_count += 1  # Increment the unique document count
 
      # Calculate NDCG scores for each k in ks
     ndcg_scores = {k: {} for k in ks}
@@ -305,6 +307,10 @@ def evaluate():
     for k in ks:
         for model_key, score in ndcg_scores[k].items():
             scores_storage[model_key + f'_ndcg@{k}'] = score
+
+        
+    # Add unique document count to the metadata
+    metric_metadata['unique_document'] = unique_doc_count
 
     return jsonify(ndcg_scores)
 
@@ -536,6 +542,7 @@ def save_query():
     faithfulness_lama = int(llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness'))
 
     annotator_name = metric_metadata.get('annotator_name', 'No Annotator Found')
+    Unique_document = metric_metadata.get('unique_document', 'No Unique Document Found')
 
     # Check if first and second model NDCG scores are the same
     if highest_ndcg_score == second_highest_ndcg_score and highest_ndcg_score == third_highest_ndcg_score:
@@ -544,6 +551,8 @@ def save_query():
         scores_equal = '1&2'
     else:
         scores_equal = 'None'
+
+    
 
 
     # Define the path to the CSV file
@@ -578,7 +587,8 @@ def save_query():
         'relevance_lama': relevance_score_lama,
         'faithfulness_lama': faithfulness_lama,
         'annotator_name': annotator_name,
-        'scores_equal': scores_equal
+        'scores_equal': scores_equal,
+        'Unique_document': Unique_document
     }
 
     # Convert the data to a DataFrame
