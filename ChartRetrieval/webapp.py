@@ -391,7 +391,7 @@ def prepare_llm_input():
                 "Format the response in the following structure with 3 paragraphs, without paragraph title::\n\n"
                 "1. Start the response with a clear classification or a straightforward answer to the query.\n"
                 "2. Provide supporting findings and detailed analysis, including relevant statistical data.\n"
-                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion based on provided content."
+                "3. Summarize the final conclusion briefly."
             )
         }
     ]
@@ -423,7 +423,7 @@ def prepare_llm_input():
                 "Format the response in the following structure with 3 paragraphs, without paragraph title:\n\n"
                 "1. Start the response with a clear classification or a straightforward answer to the query.\n"
                 "2. Provide supporting findings and detailed analysis, including relevant statistical data.\n"
-                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion based on the provided content."
+                "3. Summarize the final conclusion briefly."
             )
         },
         {
