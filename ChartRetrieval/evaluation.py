@@ -19,5 +19,5 @@ def ndcg_at_k(r, k, all_r):
     print(f"Size of sorted relevance scores list: {len(sorted_r)}")
     idcg = dcg_at_k(sorted_r, k)
     if not idcg:
-        return 0.
+        return 0
     return dcg_at_k(r, k) / idcg

@@ -29,7 +29,7 @@ def process_metadata(pew_metadata_path, statista_metadata_path, llava_descriptio
     combined_df.insert(0, 'id', combined_df.reset_index().index + 1)
 
     # Add a new column llava_description to the DataFrame from the content column of the llava description dataset
-    combined_df['llava_description'] = llava['Content']
+    combined_df['llava_description'] = llava['Content'] # or a new column 'llava_caption' to the DataFrame
 
     return combined_df
 

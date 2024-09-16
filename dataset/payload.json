@@ -1,0 +1,88 @@
+payload: {
+    "model": "gpt-4o",
+    "messages": [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "text": "You are an expert statistical analyst. Answer the given query with a detailed and comprehensive statistical insight from the following title, content, and provided image data.
+                            Query: {query}
+                            Title: {title}
+                            Content: {caption}
+                            Title1: {title1}
+                            Content2: {caption2}
+                            Format the response in the following structure with 3 paragraphs, without paragraph title::
+                            1. Start the response with a clear classification or a straightforward answer to the query.
+                            2. Provide supporting findings and detailed analysis, including relevant statistical data.
+                            3. Summarize the final conclusion briefly.",
+                    "type": "text"
+                },
+                {
+                    "image_url": {
+                        "url": "data:image/jpeg;base64,{image_data}"
+                    },
+                    "type": "image_url"
+                },
+                {
+                    "image_url": {
+                        "url": "data:image/jpeg;base64,{image_data2}"
+                    },
+                    "type": "image_url"
+                }
+            ],
+        }
+    ],
+    "max_tokens": 1000
+},
+
+Payload: {
+    "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are an expert statistical analyst. Answer the given query with a detailed and comprehensive statistical insight from the following title and content.\n\nFormat the response in the following structure with 3 paragraphs, without paragraph title:\n\n1. Start the response with a clear classification or a straightforward answer to the query.\n2. Provide supporting findings and detailed analysis, including relevant statistical data.\n3. Summarize the final conclusion briefly.",
+            
+        },
+        {   
+            "role": "user",
+            "content": "Query: {query}
+                        Title1: {title}
+                        Content1: {caption}
+                        Title2: {title}
+                        Content2: {caption}",
+        }
+    ],
+    "max_tokens": 1000
+}
+
+,
+
+{
+    "model"="meta-llama/Meta-Llama-3.1-70B-Instruct",
+    "messages"=[
+        {
+            "role": "system",
+            "content": (
+                "You are an AI assistant. Generate a 1 line question based on the following information."
+                "Here are some example questions to illustrate the desired question format:"
+                "Are gas prices too high?"
+                "Is a college education worth it?"
+                "Is capitalism the best form of economy?"
+                "Do we need cash?"
+                "Should education be free?"
+                "Does lowering the federal corporate income tax rate create jobs?"
+                "Should everyone get a universal basic income?"
+                "Should the press be subsidized?"
+                "Does legal prostitution increase human trafficking?"
+                "Should the penny stay in circulation?"
+                "Should government spending be reduced?"
+                "Should blood donations be financially compensated?"
+                "Should prescription drugs be advertised directly to consumers?"
+                "Does poverty cause crime?"
+                )    
+             },
+            {"role": "user", "content": content}
+        ],
+        "max_tokens"=20, 
+        "temperature"=0.5
+    }
