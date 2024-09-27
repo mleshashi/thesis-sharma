@@ -1,181 +1,181 @@
-SL,query,ndcg_metric,top_model,highest_ndcg_score,second_top_model,second_highest_ndcg_score,third_top_model,third_highest_ndcg_score,relevance_gpt,faithfulness_gpt,relevance_lama,faithfulness_lama,annotator_name,scores_equal,Unique_document
-1,Are gas prices too high?,_ndcg@1,Clip,1.0,Mistral-llava,0.8333333333333334,Mistral,0.8333333333333334,3,3,3,3,Pranay Karani,,14
-2,Are gas prices too high?,_ndcg@2,Qwen2,0.8218468239548651,Mistral,0.7529277676840551,Mistral-llava,0.6840087114132452,3,3,3,3,Pranay Karani,,14
-3,Are gas prices too high?,_ndcg@3,Mistral,0.8868759085647745,Qwen2,0.8537892328558954,Mistral-llava,0.5613676985676856,3,3,3,3,Pranay Karani,,14
-4,Should the government allow illegal immigrants to become citizens?,_ndcg@1,Clip,1.0,Mistral-llava,1.0,Mistral,0.8,3,3,3,3,Pranay Karani,1&2,7
-5,Should the government allow illegal immigrants to become citizens?,_ndcg@2,Mistral-llava,1.0,Clip,0.9226294385530918,Mistral,0.8773705614469083,3,3,3,3,Pranay Karani,,7
-6,Should the government allow illegal immigrants to become citizens?,_ndcg@3,Mistral-llava,0.9530721273977244,Clip,0.9407836178068272,Mistral,0.9061442547954488,3,3,3,3,Pranay Karani,,7
-7,Are social media platforms doing enough to prevent cyberbullying?,_ndcg@1,Mistral-llava,0.25,Mistral,0.25,BM25-llava,0.0,3,3,3,3,Pranay Karani,1&2,10
-8,Are social media platforms doing enough to prevent cyberbullying?,_ndcg@2,BM25,0.4282724025294405,Clip,0.4282724025294405,Qwen2,0.4282724025294405,3,3,3,3,Pranay Karani,1&2&3,10
-9,Are social media platforms doing enough to prevent cyberbullying?,_ndcg@3,Qwen2,0.5837577303021751,Clip,0.511218155815289,Mistral,0.4542326241448105,3,3,3,3,Pranay Karani,,10
-10,Is a college education worth it?,_ndcg@1,Qwen2,0.6666666666666666,Mistral-llava,0.3333333333333333,BM25-llava,0.3333333333333333,3,3,3,2,Pranay Karani,,13
-11,Is a college education worth it?,_ndcg@2,Qwen2,0.7956176024115139,BM25-llava,0.4622842690781805,Clip,0.3333333333333333,3,3,3,3,Pranay Karani,,13
-12,Is a college education worth it?,_ndcg@3,Qwen2,0.8435737579924145,Clip,0.4897595753409188,BM25-llava,0.4320273036552884,3,3,3,3,Pranay Karani,,13
-13,Should abortion be legal?,_ndcg@1,Qwen2,1.0,BM25,0.8,Mistral-llava,0.8,3,3,3,2,Pranay Karani,,11
-14,Should abortion be legal?,_ndcg@2,Qwen2,1.0,Mistral,0.9509457695419296,BM25,0.6993694869720469,3,3,3,3,Pranay Karani,,11
-15,Should abortion be legal?,_ndcg@3,Qwen2,1.0,Mistral,0.9036904578863014,BM25,0.8601619237982463,3,3,3,3,Pranay Karani,,11
-16,Are social networking sites good for our society?,_ndcg@1,Mistral-llava,0.75,Clip,0.75,Qwen2,0.75,3,3,3,2,Sagarika,1&2&3,9
-17,Are social networking sites good for our society?,_ndcg@2,Qwen2,0.8303010754742701,Mistral,0.8303010754742701,Mistral-llava,0.8303010754742701,3,3,3,2,Sagarika,1&2&3,9
-18,Are social networking sites good for our society?,_ndcg@3,Qwen2,0.9323665287394268,Clip,0.7970995862182803,Mistral-llava,0.7294661149577071,3,3,3,2,Sagarika,,9
-19,Should recreational marijuana be legal?,_ndcg@1,Mistral,1.0,BM25-llava,1.0,Qwen2,1.0,3,3,3,3,Sagarika,1&2&3,9
-20,Should recreational marijuana be legal?,_ndcg@2,Qwen2,0.93108094372919,BM25-llava,0.93108094372919,Mistral,0.8621618874583801,3,3,3,2,Sagarika,1&2,9
-21,Should recreational marijuana be legal?,_ndcg@3,Qwen2,0.9458645415972108,Mistral,0.8059264116666506,Mistral-llava,0.7967274438194762,3,3,3,2,Sagarika,,9
-22,Does poverty cause crime?,_ndcg@1,BM25,1.0,Qwen2,1.0,Clip,0.6666666666666666,3,1,3,1,Johannes Kiesel,1&2,16
-23,Does poverty cause crime?,_ndcg@2,BM25,0.8710490642551529,Qwen2,0.6131471927654584,Clip,0.4087647951769723,3,2,2,1,Johannes Kiesel,,16
-24,Does poverty cause crime?,_ndcg@3,Qwen2,0.7636451603657846,BM25,0.7232329748419101,Clip,0.3393978490514598,2,3,2,3,Johannes Kiesel,,16
-25,Should gay marriage be legal?,_ndcg@1,Qwen2,0.75,Mistral,0.75,BM25-llava,0.75,3,3,3,1,Simon,1&2&3,9
-26,Should gay marriage be legal?,_ndcg@2,Mistral-llava,0.9373691761066304,BM25,0.8303010754742701,Qwen2,0.8303010754742701,3,2,3,2,Simon,,9
-27,Should gay marriage be legal?,_ndcg@3,Mistral-llava,0.8148100536689385,BM25,0.7970995862182803,Qwen2,0.7294661149577071,3,2,2,3,Simon,,9
-28,Should government spending be reduced?,_ndcg@1,BM25,1.0,Qwen2,1.0,Mistral,1.0,2,3,2,2,Simon,1&2&3,14
-29,Should government spending be reduced?,_ndcg@2,Qwen2,0.8065735963827293,Mistral,0.8065735963827293,BM25,0.6131471927654584,2,1,3,2,Simon,1&2,14
-30,Should government spending be reduced?,_ndcg@3,Qwen2,0.8322824782867448,Mistral,0.8322824782867448,BM25,0.5316519652587917,3,3,2,3,Simon,1&2,14
-31,Should social networks be banned?,_ndcg@1,Qwen2,1.0,Mistral-llava,0.5,Clip,0.25,3,3,3,2,Simon,,15
-32,Should social networks be banned?,_ndcg@2,Qwen2,0.8065735963827293,Mistral-llava,0.4032867981913646,Mistral,0.3467132018086354,3,3,2,3,Simon,,15
-33,Should social networks be banned?,_ndcg@3,Qwen2,0.8322824782867448,Mistral-llava,0.6155107261154192,Mistral,0.433543504342651,3,2,3,3,Simon,,15
-34,Should education be free?,_ndcg@1,Mistral,0.5,Qwen2,0.5,Mistral-llava,0.5,2,3,2,3,Simon,1&2&3,14
-35,Should education be free?,_ndcg@2,Mistral,0.6606021509485402,Qwen2,0.6606021509485402,Mistral-llava,0.5535340503161801,3,2,3,2,Simon,1&2,14
-36,Should education be free?,_ndcg@3,Qwen2,0.7098417020524549,Mistral,0.7098417020524549,Mistral-llava,0.618306950342076,3,3,3,2,Simon,1&2,14
-37,Should holders of public offices resign on bad approval ratings?,_ndcg@1,Mistral,1.0,BM25,1.0,Qwen2,0.3333333333333333,3,3,3,2,Simon,1&2,14
-38,Should holders of public offices resign on bad approval ratings?,_ndcg@2,BM25,0.8710490642551529,Mistral,0.7420981285103057,Qwen2,0.4622842690781805,3,1,2,1,Simon,,14
-39,Should holders of public offices resign on bad approval ratings?,_ndcg@3,BM25,0.7448797876704595,Mistral,0.6461858173485043,Qwen2,0.5884535456628739,3,3,3,2,Simon,,14
-40,Should the federal minimum wage be increased?,_ndcg@1,Mistral,1.0,Mistral-llava,1.0,Qwen2,0.75,3,3,3,3,Sagarika,1&2,9
-41,Should the federal minimum wage be increased?,_ndcg@2,Qwen2,0.8467132018086354,Mistral-llava,0.7098603945740938,Mistral,0.7098603945740938,3,3,3,3,Sagarika,,9
-42,Should the federal minimum wage be increased?,_ndcg@3,Qwen2,0.9376847570173164,Mistral,0.7641007546071396,Mistral-llava,0.6394702686417724,3,3,3,2,Sagarika,,9
-43,Should Turkey join the EU?,_ndcg@1,Mistral-llava,0.5,Qwen2,0.5,BM25,0.5,2,3,2,2,Sagarika,1&2&3,11
-44,Should Turkey join the EU?,_ndcg@2,Clip,0.3065735963827292,BM25,0.3065735963827292,BM25-llava,0.3065735963827292,2,1,2,1,Sagarika,1&2&3,11
-45,Should Turkey join the EU?,_ndcg@3,Mistral,0.5316519652587917,BM25,0.5316519652587917,BM25-llava,0.2658259826293958,2,2,2,3,Sagarika,1&2,11
-46,Should any vaccines be required for children?,_ndcg@1,Qwen2,1.0,BM25,0.5,Mistral-llava,0.5,3,3,3,3,Sagarika,,10
-47,Should any vaccines be required for children?,_ndcg@2,Qwen2,0.8800937667159342,Mistral-llava,0.5,Mistral,0.5,2,3,3,3,Sagarika,,10
-48,Should any vaccines be required for children?,_ndcg@3,Qwen2,0.8992424290497487,Mistral,0.5798484858099497,BM25,0.4790909148596984,3,2,3,2,Sagarika,,10
-49,Can alternative energy effectively replace fossil fuels?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral,0.3333333333333333,3,3,2,3,Sagarika,1&2,13
-50,Can alternative energy effectively replace fossil fuels?,_ndcg@2,Qwen2,1.0,BM25,0.7420981285103057,Mistral,0.5912352048230277,3,3,3,3,Sagarika,,13
-51,Can alternative energy effectively replace fossil fuels?,_ndcg@3,Qwen2,0.8435737579924145,Mistral,0.687147515984829,BM25,0.5679726963447116,3,3,3,3,Sagarika,,13
-52,Do we need sex education in schools?,_ndcg@1,Mistral-llava,1.0,Mistral,1.0,Qwen2,1.0,2,3,2,3,Sagarika,1&2&3,14
-53,Do we need sex education in schools?,_ndcg@2,Qwen2,1.0,Mistral,0.6787956981029196,Mistral-llava,0.6787956981029196,3,3,2,2,Sagarika,,14
-54,Do we need sex education in schools?,_ndcg@3,Qwen2,1.0,Mistral,0.7039180890341348,Mistral-llava,0.7039180890341348,3,2,3,2,Sagarika,,14
-55,Should we imprison fewer people?,_ndcg@1,Mistral,0.75,Qwen2,0.5,Clip,0.25,2,2,2,2,Sagarika,,12
-56,Should we imprison fewer people?,_ndcg@2,Qwen2,0.7676702515809004,Mistral,0.7232329748419101,Clip,0.3838351257904502,2,3,2,3,Sagarika,,12
-57,Should we imprison fewer people?,_ndcg@3,Qwen2,0.8739160282497203,Mistral,0.6908465248289621,Clip,0.5457673758551895,2,3,2,3,Sagarika,,12
-58,Is feminism still needed?,_ndcg@1,Mistral,1.0,Qwen2,1.0,BM25,1.0,3,2,3,3,Bipin,1&2&3,14
-59,Is feminism still needed?,_ndcg@2,BM25,0.9259795222585336,Mistral,0.9259795222585336,Qwen2,0.8519590445170673,3,3,3,2,Bipin,1&2,14
-60,Is feminism still needed?,_ndcg@3,Mistral,0.9400468833579672,Qwen2,0.8325820458764425,BM25,0.7499999999999999,3,2,3,2,Bipin,,14
-61,Did COVID-19 affect global gasoline prices?,_ndcg@1,BM25,0.6,Qwen2,0.6,Mistral-llava,0.4,3,3,3,2,Bipin,1&2,12
-62,Did COVID-19 affect global gasoline prices?,_ndcg@2,Mistral-llava,0.7478320564994405,Mistral,0.7478320564994405,Qwen2,0.618306950342076,3,3,3,3,Bipin,1&2,12
-63,Did COVID-19 affect global gasoline prices?,_ndcg@3,Qwen2,0.8567135500246339,Mistral-llava,0.7797812109961533,Mistral,0.7797812109961533,3,3,3,3,Bipin,,12
-64,Do international conflicts impact fuel prices?,_ndcg@1,Clip,1.0,Mistral,0.8333333333333334,Qwen2,0.8333333333333334,3,1,3,3,Bipin,,12
-65,Do international conflicts impact fuel prices?,_ndcg@2,Qwen2,0.959684936496485,Mistral,0.959684936496485,Mistral-llava,0.6722976406770249,3,3,3,3,Bipin,1&2,12
-66,Do international conflicts impact fuel prices?,_ndcg@3,Qwen2,0.9683327868750184,Mistral,0.7538261080555907,Mistral-llava,0.5280853065972594,3,3,3,2,Bipin,,12
-67,Do Americans support spending on policing?,_ndcg@1,BM25-llava,1.0,Clip,1.0,Mistral-llava,1.0,3,3,3,3,Bipin,1&2&3,7
-68,Do Americans support spending on policing?,_ndcg@2,Clip,1.0,Mistral-llava,1.0,BM25-llava,1.0,3,2,3,3,Bipin,1&2&3,7
-69,Do Americans support spending on policing?,_ndcg@3,Qwen2,0.906479133234798,Mistral,0.906479133234798,Clip,0.8733020777613553,3,3,3,1,Bipin,1&2,7
-70,What is the government expenditure in US?,_ndcg@1,Qwen2,0.8,Mistral,0.8,BM25,0.6,3,3,3,1,Bipin,1&2,14
-71,What is the government expenditure in US?,_ndcg@2,Qwen2,0.7832282478286744,Mistral,0.7832282478286744,BM25,0.3987389739440937,3,3,3,1,Bipin,1&2,14
-72,What is the government expenditure in US?,_ndcg@3,Mistral,0.9300809618991231,Qwen2,0.6530333282081644,BM25,0.3324571604291504,3,3,3,1,Bipin,,14
-73,Is globalization beneficial for economic growth?,_ndcg@1,Mistral-llava,1.0,BM25,0.6,BM25-llava,0.6,2,3,2,3,Bipin,,11
-74,Is globalization beneficial for economic growth?,_ndcg@2,Mistral,0.892911205473213,Mistral-llava,0.7253957448688627,Qwen2,0.7098417020524549,3,3,3,3,Bipin,,11
-75,Is globalization beneficial for economic growth?,_ndcg@3,Mistral,0.9120506341899668,Qwen2,0.7617002002705158,BM25,0.7021252503381448,3,3,3,3,Bipin,,11
-76,Should the US reform its gun laws?,_ndcg@1,Qwen2,1.0,Mistral,0.5,Clip,0.5,3,3,3,3,Bikram,,14
-77,Should the US reform its gun laws?,_ndcg@2,Qwen2,0.9259795222585336,Mistral,0.5740204777414663,Clip,0.5,3,3,3,3,Bikram,,14
-78,Should the US reform its gun laws?,_ndcg@3,Qwen2,0.9869380064041244,Mistral,0.5878845219340201,Clip,0.5748225283381445,3,3,3,2,Bikram,,14
-79,Has the internet influenced US election campaigns?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,3,Bikram,1&2&3,9
-80,Has the internet influenced US election campaigns?,_ndcg@2,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,3,Bikram,1&2&3,9
-81,Has the internet influenced US election campaigns?,_ndcg@3,Mistral,0.9376847570173164,Qwen2,0.9376847570173164,Mistral-llava,0.8753695140346327,3,3,3,3,Bikram,1&2,9
-82,Are household electricity prices in Europe too high?,_ndcg@1,BM25,0.5,Qwen2,0.5,Mistral,0.5,2,2,2,3,Bikram,1&2&3,13
-83,Are household electricity prices in Europe too high?,_ndcg@2,BM25,0.7960819109658651,Mistral,0.6480409554829326,Qwen2,0.5740204777414663,2,3,2,3,Bikram,,13
-84,Are household electricity prices in Europe too high?,_ndcg@3,BM25,0.834835908247115,Mistral,0.8099531166420328,Qwen2,0.7499999999999999,3,3,2,2,Bikram,,13
-85,Is Twitter usage growing globally?,_ndcg@1,Qwen2,0.75,Mistral,0.5,BM25-llava,0.25,3,2,3,2,Bikram,,10
-86,Is Twitter usage growing globally?,_ndcg@2,Qwen2,0.9373691761066304,Mistral-llava,0.5979713270551704,Mistral,0.44646594968382,3,2,3,2,Bikram,,10
-87,Is Twitter usage growing globally?,_ndcg@3,Qwen2,0.8739160282497203,Mistral,0.6718513476054694,Mistral-llava,0.6562973047890615,3,2,3,2,Bikram,,10
-88,Is climate change a major global threat?,_ndcg@1,Mistral-llava,1.0,BM25,0.8333333333333334,Qwen2,0.5,3,2,3,3,Mazz Hussian,,7
-89,Is climate change a major global threat?,_ndcg@2,BM25,0.959684936496485,BM25-llava,0.7412166969478349,Mistral,0.7412166969478349,3,3,3,3,Mazz Hussian,,7
-90,Is climate change a major global threat?,_ndcg@3,BM25,0.9653606369886216,BM25-llava,0.8715048917840704,Mistral,0.8715048917840704,3,3,3,3,Mazz Hussian,,7
-91,Is China the world's leading economic power?,_ndcg@1,Mistral-llava,1.0,BM25,1.0,Mistral,1.0,3,3,2,3,Mazz Hussian,1&2&3,7
-92,Is China the world's leading economic power?,_ndcg@2,BM25,1.0,Mistral-llava,1.0,Qwen2,1.0,3,3,3,3,Mazz Hussian,1&2&3,7
-93,Is China the world's leading economic power?,_ndcg@3,Mistral,1.0,BM25,1.0,Qwen2,1.0,3,3,3,3,Mazz Hussian,1&2&3,7
-94,Does tourism significantly impact Europe's GDP?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Clip,0.25,2,3,2,1,Manish,1&2,14
-95,Does tourism significantly impact Europe's GDP?,_ndcg@2,Qwen2,1.0,Mistral,1.0,Clip,0.1532867981913646,2,3,2,2,Manish,1&2,14
-96,Does tourism significantly impact Europe's GDP?,_ndcg@3,Mistral,1.0,Qwen2,0.9376847570173164,Clip,0.2492609719307343,3,3,3,1,Manish,,14
-97,Do Hispanics face discrimination in the US?,_ndcg@1,Mistral-llava,1.0,Qwen2,1.0,Clip,1.0,3,3,3,3,Devang,1&2&3,9
-98,Do Hispanics face discrimination in the US?,_ndcg@2,Mistral-llava,1.0,Clip,1.0,Qwen2,1.0,3,3,3,3,Devang,1&2&3,9
-99,Do Hispanics face discrimination in the US?,_ndcg@3,Qwen2,1.0,Mistral,0.9570986642361144,Mistral-llava,0.8712959927083435,3,3,3,3,Devang,,9
-100,Can online banking replace traditional banking?,_ndcg@1,Qwen2,1.0,BM25,1.0,BM25-llava,1.0,3,3,3,2,Devang,1&2&3,11
-101,Can online banking replace traditional banking?,_ndcg@2,BM25,1.0,Qwen2,0.9161412391433724,Mistral,0.8322824782867448,3,3,3,3,Devang,,11
-102,Can online banking replace traditional banking?,_ndcg@3,BM25,0.894999002123018,Qwen2,0.8287507484077364,BM25-llava,0.8150029936309461,3,3,3,3,Devang,,11
-103,Should immigrants who commit crimes be deported?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,2,Harshil,1&2&3,9
-104,Should immigrants who commit crimes be deported?,_ndcg@2,Clip,1.0,BM25,0.908465248289621,Mistral,0.908465248289621,3,3,3,3,Harshil,,9
-105,Should immigrants who commit crimes be deported?,_ndcg@3,Clip,1.0,Mistral,0.9200625111439562,Qwen2,0.9200625111439562,3,2,3,2,Harshil,,9
-106,Should online piracy of TV shows be punishable by law?,_ndcg@1,Qwen2,0.75,Mistral-llava,0.75,Clip,0.75,3,2,3,1,Harshil,1&2&3,13
-107,Should online piracy of TV shows be punishable by law?,_ndcg@2,Qwen2,0.9373691761066304,Mistral-llava,0.7232329748419101,Mistral,0.6606021509485402,3,2,3,3,Harshil,,13
-108,Should online piracy of TV shows be punishable by law?,_ndcg@3,Qwen2,0.8824435249295117,Mistral,0.7294661149577071,Mistral-llava,0.7117556475070489,3,2,3,1,Harshil,,13
-109,Is a low inflation rate beneficial to the economy?,_ndcg@1,Qwen2,1.0,Mistral,0.75,BM25,0.5,3,3,3,3,Shashi,,16
-110,Is a low inflation rate beneficial to the economy?,_ndcg@2,Qwen2,0.8065735963827293,BM25,0.6934264036172708,Mistral,0.5565735963827292,3,2,3,1,Shashi,,16
-111,Is a low inflation rate beneficial to the economy?,_ndcg@3,Qwen2,0.8427338364047597,BM25,0.7507390280692655,Mistral,0.5771550256590888,3,2,3,2,Shashi,,16
-112,Are property prices in European cities too high?,_ndcg@1,Qwen2,1.0,BM25,0.8333333333333334,Mistral-llava,0.5,3,3,3,2,Shashi,,15
-113,Are property prices in European cities too high?,_ndcg@2,Qwen2,1.0,Mistral,0.5630635209026998,BM25,0.5461705988716252,3,3,3,3,Shashi,,15
-114,Are property prices in European cities too high?,_ndcg@3,Qwen2,1.0,Mistral,0.6245770191817948,BM25,0.5631344712273079,3,3,3,3,Shashi,,15
-115,Do people prefer online shopping over in-store shopping?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral,1.0,3,3,3,2,Shashi,1&2&3,11
-116,Do people prefer online shopping over in-store shopping?,_ndcg@2,Mistral,1.0,BM25,0.9226294385530918,Qwen2,0.8452588771061834,3,3,3,2,Shashi,,11
-117,Do people prefer online shopping over in-store shopping?,_ndcg@3,Mistral,0.9507614678330716,BM25,0.9378678900673996,Qwen2,0.924974312301727,3,3,3,2,Shashi,,11
-118,Is Facebook still the most popular social network?,_ndcg@1,Clip,0.8333333333333334,Qwen2,0.6666666666666666,Mistral,0.3333333333333333,3,3,3,2,Shashi,,17
-119,Is Facebook still the most popular social network?,_ndcg@2,Qwen2,0.8504508167221599,Clip,0.5461705988716252,Mistral,0.35630635209027,3,2,3,2,Shashi,,17
-120,Is Facebook still the most popular social network?,_ndcg@3,Qwen2,0.7876158814381369,Clip,0.4482436071324599,Mistral,0.4268946164279477,3,3,3,2,Shashi,,17
-121,Is Islamophobia on the rise in the world?,_ndcg@1,Qwen2,1.0,Mistral,0.25,Mistral-llava,0.25,2,1,2,2,Devang,,12
-122,Is Islamophobia on the rise in the world?,_ndcg@3,Qwen2,1.0,Mistral,0.5169525925206234,Mistral-llava,0.3033905185041247,3,2,3,2,Devang,,12
-123,Is Islamophobia on the rise in the world?,_ndcg@2,Qwen2,1.0,Mistral,0.25,Mistral-llava,0.25,3,3,2,3,Devang,,12
-124,Is an aging population a concern for Europe's future?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Mistral-llava,1.0,3,2,3,1,Shashi,1&2&3,13
-125,Is an aging population a concern for Europe's future?,_ndcg@3,Mistral,1.0,Qwen2,1.0,Mistral-llava,0.5540952673819174,3,2,3,2,Shashi,1&2,13
-126,Is an aging population a concern for Europe's future?,_ndcg@2,Qwen2,1.0,Mistral,1.0,Mistral-llava,0.6645649565734895,3,2,3,1,Shashi,1&2,13
-127,Does India see Pakistan as a threat?,_ndcg@1,Mistral,1.0,BM25,1.0,Qwen2,1.0,3,3,3,2,Zeru,1&2&3,7
-128,Does India see Pakistan as a threat?,_ndcg@2,Mistral,1.0,BM25,1.0,Qwen2,1.0,3,2,3,2,Zeru,1&2&3,7
-129,Does India see Pakistan as a threat?,_ndcg@3,Qwen2,0.914197328472229,Mistral,0.914197328472229,BM25,0.7854933211805725,3,3,3,2,Zeru,1&2,7
-130,Is anti-Semitism on the rise globally?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Clip,0.8,3,2,3,1,Zeru,1&2,11
-131,Is anti-Semitism on the rise globally?,_ndcg@2,Qwen2,0.9161412391433724,Mistral,0.9161412391433724,Mistral-llava,0.7341740173706042,3,1,3,2,Zeru,1&2,11
-132,Is anti-Semitism on the rise globally?,_ndcg@3,Mistral,0.9300809618991231,Qwen2,0.9300809618991231,Mistral-llava,0.6121333128326577,3,3,3,3,Zeru,1&2,11
-133,Should pets be considered a necessary part of a household?,_ndcg@1,Mistral,1.0,Qwen2,0.8,Clip,0.0,3,3,3,2,Zeru,,14
-134,Should pets be considered a necessary part of a household?,_ndcg@2,Mistral,0.6645649565734895,Qwen2,0.6155107261154192,BM25-llava,0.3354350434265105,3,3,3,2,Zeru,,14
-135,Should pets be considered a necessary part of a household?,_ndcg@3,Mistral,0.6452582482812901,Qwen2,0.6019590445170673,Mistral-llava,0.3547417517187098,2,3,3,3,Zeru,,14
-136,Is nuclear energy safer than coal energy?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral,1.0,3,3,3,2,Devang,1&2&3,11
-137,Is nuclear energy safer than coal energy?,_ndcg@2,Qwen2,1.0,Mistral,0.9200625111439562,Mistral-llava,0.9200625111439562,3,3,3,2,Devang,,11
-138,Is nuclear energy safer than coal energy?,_ndcg@3,Qwen2,0.9467676761267002,Mistral-llava,0.9328282860331658,Mistral,0.7731313144132663,3,3,3,2,Devang,,11
-139,Should social media be more transparent about data collection?,_ndcg@1,Qwen2,1.0,BM25-llava,1.0,Mistral,1.0,2,3,2,2,Devang,1&2&3,12
-140,Should social media be more transparent about data collection?,_ndcg@2,Mistral,1.0,Qwen2,0.89293189936764,BM25,0.7858637987352798,3,3,3,2,Devang,,12
-141,Should social media be more transparent about data collection?,_ndcg@3,Qwen2,0.9810048227765072,Mistral,0.8549208510262275,BM25,0.6718513476054694,3,2,3,2,Devang,,12
-142,Is the decline in marriage rates a cause for concern?,_ndcg@1,Clip,1.0,BM25,0.8,Mistral-llava,0.8,2,1,3,1,Mazz Hussian,,9
-143,Is the decline in marriage rates a cause for concern?,_ndcg@2,Clip,1.0,Mistral-llava,0.8773705614469083,Qwen2,0.7226294385530917,3,1,3,2,Mazz Hussian,,9
-144,Is the decline in marriage rates a cause for concern?,_ndcg@3,Clip,1.0,Qwen2,0.8264972479678704,Mistral-llava,0.7538073391653585,2,3,3,1,Mazz Hussian,,9
-145,Should the internet be considered a daily necessity?,_ndcg@1,Mistral,1.0,Qwen2,0.6666666666666666,BM25,0.1666666666666666,3,3,3,2,Manish,,14
-146,Should the internet be considered a daily necessity?,_ndcg@2,Mistral,0.9259795222585336,Qwen2,0.5432992037642228,BM25-llava,0.4441228664487978,3,3,3,3,Manish,,14
-147,Should the internet be considered a daily necessity?,_ndcg@3,Mistral,0.9370563208453614,Qwen2,0.5118788491835059,BM25-llava,0.4275437604865945,3,3,3,3,Manish,,14
-148,Is society more accepting of transgender people?,_ndcg@1,Clip,1.0,Qwen2,1.0,Mistral-llava,1.0,3,3,3,3,Manish,1&2&3,8
-149,Is society more accepting of transgender people?,_ndcg@2,Mistral-llava,1.0,Qwen2,1.0,BM25,0.959684936496485,3,3,3,2,Manish,1&2,8
-150,Is society more accepting of transgender people?,_ndcg@3,Qwen2,1.0,Mistral-llava,0.9570986642361144,Mistral,0.9254314511111328,3,3,3,3,Manish,,8
-151,Does reducing police funding increase crime?,_ndcg@1,Mistral,0.3333333333333333,Mistral-llava,0.3333333333333333,Clip,0.3333333333333333,2,1,2,1,Manish,1&2&3,10
-152,Does reducing police funding increase crime?,_ndcg@2,Qwen2,0.6319825771735098,Mistral,0.35630635209027,Mistral-llava,0.35630635209027,3,2,3,2,Manish,,10
-153,Does reducing police funding increase crime?,_ndcg@3,Qwen2,0.6083184385851529,BM25,0.4621076714410481,Mistral,0.2924215342882096,3,2,3,2,Manish,,10
-154,Do Russians regret the breakup of the Soviet Union?,_ndcg@1,BM25-llava,1.0,Mistral-llava,1.0,Mistral,1.0,3,3,3,3,Manish,1&2&3,8
-155,Do Russians regret the breakup of the Soviet Union?,_ndcg@2,Qwen2,1.0,Mistral,1.0,Mistral-llava,1.0,3,3,3,3,Manish,1&2&3,8
-156,Do Russians regret the breakup of the Soviet Union?,_ndcg@3,Mistral,1.0,Qwen2,1.0,Mistral-llava,0.8592163821931731,3,3,3,3,Manish,1&2,8
-157,Have organ donation been increasing over time in UK?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Mistral-llava,0.4,2,2,2,3,Shashi,1&2,11
-158,Have organ donation been increasing over time in UK?,_ndcg@2,Qwen2,1.0,Mistral,0.8322824782867448,Mistral-llava,0.6851197869125338,3,3,3,3,Shashi,,11
-159,Have organ donation been increasing over time in UK?,_ndcg@3,Qwen2,0.9474995010615088,Mistral,0.7625024946924551,Mistral-llava,0.6462442622073531,3,3,3,2,Shashi,,11
-160,Is air travel becoming less safe?,_ndcg@1,Qwen2,1.0,Mistral,1.0,BM25-llava,0.3333333333333333,3,3,3,2,Shashi,1&2,11
-161,Is air travel becoming less safe?,_ndcg@2,Qwen2,1.0,Mistral,0.8621618874583801,BM25,0.4135143376248598,3,2,3,2,Shashi,,11
-162,Is air travel becoming less safe?,_ndcg@3,Qwen2,1.0,Mistral,0.8346393630113783,BM25,0.4491540383635896,3,3,3,2,Shashi,,11
-163,Do tattoos negatively impact job opportunities?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,2,Shashi,1&2&3,8
-164,Do tattoos negatively impact job opportunities?,_ndcg@2,Qwen2,1.0,Mistral-llava,0.8452588771061834,BM25,0.8452588771061834,3,3,3,3,Shashi,,8
-165,Do tattoos negatively impact job opportunities?,_ndcg@3,Qwen2,0.9507614678330716,Mistral,0.924974312301727,BM25-llava,0.8030458713322868,3,3,3,2,Shashi,,8
-166,Should newspapers shift entirely to digital formats?,_ndcg@1,Qwen2,0.6666666666666666,Mistral-llava,0.5,Clip,0.5,3,3,3,2,Nikhil,,13
-167,Should newspapers shift entirely to digital formats?,_ndcg@2,Qwen2,0.6913401592471553,Mistral-llava,0.3519590445170673,Clip,0.3519590445170673,3,3,3,3,Nikhil,,13
-168,Should newspapers shift entirely to digital formats?,_ndcg@3,Qwen2,0.8871746352865983,Mistral-llava,0.3990534844701043,Mistral,0.3384760941402048,3,2,3,3,Nikhil,,13
-169,Are Football League ticket prices too expensive?,_ndcg@1,BM25-llava,1.0,Qwen2,0.6,Mistral-llava,0.6,3,3,3,2,Nikhil,,11
-170,Are Football League ticket prices too expensive?,_ndcg@2,BM25-llava,0.9161412391433724,Qwen2,0.8180327782272317,Mistral-llava,0.7341740173706042,3,3,3,2,Nikhil,,11
-171,Are Football League ticket prices too expensive?,_ndcg@3,Qwen2,0.8562462579613171,BM25-llava,0.8287507484077364,Mistral-llava,0.7374975053075448,3,3,3,3,Nikhil,,11
-172,Is the UK's defense spending increasing?,_ndcg@1,Qwen2,1.0,Mistral,1.0,BM25,0.6,3,3,3,2,Nikhil,1&2,12
-173,Is the UK's defense spending increasing?,_ndcg@2,Qwen2,0.9161412391433724,Mistral,0.8322824782867448,BM25,0.3987389739440937,3,2,3,2,Nikhil,,12
-174,Is the UK's defense spending increasing?,_ndcg@3,Mistral,0.915571450536438,Qwen2,0.8746714351609314,BM25,0.4432762139055339,3,3,3,2,Nikhil,,12
-175,Should health and fitness apps be free to download?,_ndcg@1,BM25-llava,0.6666666666666666,BM25,0.6666666666666666,Mistral,0.6666666666666666,3,3,2,3,Nikhil,1&2&3,10
-176,Should health and fitness apps be free to download?,_ndcg@2,Qwen2,0.7956176024115139,BM25,0.7956176024115139,Mistral,0.6666666666666667,3,2,3,3,Nikhil,1&2,10
-177,Should health and fitness apps be free to download?,_ndcg@3,Qwen2,0.9151505377371352,BM25,0.7454516132114052,Mistral,0.638383512579045,3,2,3,3,Nikhil,,10
-178,Are women more likely to use Instagram than men?,_ndcg@1,Mistral-llava,1.0,Mistral,0.8333333333333334,Qwen2,0.8333333333333334,3,3,3,3,Nikhil,,13
-179,Are women more likely to use Instagram than men?,_ndcg@2,Mistral-llava,0.93108094372919,Mistral,0.8907658802256749,Qwen2,0.8907658802256749,3,3,3,2,Nikhil,,13
-180,Are women more likely to use Instagram than men?,_ndcg@3,Mistral-llava,0.9458645415972108,Qwen2,0.8712959927083435,Mistral,0.8712959927083435,3,3,3,2,Nikhil,,13
+SL,query,ndcg_metric,top_model,highest_ndcg_score,second_top_model,second_highest_ndcg_score,third_top_model,third_highest_ndcg_score,relevance_gpt,faithfulness_gpt,relevance_lama,faithfulness_lama,annotator_name,scores_equal,Unique_document,source_file
+1,Are gas prices too high?,_ndcg@1,Clip,1.0,Mistral-llava,0.8333333333333334,Mistral,0.8333333333333334,3,3,3,3,Pranay Karani,,14,Touche
+2,Are gas prices too high?,_ndcg@2,Qwen2,0.8218468239548651,Mistral,0.7529277676840551,Mistral-llava,0.6840087114132452,3,3,3,3,Pranay Karani,,14,Touche
+3,Are gas prices too high?,_ndcg@3,Mistral,0.8868759085647745,Qwen2,0.8537892328558954,Mistral-llava,0.5613676985676856,3,3,3,3,Pranay Karani,,14,Touche
+4,Should the government allow illegal immigrants to become citizens?,_ndcg@1,Clip,1.0,Mistral-llava,1.0,Mistral,0.8,3,3,3,3,Pranay Karani,1&2,7,Touche
+5,Should the government allow illegal immigrants to become citizens?,_ndcg@2,Mistral-llava,1.0,Clip,0.9226294385530918,Mistral,0.8773705614469083,3,3,3,3,Pranay Karani,,7,Touche
+6,Should the government allow illegal immigrants to become citizens?,_ndcg@3,Mistral-llava,0.9530721273977244,Clip,0.9407836178068272,Mistral,0.9061442547954488,3,3,3,3,Pranay Karani,,7,Touche
+7,Are social media platforms doing enough to prevent cyberbullying?,_ndcg@1,Mistral-llava,0.25,Mistral,0.25,BM25-llava,0.0,3,3,3,3,Pranay Karani,1&2,10,Touche
+8,Are social media platforms doing enough to prevent cyberbullying?,_ndcg@2,BM25,0.4282724025294405,Clip,0.4282724025294405,Qwen2,0.4282724025294405,3,3,3,3,Pranay Karani,1&2&3,10,Touche
+9,Are social media platforms doing enough to prevent cyberbullying?,_ndcg@3,Qwen2,0.5837577303021751,Clip,0.511218155815289,Mistral,0.4542326241448105,3,3,3,3,Pranay Karani,,10,Touche
+10,Is a college education worth it?,_ndcg@1,Qwen2,0.6666666666666666,Mistral-llava,0.3333333333333333,BM25-llava,0.3333333333333333,3,3,3,2,Pranay Karani,,13,Touche
+11,Is a college education worth it?,_ndcg@2,Qwen2,0.7956176024115139,BM25-llava,0.4622842690781805,Clip,0.3333333333333333,3,3,3,3,Pranay Karani,,13,Touche
+12,Is a college education worth it?,_ndcg@3,Qwen2,0.8435737579924145,Clip,0.4897595753409188,BM25-llava,0.4320273036552884,3,3,3,3,Pranay Karani,,13,Touche
+13,Should abortion be legal?,_ndcg@1,Qwen2,1.0,BM25,0.8,Mistral-llava,0.8,3,3,3,2,Pranay Karani,,11,Touche
+14,Should abortion be legal?,_ndcg@2,Qwen2,1.0,Mistral,0.9509457695419296,BM25,0.6993694869720469,3,3,3,3,Pranay Karani,,11,Touche
+15,Should abortion be legal?,_ndcg@3,Qwen2,1.0,Mistral,0.9036904578863014,BM25,0.8601619237982463,3,3,3,3,Pranay Karani,,11,Touche
+16,Are social networking sites good for our society?,_ndcg@1,Mistral-llava,0.75,Clip,0.75,Qwen2,0.75,3,3,3,2,Sagarika,1&2&3,9,Touche
+17,Are social networking sites good for our society?,_ndcg@2,Qwen2,0.8303010754742701,Mistral,0.8303010754742701,Mistral-llava,0.8303010754742701,3,3,3,2,Sagarika,1&2&3,9,Touche
+18,Are social networking sites good for our society?,_ndcg@3,Qwen2,0.9323665287394268,Clip,0.7970995862182803,Mistral-llava,0.7294661149577071,3,3,3,2,Sagarika,,9,Touche
+19,Should recreational marijuana be legal?,_ndcg@1,Mistral,1.0,BM25-llava,1.0,Qwen2,1.0,3,3,3,3,Sagarika,1&2&3,9,Touche
+20,Should recreational marijuana be legal?,_ndcg@2,Qwen2,0.93108094372919,BM25-llava,0.93108094372919,Mistral,0.8621618874583801,3,3,3,2,Sagarika,1&2,9,Touche
+21,Should recreational marijuana be legal?,_ndcg@3,Qwen2,0.9458645415972108,Mistral,0.8059264116666506,Mistral-llava,0.7967274438194762,3,3,3,2,Sagarika,,9,Touche
+22,Does poverty cause crime?,_ndcg@1,BM25,1.0,Qwen2,1.0,Clip,0.6666666666666666,3,1,3,1,Johannes Kiesel,1&2,16,Touche
+23,Does poverty cause crime?,_ndcg@2,BM25,0.8710490642551529,Qwen2,0.6131471927654584,Clip,0.4087647951769723,3,2,2,1,Johannes Kiesel,,16,Touche
+24,Does poverty cause crime?,_ndcg@3,Qwen2,0.7636451603657846,BM25,0.7232329748419101,Clip,0.3393978490514598,2,3,2,3,Johannes Kiesel,,16,Touche
+25,Should gay marriage be legal?,_ndcg@1,Qwen2,0.75,Mistral,0.75,BM25-llava,0.75,3,3,3,1,Simon,1&2&3,9,Touche
+26,Should gay marriage be legal?,_ndcg@2,Mistral-llava,0.9373691761066304,BM25,0.8303010754742701,Qwen2,0.8303010754742701,3,2,3,2,Simon,,9,Touche
+27,Should gay marriage be legal?,_ndcg@3,Mistral-llava,0.8148100536689385,BM25,0.7970995862182803,Qwen2,0.7294661149577071,3,2,2,3,Simon,,9,Touche
+28,Should government spending be reduced?,_ndcg@1,BM25,1.0,Qwen2,1.0,Mistral,1.0,2,3,2,2,Simon,1&2&3,14,Touche
+29,Should government spending be reduced?,_ndcg@2,Qwen2,0.8065735963827293,Mistral,0.8065735963827293,BM25,0.6131471927654584,2,1,3,2,Simon,1&2,14,Touche
+30,Should government spending be reduced?,_ndcg@3,Qwen2,0.8322824782867448,Mistral,0.8322824782867448,BM25,0.5316519652587917,3,3,2,3,Simon,1&2,14,Touche
+31,Should social networks be banned?,_ndcg@1,Qwen2,1.0,Mistral-llava,0.5,Clip,0.25,3,3,3,2,Simon,,15,Touche
+32,Should social networks be banned?,_ndcg@2,Qwen2,0.8065735963827293,Mistral-llava,0.4032867981913646,Mistral,0.3467132018086354,3,3,2,3,Simon,,15,Touche
+33,Should social networks be banned?,_ndcg@3,Qwen2,0.8322824782867448,Mistral-llava,0.6155107261154192,Mistral,0.433543504342651,3,2,3,3,Simon,,15,Touche
+34,Should education be free?,_ndcg@1,Mistral,0.5,Qwen2,0.5,Mistral-llava,0.5,2,3,2,3,Simon,1&2&3,14,Touche
+35,Should education be free?,_ndcg@2,Mistral,0.6606021509485402,Qwen2,0.6606021509485402,Mistral-llava,0.5535340503161801,3,2,3,2,Simon,1&2,14,Touche
+36,Should education be free?,_ndcg@3,Qwen2,0.7098417020524549,Mistral,0.7098417020524549,Mistral-llava,0.618306950342076,3,3,3,2,Simon,1&2,14,Touche
+37,Should holders of public offices resign on bad approval ratings?,_ndcg@1,Mistral,1.0,BM25,1.0,Qwen2,0.3333333333333333,3,3,3,2,Simon,1&2,14,Touche
+38,Should holders of public offices resign on bad approval ratings?,_ndcg@2,BM25,0.8710490642551529,Mistral,0.7420981285103057,Qwen2,0.4622842690781805,3,1,2,1,Simon,,14,Touche
+39,Should holders of public offices resign on bad approval ratings?,_ndcg@3,BM25,0.7448797876704595,Mistral,0.6461858173485043,Qwen2,0.5884535456628739,3,3,3,2,Simon,,14,Touche
+40,Should the federal minimum wage be increased?,_ndcg@1,Mistral,1.0,Mistral-llava,1.0,Qwen2,0.75,3,3,3,3,Sagarika,1&2,9,Touche
+41,Should the federal minimum wage be increased?,_ndcg@2,Qwen2,0.8467132018086354,Mistral-llava,0.7098603945740938,Mistral,0.7098603945740938,3,3,3,3,Sagarika,,9,Touche
+42,Should the federal minimum wage be increased?,_ndcg@3,Qwen2,0.9376847570173164,Mistral,0.7641007546071396,Mistral-llava,0.6394702686417724,3,3,3,2,Sagarika,,9,Touche
+43,Should Turkey join the EU?,_ndcg@1,Mistral-llava,0.5,Qwen2,0.5,BM25,0.5,2,3,2,2,Sagarika,1&2&3,11,Touche
+44,Should Turkey join the EU?,_ndcg@2,Clip,0.3065735963827292,BM25,0.3065735963827292,BM25-llava,0.3065735963827292,2,1,2,1,Sagarika,1&2&3,11,Touche
+45,Should Turkey join the EU?,_ndcg@3,Mistral,0.5316519652587917,BM25,0.5316519652587917,BM25-llava,0.2658259826293958,2,2,2,3,Sagarika,1&2,11,Touche
+46,Should any vaccines be required for children?,_ndcg@1,Qwen2,1.0,BM25,0.5,Mistral-llava,0.5,3,3,3,3,Sagarika,,10,Touche
+47,Should any vaccines be required for children?,_ndcg@2,Qwen2,0.8800937667159342,Mistral-llava,0.5,Mistral,0.5,2,3,3,3,Sagarika,,10,Touche
+48,Should any vaccines be required for children?,_ndcg@3,Qwen2,0.8992424290497487,Mistral,0.5798484858099497,BM25,0.4790909148596984,3,2,3,2,Sagarika,,10,Touche
+49,Can alternative energy effectively replace fossil fuels?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral,0.3333333333333333,3,3,2,3,Sagarika,1&2,13,Touche
+50,Can alternative energy effectively replace fossil fuels?,_ndcg@2,Qwen2,1.0,BM25,0.7420981285103057,Mistral,0.5912352048230277,3,3,3,3,Sagarika,,13,Touche
+51,Can alternative energy effectively replace fossil fuels?,_ndcg@3,Qwen2,0.8435737579924145,Mistral,0.687147515984829,BM25,0.5679726963447116,3,3,3,3,Sagarika,,13,Touche
+52,Do we need sex education in schools?,_ndcg@1,Mistral-llava,1.0,Mistral,1.0,Qwen2,1.0,2,2,2,3,Sagarika,1&2&3,14,Touche
+53,Do we need sex education in schools?,_ndcg@2,Qwen2,1.0,Mistral,0.6787956981029196,Mistral-llava,0.6787956981029196,3,3,2,2,Sagarika,,14,Touche
+54,Do we need sex education in schools?,_ndcg@3,Qwen2,1.0,Mistral,0.7039180890341348,Mistral-llava,0.7039180890341348,3,2,3,2,Sagarika,,14,Touche
+55,Should we imprison fewer people?,_ndcg@1,Mistral,0.75,Qwen2,0.5,Clip,0.25,2,2,2,2,Sagarika,,12,Touche
+56,Should we imprison fewer people?,_ndcg@2,Qwen2,0.7676702515809004,Mistral,0.7232329748419101,Clip,0.3838351257904502,2,3,2,3,Sagarika,,12,Touche
+57,Should we imprison fewer people?,_ndcg@3,Qwen2,0.8739160282497203,Mistral,0.6908465248289621,Clip,0.5457673758551895,2,3,2,3,Sagarika,,12,Touche
+58,Is feminism still needed?,_ndcg@1,Mistral,1.0,Qwen2,1.0,BM25,1.0,3,2,3,3,Bipin,1&2&3,14,Touche
+59,Is feminism still needed?,_ndcg@2,BM25,0.9259795222585336,Mistral,0.9259795222585336,Qwen2,0.8519590445170673,3,3,3,2,Bipin,1&2,14,Touche
+60,Is feminism still needed?,_ndcg@3,Mistral,0.9400468833579672,Qwen2,0.8325820458764425,BM25,0.7499999999999999,3,2,3,2,Bipin,,14,Touche
+61,Did COVID-19 affect global gasoline prices?,_ndcg@1,BM25,0.6,Qwen2,0.6,Mistral-llava,0.4,3,3,3,2,Bipin,1&2,12,manual
+62,Did COVID-19 affect global gasoline prices?,_ndcg@2,Mistral-llava,0.7478320564994405,Mistral,0.7478320564994405,Qwen2,0.618306950342076,3,3,3,3,Bipin,1&2,12,manual
+63,Did COVID-19 affect global gasoline prices?,_ndcg@3,Qwen2,0.8567135500246339,Mistral-llava,0.7797812109961533,Mistral,0.7797812109961533,3,3,3,3,Bipin,,12,manual
+64,Do international conflicts impact fuel prices?,_ndcg@1,Clip,1.0,Mistral,0.8333333333333334,Qwen2,0.8333333333333334,3,1,3,3,Bipin,,12,manual
+65,Do international conflicts impact fuel prices?,_ndcg@2,Qwen2,0.959684936496485,Mistral,0.959684936496485,Mistral-llava,0.6722976406770249,3,3,3,3,Bipin,1&2,12,manual
+66,Do international conflicts impact fuel prices?,_ndcg@3,Qwen2,0.9683327868750184,Mistral,0.7538261080555907,Mistral-llava,0.5280853065972594,3,3,3,2,Bipin,,12,manual
+67,Do Americans support spending on policing?,_ndcg@1,BM25-llava,1.0,Clip,1.0,Mistral-llava,1.0,3,3,3,3,Bipin,1&2&3,7,manual
+68,Do Americans support spending on policing?,_ndcg@2,Clip,1.0,Mistral-llava,1.0,BM25-llava,1.0,3,2,3,3,Bipin,1&2&3,7,manual
+69,Do Americans support spending on policing?,_ndcg@3,Qwen2,0.906479133234798,Mistral,0.906479133234798,Clip,0.8733020777613553,3,3,3,1,Bipin,1&2,7,manual
+70,What is the government expenditure in US?,_ndcg@1,Qwen2,0.8,Mistral,0.8,BM25,0.6,3,3,3,1,Bipin,1&2,14,manual
+71,What is the government expenditure in US?,_ndcg@2,Qwen2,0.7832282478286744,Mistral,0.7832282478286744,BM25,0.3987389739440937,3,3,3,1,Bipin,1&2,14,manual
+72,What is the government expenditure in US?,_ndcg@3,Mistral,0.9300809618991231,Qwen2,0.6530333282081644,BM25,0.3324571604291504,3,3,3,1,Bipin,,14,manual
+73,Is globalization beneficial for economic growth?,_ndcg@1,Mistral-llava,1.0,BM25,0.6,BM25-llava,0.6,2,3,2,3,Bipin,,11,manual
+74,Is globalization beneficial for economic growth?,_ndcg@2,Mistral,0.892911205473213,Mistral-llava,0.7253957448688627,Qwen2,0.7098417020524549,3,3,3,3,Bipin,,11,manual
+75,Is globalization beneficial for economic growth?,_ndcg@3,Mistral,0.9120506341899668,Qwen2,0.7617002002705158,BM25,0.7021252503381448,3,3,3,3,Bipin,,11,manual
+76,Should the US reform its gun laws?,_ndcg@1,Qwen2,1.0,Mistral,0.5,Clip,0.5,3,3,3,3,Bikram,,14,manual
+77,Should the US reform its gun laws?,_ndcg@2,Qwen2,0.9259795222585336,Mistral,0.5740204777414663,Clip,0.5,3,3,3,3,Bikram,,14,manual
+78,Should the US reform its gun laws?,_ndcg@3,Qwen2,0.9869380064041244,Mistral,0.5878845219340201,Clip,0.5748225283381445,3,3,3,2,Bikram,,14,manual
+79,Has the internet influenced US election campaigns?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,3,Bikram,1&2&3,9,manual
+80,Has the internet influenced US election campaigns?,_ndcg@2,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,3,Bikram,1&2&3,9,manual
+81,Has the internet influenced US election campaigns?,_ndcg@3,Mistral,0.9376847570173164,Qwen2,0.9376847570173164,Mistral-llava,0.8753695140346327,3,3,3,3,Bikram,1&2,9,manual
+82,Are household electricity prices in Europe too high?,_ndcg@1,BM25,0.5,Qwen2,0.5,Mistral,0.5,2,2,2,3,Bikram,1&2&3,13,manual
+83,Are household electricity prices in Europe too high?,_ndcg@2,BM25,0.7960819109658651,Mistral,0.6480409554829326,Qwen2,0.5740204777414663,2,3,2,3,Bikram,,13,manual
+84,Are household electricity prices in Europe too high?,_ndcg@3,BM25,0.834835908247115,Mistral,0.8099531166420328,Qwen2,0.7499999999999999,3,3,2,2,Bikram,,13,manual
+85,Is Twitter usage growing globally?,_ndcg@1,Qwen2,0.75,Mistral,0.5,BM25-llava,0.25,3,2,3,2,Bikram,,10,manual
+86,Is Twitter usage growing globally?,_ndcg@2,Qwen2,0.9373691761066304,Mistral-llava,0.5979713270551704,Mistral,0.44646594968382,3,2,3,2,Bikram,,10,manual
+87,Is Twitter usage growing globally?,_ndcg@3,Qwen2,0.8739160282497203,Mistral,0.6718513476054694,Mistral-llava,0.6562973047890615,3,2,3,2,Bikram,,10,manual
+88,Is climate change a major global threat?,_ndcg@1,Mistral-llava,1.0,BM25,0.8333333333333334,Qwen2,0.5,3,2,3,3,Mazz Hussian,,7,manual
+89,Is climate change a major global threat?,_ndcg@2,BM25,0.959684936496485,BM25-llava,0.7412166969478349,Mistral,0.7412166969478349,3,3,3,3,Mazz Hussian,,7,manual
+90,Is climate change a major global threat?,_ndcg@3,BM25,0.9653606369886216,BM25-llava,0.8715048917840704,Mistral,0.8715048917840704,3,3,3,3,Mazz Hussian,,7,manual
+91,Is China the world's leading economic power?,_ndcg@1,Mistral-llava,1.0,BM25,1.0,Mistral,1.0,3,3,2,3,Mazz Hussian,1&2&3,7,manual
+92,Is China the world's leading economic power?,_ndcg@2,BM25,1.0,Mistral-llava,1.0,Qwen2,1.0,3,3,3,3,Mazz Hussian,1&2&3,7,manual
+93,Is China the world's leading economic power?,_ndcg@3,Mistral,1.0,BM25,1.0,Qwen2,1.0,3,3,3,3,Mazz Hussian,1&2&3,7,manual
+94,Does tourism significantly impact Europe's GDP?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Clip,0.25,2,3,2,1,Manish,1&2,14,manual
+95,Does tourism significantly impact Europe's GDP?,_ndcg@2,Qwen2,1.0,Mistral,1.0,Clip,0.1532867981913646,2,3,2,2,Manish,1&2,14,manual
+96,Does tourism significantly impact Europe's GDP?,_ndcg@3,Mistral,1.0,Qwen2,0.9376847570173164,Clip,0.2492609719307343,3,3,3,1,Manish,,14,manual
+97,Do Hispanics face discrimination in the US?,_ndcg@1,Mistral-llava,1.0,Qwen2,1.0,Clip,1.0,3,3,3,3,Devang,1&2&3,9,manual
+98,Do Hispanics face discrimination in the US?,_ndcg@2,Mistral-llava,1.0,Clip,1.0,Qwen2,1.0,3,3,3,3,Devang,1&2&3,9,manual
+99,Do Hispanics face discrimination in the US?,_ndcg@3,Qwen2,1.0,Mistral,0.9570986642361144,Mistral-llava,0.8712959927083435,3,3,3,3,Devang,,9,manual
+100,Can online banking replace traditional banking?,_ndcg@1,Qwen2,1.0,BM25,1.0,BM25-llava,1.0,3,3,3,2,Devang,1&2&3,11,manual
+101,Can online banking replace traditional banking?,_ndcg@2,BM25,1.0,Qwen2,0.9161412391433724,Mistral,0.8322824782867448,3,3,3,3,Devang,,11,manual
+102,Can online banking replace traditional banking?,_ndcg@3,BM25,0.894999002123018,Qwen2,0.8287507484077364,BM25-llava,0.8150029936309461,3,3,3,3,Devang,,11,manual
+103,Should immigrants who commit crimes be deported?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,2,Harshil,1&2&3,9,random
+104,Should immigrants who commit crimes be deported?,_ndcg@2,Clip,1.0,BM25,0.908465248289621,Mistral,0.908465248289621,3,3,3,3,Harshil,,9,random
+105,Should immigrants who commit crimes be deported?,_ndcg@3,Clip,1.0,Mistral,0.9200625111439562,Qwen2,0.9200625111439562,3,2,3,2,Harshil,,9,random
+106,Should online piracy of TV shows be punishable by law?,_ndcg@1,Qwen2,0.75,Mistral-llava,0.75,Clip,0.75,3,2,3,1,Harshil,1&2&3,13,random
+107,Should online piracy of TV shows be punishable by law?,_ndcg@2,Qwen2,0.9373691761066304,Mistral-llava,0.7232329748419101,Mistral,0.6606021509485402,3,2,3,3,Harshil,,13,random
+108,Should online piracy of TV shows be punishable by law?,_ndcg@3,Qwen2,0.8824435249295117,Mistral,0.7294661149577071,Mistral-llava,0.7117556475070489,3,2,3,1,Harshil,,13,random
+109,Is a low inflation rate beneficial to the economy?,_ndcg@1,Qwen2,1.0,Mistral,0.75,BM25,0.5,3,3,3,3,Shashi,,16,manual
+110,Is a low inflation rate beneficial to the economy?,_ndcg@2,Qwen2,0.8065735963827293,BM25,0.6934264036172708,Mistral,0.5565735963827292,3,2,3,1,Shashi,,16,manual
+111,Is a low inflation rate beneficial to the economy?,_ndcg@3,Qwen2,0.8427338364047597,BM25,0.7507390280692655,Mistral,0.5771550256590888,3,2,3,2,Shashi,,16,manual
+112,Are property prices in European cities too high?,_ndcg@1,Qwen2,1.0,BM25,0.8333333333333334,Mistral-llava,0.5,3,3,3,2,Shashi,,15,manual
+113,Are property prices in European cities too high?,_ndcg@2,Qwen2,1.0,Mistral,0.5630635209026998,BM25,0.5461705988716252,3,3,3,3,Shashi,,15,manual
+114,Are property prices in European cities too high?,_ndcg@3,Qwen2,1.0,Mistral,0.6245770191817948,BM25,0.5631344712273079,3,3,3,3,Shashi,,15,manual
+115,Do people prefer online shopping over in-store shopping?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral,1.0,3,3,3,2,Shashi,1&2&3,11,manual
+116,Do people prefer online shopping over in-store shopping?,_ndcg@2,Mistral,1.0,BM25,0.9226294385530918,Qwen2,0.8452588771061834,3,3,3,2,Shashi,,11,manual
+117,Do people prefer online shopping over in-store shopping?,_ndcg@3,Mistral,0.9507614678330716,BM25,0.9378678900673996,Qwen2,0.924974312301727,3,3,3,2,Shashi,,11,manual
+118,Is Facebook still the most popular social network?,_ndcg@1,Clip,0.8333333333333334,Qwen2,0.6666666666666666,Mistral,0.3333333333333333,3,3,3,2,Shashi,,17,manual
+119,Is Facebook still the most popular social network?,_ndcg@2,Qwen2,0.8504508167221599,Clip,0.5461705988716252,Mistral,0.35630635209027,3,2,3,2,Shashi,,17,manual
+120,Is Facebook still the most popular social network?,_ndcg@3,Qwen2,0.7876158814381369,Clip,0.4482436071324599,Mistral,0.4268946164279477,3,3,3,2,Shashi,,17,manual
+121,Is Islamophobia on the rise in the world?,_ndcg@1,Qwen2,1.0,Mistral,0.25,Mistral-llava,0.25,2,1,2,2,Devang,,12,manual
+122,Is Islamophobia on the rise in the world?,_ndcg@3,Qwen2,1.0,Mistral,0.5169525925206234,Mistral-llava,0.3033905185041247,3,2,3,2,Devang,,12,manual
+123,Is Islamophobia on the rise in the world?,_ndcg@2,Qwen2,1.0,Mistral,0.25,Mistral-llava,0.25,3,3,2,3,Devang,,12,manual
+124,Is an aging population a concern for Europe's future?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Mistral-llava,1.0,3,2,3,1,Shashi,1&2&3,13,manual
+125,Is an aging population a concern for Europe's future?,_ndcg@3,Mistral,1.0,Qwen2,1.0,Mistral-llava,0.5540952673819174,3,2,3,2,Shashi,1&2,13,manual
+126,Is an aging population a concern for Europe's future?,_ndcg@2,Qwen2,1.0,Mistral,1.0,Mistral-llava,0.6645649565734895,3,2,3,1,Shashi,1&2,13,manual
+127,Does India see Pakistan as a threat?,_ndcg@1,Mistral,1.0,BM25,1.0,Qwen2,1.0,3,3,3,2,Zeru,1&2&3,7,random
+128,Does India see Pakistan as a threat?,_ndcg@2,Mistral,1.0,BM25,1.0,Qwen2,1.0,3,2,3,2,Zeru,1&2&3,7,random
+129,Does India see Pakistan as a threat?,_ndcg@3,Qwen2,0.914197328472229,Mistral,0.914197328472229,BM25,0.7854933211805725,3,3,3,2,Zeru,1&2,7,random
+130,Is anti-Semitism on the rise globally?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Clip,0.8,3,2,3,1,Zeru,1&2,11,random
+131,Is anti-Semitism on the rise globally?,_ndcg@2,Qwen2,0.9161412391433724,Mistral,0.9161412391433724,Mistral-llava,0.7341740173706042,3,1,3,2,Zeru,1&2,11,random
+132,Is anti-Semitism on the rise globally?,_ndcg@3,Mistral,0.9300809618991231,Qwen2,0.9300809618991231,Mistral-llava,0.6121333128326577,3,3,3,3,Zeru,1&2,11,random
+133,Should pets be considered a necessary part of a household?,_ndcg@1,Mistral,1.0,Qwen2,0.8,Clip,0.0,3,3,3,2,Zeru,,14,random
+134,Should pets be considered a necessary part of a household?,_ndcg@2,Mistral,0.6645649565734895,Qwen2,0.6155107261154192,BM25-llava,0.3354350434265105,3,3,3,2,Zeru,,14,random
+135,Should pets be considered a necessary part of a household?,_ndcg@3,Mistral,0.6452582482812901,Qwen2,0.6019590445170673,Mistral-llava,0.3547417517187098,2,3,3,3,Zeru,,14,random
+136,Is nuclear energy safer than coal energy?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral,1.0,3,3,3,2,Devang,1&2&3,11,random
+137,Is nuclear energy safer than coal energy?,_ndcg@2,Qwen2,1.0,Mistral,0.9200625111439562,Mistral-llava,0.9200625111439562,3,3,3,2,Devang,,11,random
+138,Is nuclear energy safer than coal energy?,_ndcg@3,Qwen2,0.9467676761267002,Mistral-llava,0.9328282860331658,Mistral,0.7731313144132663,3,3,3,2,Devang,,11,random
+139,Should social media be more transparent about data collection?,_ndcg@1,Qwen2,1.0,BM25-llava,1.0,Mistral,1.0,2,3,2,2,Devang,1&2&3,12,random
+140,Should social media be more transparent about data collection?,_ndcg@2,Mistral,1.0,Qwen2,0.89293189936764,BM25,0.7858637987352798,3,3,3,2,Devang,,12,random
+141,Should social media be more transparent about data collection?,_ndcg@3,Qwen2,0.9810048227765072,Mistral,0.8549208510262275,BM25,0.6718513476054694,3,2,3,2,Devang,,12,random
+142,Is the decline in marriage rates a cause for concern?,_ndcg@1,Clip,1.0,BM25,0.8,Mistral-llava,0.8,2,1,3,1,Mazz Hussian,,9,random
+143,Is the decline in marriage rates a cause for concern?,_ndcg@2,Clip,1.0,Mistral-llava,0.8773705614469083,Qwen2,0.7226294385530917,3,1,3,2,Mazz Hussian,,9,random
+144,Is the decline in marriage rates a cause for concern?,_ndcg@3,Clip,1.0,Qwen2,0.8264972479678704,Mistral-llava,0.7538073391653585,2,3,3,1,Mazz Hussian,,9,random
+145,Should the internet be considered a daily necessity?,_ndcg@1,Mistral,1.0,Qwen2,0.6666666666666666,BM25,0.1666666666666666,3,3,3,2,Manish,,14,random
+146,Should the internet be considered a daily necessity?,_ndcg@2,Mistral,0.9259795222585336,Qwen2,0.5432992037642228,BM25-llava,0.4441228664487978,3,3,3,3,Manish,,14,random
+147,Should the internet be considered a daily necessity?,_ndcg@3,Mistral,0.9370563208453614,Qwen2,0.5118788491835059,BM25-llava,0.4275437604865945,3,3,3,3,Manish,,14,random
+148,Is society more accepting of transgender people?,_ndcg@1,Clip,1.0,Qwen2,1.0,Mistral-llava,1.0,3,3,3,3,Manish,1&2&3,8,random
+149,Is society more accepting of transgender people?,_ndcg@2,Mistral-llava,1.0,Qwen2,1.0,BM25,0.959684936496485,3,3,3,2,Manish,1&2,8,random
+150,Is society more accepting of transgender people?,_ndcg@3,Qwen2,1.0,Mistral-llava,0.9570986642361144,Mistral,0.9254314511111328,3,3,3,3,Manish,,8,random
+151,Does reducing police funding increase crime?,_ndcg@1,Mistral,0.3333333333333333,Mistral-llava,0.3333333333333333,Clip,0.3333333333333333,2,1,2,1,Manish,1&2&3,10,random
+152,Does reducing police funding increase crime?,_ndcg@2,Qwen2,0.6319825771735098,Mistral,0.35630635209027,Mistral-llava,0.35630635209027,3,2,3,2,Manish,,10,random
+153,Does reducing police funding increase crime?,_ndcg@3,Qwen2,0.6083184385851529,BM25,0.4621076714410481,Mistral,0.2924215342882096,3,2,3,2,Manish,,10,random
+154,Do Russians regret the breakup of the Soviet Union?,_ndcg@1,BM25-llava,1.0,Mistral-llava,1.0,Mistral,1.0,3,3,3,3,Manish,1&2&3,8,random
+155,Do Russians regret the breakup of the Soviet Union?,_ndcg@2,Qwen2,1.0,Mistral,1.0,Mistral-llava,1.0,3,3,3,3,Manish,1&2&3,8,random
+156,Do Russians regret the breakup of the Soviet Union?,_ndcg@3,Mistral,1.0,Qwen2,1.0,Mistral-llava,0.8592163821931731,3,3,3,3,Manish,1&2,8,random
+157,Have organ donation been increasing over time in UK?,_ndcg@1,Mistral,1.0,Qwen2,1.0,Mistral-llava,0.4,2,2,2,3,Shashi,1&2,11,random
+158,Have organ donation been increasing over time in UK?,_ndcg@2,Qwen2,1.0,Mistral,0.8322824782867448,Mistral-llava,0.6851197869125338,3,3,3,3,Shashi,,11,random
+159,Have organ donation been increasing over time in UK?,_ndcg@3,Qwen2,0.9474995010615088,Mistral,0.7625024946924551,Mistral-llava,0.6462442622073531,3,3,3,2,Shashi,,11,random
+160,Is air travel becoming less safe?,_ndcg@1,Qwen2,1.0,Mistral,1.0,BM25-llava,0.3333333333333333,3,3,3,2,Shashi,1&2,11,random
+161,Is air travel becoming less safe?,_ndcg@2,Qwen2,1.0,Mistral,0.8621618874583801,BM25,0.4135143376248598,3,2,3,2,Shashi,,11,random
+162,Is air travel becoming less safe?,_ndcg@3,Qwen2,1.0,Mistral,0.8346393630113783,BM25,0.4491540383635896,3,3,3,2,Shashi,,11,random
+163,Do tattoos negatively impact job opportunities?,_ndcg@1,Qwen2,1.0,BM25,1.0,Mistral-llava,1.0,3,3,3,2,Shashi,1&2&3,8,random
+164,Do tattoos negatively impact job opportunities?,_ndcg@2,Qwen2,1.0,Mistral-llava,0.8452588771061834,BM25,0.8452588771061834,3,3,3,3,Shashi,,8,random
+165,Do tattoos negatively impact job opportunities?,_ndcg@3,Qwen2,0.9507614678330716,Mistral,0.924974312301727,BM25-llava,0.8030458713322868,3,3,3,2,Shashi,,8,random
+166,Should newspapers shift entirely to digital formats?,_ndcg@1,Qwen2,0.6666666666666666,Mistral-llava,0.5,Clip,0.5,3,3,3,2,Nikhil,,13,random
+167,Should newspapers shift entirely to digital formats?,_ndcg@2,Qwen2,0.6913401592471553,Mistral-llava,0.3519590445170673,Clip,0.3519590445170673,3,3,3,3,Nikhil,,13,random
+168,Should newspapers shift entirely to digital formats?,_ndcg@3,Qwen2,0.8871746352865983,Mistral-llava,0.3990534844701043,Mistral,0.3384760941402048,3,2,3,3,Nikhil,,13,random
+169,Are Football League ticket prices too expensive?,_ndcg@1,BM25-llava,1.0,Qwen2,0.6,Mistral-llava,0.6,3,3,3,2,Nikhil,,11,random
+170,Are Football League ticket prices too expensive?,_ndcg@2,BM25-llava,0.9161412391433724,Qwen2,0.8180327782272317,Mistral-llava,0.7341740173706042,3,3,3,2,Nikhil,,11,random
+171,Are Football League ticket prices too expensive?,_ndcg@3,Qwen2,0.8562462579613171,BM25-llava,0.8287507484077364,Mistral-llava,0.7374975053075448,3,3,3,3,Nikhil,,11,random
+172,Is the UK's defense spending increasing?,_ndcg@1,Qwen2,1.0,Mistral,1.0,BM25,0.6,3,3,3,2,Nikhil,1&2,12,random
+173,Is the UK's defense spending increasing?,_ndcg@2,Qwen2,0.9161412391433724,Mistral,0.8322824782867448,BM25,0.3987389739440937,3,2,3,2,Nikhil,,12,random
+174,Is the UK's defense spending increasing?,_ndcg@3,Mistral,0.915571450536438,Qwen2,0.8746714351609314,BM25,0.4432762139055339,3,3,3,2,Nikhil,,12,random
+175,Should health and fitness apps be free to download?,_ndcg@1,BM25-llava,0.6666666666666666,BM25,0.6666666666666666,Mistral,0.6666666666666666,3,3,2,3,Nikhil,1&2&3,10,random
+176,Should health and fitness apps be free to download?,_ndcg@2,Qwen2,0.7956176024115139,BM25,0.7956176024115139,Mistral,0.6666666666666667,3,2,3,3,Nikhil,1&2,10,random
+177,Should health and fitness apps be free to download?,_ndcg@3,Qwen2,0.9151505377371352,BM25,0.7454516132114052,Mistral,0.638383512579045,3,2,3,3,Nikhil,,10,random
+178,Are women more likely to use Instagram than men?,_ndcg@1,Mistral-llava,1.0,Mistral,0.8333333333333334,Qwen2,0.8333333333333334,3,3,3,3,Nikhil,,13,random
+179,Are women more likely to use Instagram than men?,_ndcg@2,Mistral-llava,0.93108094372919,Mistral,0.8907658802256749,Qwen2,0.8907658802256749,3,3,3,2,Nikhil,,13,random
+180,Are women more likely to use Instagram than men?,_ndcg@3,Mistral-llava,0.9458645415972108,Qwen2,0.8712959927083435,Mistral,0.8712959927083435,3,3,3,2,Nikhil,,13,random

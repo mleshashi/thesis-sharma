@@ -159,7 +159,7 @@
         "affiliated": "Bauhaus-Universit\u00e4t Weimar",
         "annotator_name": "Shashi"
     },
-    "query": "Have organ donation been increasing over time?",
+    "query": "Have organ donation been increasing over time in UK?",
     "BM25-llava_documents_ndcg@1": 0.4,
     "BM25_documents_ndcg@1": 0.4,
     "Clip_documents_ndcg@1": 0.0,
