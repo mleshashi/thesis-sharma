@@ -3,12 +3,14 @@ from elasticsearch import Elasticsearch
 import pandas as pd
 import random
 import torch
-from loadModel import load_model, load_tokenizer, load_clip_model
-from getEmbeddings import get_detailed_instruct, embed_texts, get_text_features
+#from loadModel import load_model, load_tokenizer, load_clip_model
+#from getEmbeddings import get_detailed_instruct, embed_texts, get_text_features
 from evaluation import ndcg_at_k
 import json
 import requests
 import os
+from collections import defaultdict
+import random
 
 # Load the API key from credentials.json
 with open('credentials.json') as f:
@@ -21,20 +23,20 @@ es = Elasticsearch(["http://localhost:9200"])
 index_name = "documents"
 
 # Load models
-mistral = 'intfloat/e5-mistral-7b-instruct'
-Qwen2 = 'Alibaba-NLP/gte-Qwen2-7B-instruct'
-clip = 'openai/clip-vit-large-patch14'
+# mistral = 'intfloat/e5-mistral-7b-instruct'
+# Qwen2 = 'Alibaba-NLP/gte-Qwen2-7B-instruct'
+# clip = 'openai/clip-vit-large-patch14'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-tokenizer_2 = load_tokenizer(mistral)
-model_2 = load_model(mistral)
-#tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
-#model_3 = load_model(Qwen2, trust_remote_code=True)
-tokenizer_4, model_4 = load_clip_model(clip, device)
+# tokenizer_1, model_1 = load_clip_model(clip, device)
+# tokenizer_2 = load_tokenizer(mistral)
+# model_2 = load_model(mistral)
+# tokenizer_3 = load_tokenizer(Qwen2, trust_remote_code=True)
+# model_3 = load_model(Qwen2, trust_remote_code=True)
 
 # Load topics DataFrame globally
-topics_df = pd.read_csv('../dataset/Touche2.csv')
+topics_df = pd.read_csv('../dataset/Touche.csv')
 Manualtopics_df = pd.read_csv('../dataset/manual_topics.csv')
 
 # In-memory storage for scores and search results
@@ -67,13 +69,13 @@ def get_manual_topics():
 @app.route('/search', methods=['POST'])
 def search():
     topic = request.json['topic']
-    task = 'Given a web search query, retrieve relevant passages that answer the query'
-    query = get_detailed_instruct(task, topic)
+    # task = 'Given a web search query, retrieve relevant passages that answer the query'
+    # query = get_detailed_instruct(task, topic)
     
     # Get embeddings for all models
-    topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
-    topic_embedding_3 = embed_texts(query, tokenizer_2, model_2, device)
-    topic_embedding_4 = get_text_features(topic, tokenizer_4, model_4, device)
+    # topic_embedding_1 = get_text_features(topic, tokenizer_1, model_1, device)
+    # topic_embedding_2 = embed_texts(query, tokenizer_2, model_2, device)
+    # topic_embedding_3 = embed_texts(query, tokenizer_3, model_3, device)
 
     # Elasticsearch BM25 query using multi_match for content and title
     script_query_1 = {
@@ -86,65 +88,106 @@ def search():
             }
         }
     }
+
+    # Elasticsearch BM25 query using multi_match for lava content and title
+    script_query_2 = {
+        "query": {
+            "multi_match": {
+                "query": topic,
+                "fields": ["title", "lava_content"],
+                "type": "best_fields",
+                "tie_breaker": 0.3
+            }
+        }
+    }
+
+    # Elasticsearch query using clip model on the image embeddings
+    script_query_3 = {
+        "query": {
+            "multi_match": {
+                "query": topic,
+                "fields": ["title", "title"],
+                "type": "best_fields",
+                "tie_breaker": 0.3
+            }
+        }
+    }
     
     # Elasticsearch query for the first model
-    script_query_2 = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'mistral_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding_2}
+    script_query_4 = {
+        "query": {
+            "multi_match": {
+                "query": topic,
+                "fields": ["content", "content"],
+                "type": "best_fields",
+                "tie_breaker": 0.3
             }
         }
     }
 
     # Elasticsearch query for the second model
-    script_query_3 = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'llava_content_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding_3}
+    script_query_5 = {
+        "query": {
+            "multi_match": {
+                "query": topic,
+                "fields": ["lava_content", "lava_content"],
+                "type": "best_fields",
+                "tie_breaker": 0.3
             }
         }
     }
 
     # Elasticsearch query for the third model
-    script_query_4 = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'image_embedding') + 1.0",
-                "params": {"query_vector": topic_embedding_4}
+    script_query_6 = {
+        "query": {
+            "multi_match": {
+                "query": topic,
+                "fields": ["content", "lava_content"],
+                "type": "best_fields",
+                "tie_breaker": 0.3
             }
         }
     }
 
-    # Get results for the first model ie. BM25
+    # Get results for the first model ie. BM25 on title and content
     response_1 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
         "query": script_query_1["query"],
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the mistral model
+    # Get results for the second model ie. BM25 on title and llava content
     response_2 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_2,
+        "query": script_query_2["query"],
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the qwen-2 model
+    # Get results for the clip model on the image embeddings
     response_3 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_3,
+        "query": script_query_3["query"],
         "_source": ["title", "content", "image_data"]
     })
 
-    # Get results for the clip model
+    # Get results for the mistral model on the title and content embeddings
     response_4 = es.search(index=index_name, body={
         "size": 3,  # Fetch top 3 relevant documents
-        "query": script_query_4,
+        "query": script_query_4["query"],
+        "_source": ["title", "content", "image_data"]
+    })
+
+    # Get results for the mistral model on the title and llava content embeddings
+    response_5 = es.search(index=index_name, body={
+        "size": 3,  # Fetch top 3 relevant documents
+        "query": script_query_5["query"],
+        "_source": ["title", "content", "image_data"]
+    })
+        
+    # Get results for the qwen-2 model on the title and content embeddings
+    response_6 = es.search(index=index_name, body={
+        "size": 3,  # Fetch top 3 relevant documents
+        "query": script_query_6["query"],
         "_source": ["title", "content", "image_data"]
     })
 
@@ -152,14 +195,18 @@ def search():
     documents_2 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_2['hits']['hits']]
     documents_3 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_3['hits']['hits']]
     documents_4 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_4['hits']['hits']]
+    documents_5 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_5['hits']['hits']]
+    documents_6 = [{"title": hit["_source"]["title"], "content": hit["_source"]["content"], "score": hit["_score"], "image_data": hit["_source"]["image_data"]} for hit in response_6['hits']['hits']]
     
     # Store results in memory without the "latest" wrapper
     search_results.update({
         "query": topic,
         "BM25_documents": documents_1,
-        "Mistral_documents": documents_2,
-        "Qwen2_documents": documents_3,
-        "Clip_documents": documents_4
+        "BM25-llava_documents": documents_2,
+        "Clip_documents": documents_3,
+        "Mistral_documents": documents_4,
+        "Mistral-llava_documents": documents_5,
+        "Qwen2_documents": documents_6
     })
     
     return jsonify(search_results)
@@ -242,6 +289,7 @@ def evaluate():
     # Collect all relevance scores from all models, removing duplicates
     all_relevance_scores = []
     seen_docs = set()  # To keep track of seen (title, content) pairs
+    unique_doc_count = 0  # Variable to count unique documents
 
     for model_key, documents in results.items():
         if model_key != 'query' and '_documents' in model_key:
@@ -250,6 +298,7 @@ def evaluate():
                 if doc_key not in seen_docs:
                     seen_docs.add(doc_key)
                     all_relevance_scores.append(doc['relevance'] + doc['completeness'])
+                    unique_doc_count += 1  # Increment the unique document count
 
      # Calculate NDCG scores for each k in ks
     ndcg_scores = {k: {} for k in ks}
@@ -264,6 +313,10 @@ def evaluate():
     for k in ks:
         for model_key, score in ndcg_scores[k].items():
             scores_storage[model_key + f'_ndcg@{k}'] = score
+
+        
+    # Add unique document count to the metadata
+    metric_metadata['unique_document'] = unique_doc_count
 
     return jsonify(ndcg_scores)
 
@@ -281,19 +334,36 @@ def prepare_llm_input():
     if not ndcg_scores:
         return jsonify({"error": f"No NDCG scores found for NDCG@{ndcg_value}"}), 404
     
-    # Sort the NDCG scores to get the top and second top models
-    sorted_ndcg_scores = sorted(ndcg_scores.items(), key=lambda item: item[1], reverse=True)
+    # Group the scores
+    score_groups = defaultdict(list)
+    for key, value in ndcg_scores.items():
+        score_groups[value].append(key)
+
+    # Sort the groups by score in descending order
+    sorted_score_groups = sorted(score_groups.items(), key=lambda item: item[0], reverse=True)
+
+    # Randomize within each group
+    randomized_models = []
+    for score, models in sorted_score_groups:
+        random.shuffle(models)
+        for model in models:
+            randomized_models.append((model, score))
     
-    top_model, highest_ndcg_score = sorted_ndcg_scores[0]
+    top_model, highest_ndcg_score = randomized_models[0]
     top_model = top_model.replace(ndcg_key, '')
     top_model_name = top_model.replace('_documents', '')
     
-    second_top_model, second_highest_ndcg_score = sorted_ndcg_scores[1]
+    second_top_model, second_highest_ndcg_score = randomized_models[1]
     second_top_model = second_top_model.replace(ndcg_key, '')
     second_top_model_name = second_top_model.replace('_documents', '')
+
+    third_top_model, third_highest_ndcg_score = randomized_models[2]
+    third_top_model = third_top_model.replace(ndcg_key, '')
+    third_top_model_name = third_top_model.replace('_documents', '')
     
     print(ndcg_key, top_model_name, highest_ndcg_score)
     print(ndcg_key, second_top_model_name, second_highest_ndcg_score)
+    print(ndcg_key, third_top_model_name, third_highest_ndcg_score)
 
     # Extract the top-ranked documents from the top NDCG model
     top_documents_key = top_model.replace(ndcg_key, '_documents')
@@ -325,7 +395,7 @@ def prepare_llm_input():
                 "Format the response in the following structure with 3 paragraphs, without paragraph title::\n\n"
                 "1. Start the response with a clear classification or a straightforward answer to the query.\n"
                 "2. Provide supporting findings and detailed analysis, including relevant statistical data.\n"
-                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion based on provided content."
+                "3. Summarize the final conclusion briefly."
             )
         }
     ]
@@ -357,7 +427,7 @@ def prepare_llm_input():
                 "Format the response in the following structure with 3 paragraphs, without paragraph title:\n\n"
                 "1. Start the response with a clear classification or a straightforward answer to the query.\n"
                 "2. Provide supporting findings and detailed analysis, including relevant statistical data.\n"
-                "3. Summarize the final conclusion briefly. If the query does not specify a country, provide a global perspective in the conclusion based on the provided content."
+                "3. Summarize the final conclusion briefly."
             )
         },
         {
@@ -370,13 +440,13 @@ def prepare_llm_input():
     payload1 = {
         "model": "gpt-4o",
         "messages": messages1,
-        "max_tokens": 1000
+        "max_tokens": 500
     }
 
     payload2 = {
         "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
         "messages": messages2,
-        "max_tokens": 1000
+        "max_tokens": 500
     }
     
     # Store the payloads in llm_inputs
@@ -392,6 +462,8 @@ def prepare_llm_input():
     metric_metadata['highest_ndcg_score'] = highest_ndcg_score
     metric_metadata['second_top_model'] = second_top_model_name
     metric_metadata['second_highest_ndcg_score'] = second_highest_ndcg_score
+    metric_metadata['third_top_model'] = third_top_model_name
+    metric_metadata['third_highest_ndcg_score'] = third_highest_ndcg_score
 
     return jsonify({"message": "LLM input prepared and stored successfully"})
 
@@ -476,6 +548,8 @@ def save_query():
     highest_ndcg_score = metric_metadata.get('highest_ndcg_score', 'No Score Found')
     second_top_model = metric_metadata.get('second_top_model', 'No Model Found')
     second_highest_ndcg_score = metric_metadata.get('second_highest_ndcg_score', 'No Score Found')
+    third_top_model = metric_metadata.get('third_top_model', 'No Model Found')
+    third_highest_ndcg_score = metric_metadata.get('third_highest_ndcg_score', 'No Score Found')
 
     gpt_answer = llm_answers.get('gpt_llm_answer', {}).get('choices', [{}])[0].get('message', {}).get('content', 'No Answer Found').replace('\n', ' ').replace('\r', ' ')
     relevance_score_gpt = int(llm_answers.get('gpt_llm_answer', {}).get('annotation', {}).get('relevance'))
@@ -486,6 +560,18 @@ def save_query():
     faithfulness_lama = int(llm_answers.get('lama_llm_answer', {}).get('annotation', {}).get('faithfulness'))
 
     annotator_name = metric_metadata.get('annotator_name', 'No Annotator Found')
+    Unique_document = metric_metadata.get('unique_document', 'No Unique Document Found')
+
+    # Check if first and second model NDCG scores are the same
+    if highest_ndcg_score == second_highest_ndcg_score and highest_ndcg_score == third_highest_ndcg_score:
+        scores_equal = '1&2&3'
+    elif highest_ndcg_score == second_highest_ndcg_score:
+        scores_equal = '1&2'
+    else:
+        scores_equal = 'None'
+
+    
+
 
     # Define the path to the CSV file
     csv_file_path  = '../dataset/results/results.csv'
@@ -510,13 +596,17 @@ def save_query():
         'highest_ndcg_score': highest_ndcg_score,
         'second_top_model': second_top_model,
         'second_highest_ndcg_score': second_highest_ndcg_score,
+        'third_top_model': third_top_model,
+        'third_highest_ndcg_score': third_highest_ndcg_score,
         'final_answer_gpt': gpt_answer,
         'relevance_gpt': relevance_score_gpt,
         'faithfulness_gpt': faithfulness_gpt,
         'final_answer_lama': lama_answer,
         'relevance_lama': relevance_score_lama,
         'faithfulness_lama': faithfulness_lama,
-        'annotator_name': annotator_name
+        'annotator_name': annotator_name,
+        'scores_equal': scores_equal,
+        'Unique_document': Unique_document
     }
 
     # Convert the data to a DataFrame
