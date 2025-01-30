@@ -1,4 +1,4 @@
-# Master's Thesis: Chart Retrieval for Arguments
+# chart-retrieval-for-arguments
 
 ## Repository Structure
 
@@ -65,7 +65,7 @@ This repository contains the implementation of a chart retrieval system for argu
 
 4. Run the system:
    ```bash
-   cd thesis-sharma
+   cd ChartRetrieval
    python webapp.py
    ```
 
